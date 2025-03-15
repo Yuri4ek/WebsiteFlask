@@ -12,5 +12,5 @@ class Sockets(SqlAlchemyBase):
 
     processors = orm.relationship("Processors", back_populates="socket")
     motherboards = orm.relationship("MotherBoards", back_populates="socket")
-    coolingsystems = orm.relationship("CoolingSystems",
-                                      back_populates="socket")
+    cooling_systems = orm.relationship("CoolingSystems",
+                                       back_populates="socket")

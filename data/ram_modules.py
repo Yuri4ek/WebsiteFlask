@@ -3,21 +3,16 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 
 
-class MotherBoards(SqlAlchemyBase):
-    __tablename__ = 'motherboards'
+class RamModules(SqlAlchemyBase):
+    __tablename__ = 'ram_modules'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
-    socket_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                  sqlalchemy.ForeignKey("sockets.id"))
     memory_type_id = sqlalchemy.Column(sqlalchemy.Integer,
                                        sqlalchemy.ForeignKey(
                                            "memory_types.id"))
-    m2_support = sqlalchemy.Column(sqlalchemy.Boolean)
-    form_factor = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
 
-    socket = orm.relationship("Sockets")
     memory_type = orm.relationship("MemoryTypes")

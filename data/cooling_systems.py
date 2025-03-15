@@ -4,7 +4,7 @@ from sqlalchemy import orm
 
 
 class CoolingSystems(SqlAlchemyBase):
-    __tablename__ = 'coolingsystems'
+    __tablename__ = 'cooling_systems'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

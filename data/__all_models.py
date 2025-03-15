@@ -4,3 +4,7 @@ from . import processors
 from . import cooling_systems
 from . import motherboards
 from . import ram_modules
+from . import videocards
+from . import storage_devices
+from . import power_supplies
+from . import computer_cases

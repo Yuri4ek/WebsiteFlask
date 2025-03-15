@@ -9,10 +9,13 @@ class Processors(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
-    socket = sqlalchemy.Column(sqlalchemy.String)
+    socket_id = sqlalchemy.Column(sqlalchemy.Integer,
+                               sqlalchemy.ForeignKey("sockets.id"))
     efficiency = sqlalchemy.Column(sqlalchemy.REAL)
     cores_threads = sqlalchemy.Column(sqlalchemy.String)
     release_year = sqlalchemy.Column(sqlalchemy.Integer)
     tdp = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
+
+    socket = orm.relationship("Sockets")

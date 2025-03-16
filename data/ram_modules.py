@@ -9,6 +9,7 @@ class RamModules(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
+    capacity_gb = sqlalchemy.Column(sqlalchemy.Integer)
     memory_type_id = sqlalchemy.Column(sqlalchemy.Integer,
                                        sqlalchemy.ForeignKey(
                                            "memory_types.id"))

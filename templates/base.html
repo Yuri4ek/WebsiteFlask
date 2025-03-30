@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Configuration</title>
+    <link rel="stylesheet" href="/static/css/base_style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="/">Конфигуратор</a>
+            <div class="dropdown">
+                <a href="" class="dropbtn">Комплектующие</a>
+                <div class="dropdown-content">
+                    <a href="/components/processors">Процессоры</a>
+                    <a href="/components/sockets">Сокеты</a>
+                    <a href="/components/videocards">Видеокарты</a>
+                    <a href="/components/ram_modules">ОЗУ</a>
+                    <a href="/components/memory_types">Тип ОЗУ</a>
+                    <a href="/components/storage_devices">Накопители</a>
+                    <a href="/components/motherboards">Материнские платы</a>
+                    <a href="/components/power_supplies">Блоки питания</a>
+                    <a href="/components/computer_cases">Корпуса</a>
+                    <a href="/components/cooling_systems">Охлаждение процессора</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="/builds" class="dropbtn">Конфигурации</a>
+                <div class="dropdown-content">
+                    <a href="/builds" class="dropbtn">Конфигурации</a>
+                    <a href="/make_builds">Создать Конфигурацию</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-right">
+            {% if user.is_logged_in %}
+                <a href="/profile" class="btn">{{ user.username }}</a>
+            {% else %}
+                <a href="/login" class="btn">Войти</a>
+                <a href="/register" class="btn">Зарегистрироваться</a>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Begin page content -->
+    <main role="main" class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

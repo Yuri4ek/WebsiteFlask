@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/components_style.css">
+
+<div class="container">
+    <div class="filters">
+        <h3>Фильтры</h3>
+        <div>
+            <label><input type="checkbox"> Процессоры</label><br>
+            <label><input type="checkbox"> Видеокарты</label><br>
+            <label><input type="checkbox"> Материнские платы</label><br>
+            <label><input type="checkbox"> Оперативная память</label><br>
+            <label><input type="checkbox"> Охлаждение процессора</label><br>
+            <label><input type="checkbox"> Накопители</label><br>
+            <label><input type="checkbox"> Блоки питания</label><br>
+            <label><input type="checkbox"> Корпуса</label>
+        </div>
+
+        <!-- Динамические фильтры в зависимости от категории -->
+        {% if component == "processors" %}
+            <h4>Сокет</h4>
+            <select name="socket">
+                <option value="">Любой</option>
+                <option value="LGA 1700">LGA 1700</option>
+                <option value="AM4">AM4</option>
+                <option value="LGA 1200">LGA 1200</option>
+            </select>
+            <h4>Сортировка по мощности</h4>
+            <select name="power_sort">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+        {% elif component == "videocards" %}
+            <h4>Сортировка по мощности</h4>
+            <select name="power_sort">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+        {% elif component == "motherboards" %}
+            <h4>Сокет</h4>
+            <select name="socket">
+                <option value="">Любой</option>
+                <option value="LGA 1700">LGA 1700</option>
+                <option value="AM4">AM4</option>
+                <option value="LGA 1200">LGA 1200</option>
+            </select>
+            <h4>Тип памяти</h4>
+            <select name="memory_type">
+                <option value="">Любой</option>
+                <option value="DDR4">DDR4</option>
+                <option value="DDR5">DDR5</option>
+            </select>
+            <h4>Форм-фактор</h4>
+            <select name="form_factor">
+                <option value="">Любой</option>
+                <option value="ATX">ATX</option>
+                <option value="Micro-ATX">Micro-ATX</option>
+                <option value="Mini-ITX">Mini-ITX</option>
+            </select>
+        {% elif component == "ram_modules" %}
+            <h4>Тип</h4>
+            <select name="memory_type">
+                <option value="">Любой</option>
+                <option value="DDR4">DDR4</option>
+                <option value="DDR5">DDR5</option>
+            </select>
+            <h4>Объём (ГБ)</h4>
+            <select name="volume">
+                <option value="">Любой</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+            </select>
+        {% elif component == "cooling_systems" %}
+            <h4>Сокет</h4>
+            <select name="socket">
+                <option value="">Любой</option>
+                <option value="LGA 1700">LGA 1700</option>
+                <option value="AM4">AM4</option>
+                <option value="LGA 1200">LGA 1200</option>
+            </select>
+            <h4>Сортировка по тепловыделению</h4>
+            <select name="tdp_sort">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+        {% elif component == "storage_devices" %}
+            <h4>Тип</h4>
+            <select name="storage_type">
+                <option value="">Любой</option>
+                <option value="SSD">SSD</option>
+                <option value="HDD">HDD</option>
+                <option value="NVMe">NVMe</option>
+            </select>
+            <h4>Объём (ГБ)</h4>
+            <select name="volume">
+                <option value="">Любой</option>
+                <option value="256">256</option>
+                <option value="512">512</option>
+                <option value="1000">1000</option>
+            </select>
+        {% elif component == "power_supplies" %}
+            <h4>Сортировка по мощности</h4>
+            <select name="power_sort">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+        {% endif %}
+
+        <h4>Цена</h4>
+        <div class="price-range">
+            <div class="price-input">
+                <input type="number" name="price_from"  placeholder="От">
+            </div>
+            <div class="price-input">
+                <input type="number" name="price_to" placeholder="До">
+            </div>
+        </div>
+    </div>
+    <div class="right-section">
+        <div class="search-bar">
+            <input type="text" placeholder="Поиск комплектующих...">
+            <button>Поиск</button>
+        </div>
+        <div class="components">
+            <div class="component-item">
+                <div class="component-image"></div>
+                <div class="component-info">
+                    <h3>Процессор Intel Core i7-12700K</h3>
+                    <p>Ядра: 12</p>
+                    <p>Потоки: 20</p>
+                    <p>Частота: 3.6 ГГц (5.0 ГГц Turbo)</p>
+                    <p>Сокет: LGA 1700</p>
+                </div>
+            </div>
+            <div class="component-item">
+                <div class="component-image"></div>
+                <div class="component-info">
+                    <h3>Видеокарта NVIDIA RTX 4080</h3>
+                    <p>Память: 16 ГБ GDDR6X</p>
+                    <p>Шина: 256-бит</p>
+                    <p>Частота ядра: 2500 МГц</p>
+                    <p>Разъемы: HDMI, 3x DP</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

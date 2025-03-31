@@ -21,5 +21,13 @@ user = {
 def home():
     return render_template('main.html', user=user)
 
+
+@app.route('/choose_components/<components_type>')
+def choose_components(components_type):
+    return render_template('search_components.html',
+                           user=user,
+                           component=components_type)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

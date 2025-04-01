@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/registration_authorization_style.css">
+
+<div class="container">
+    <form class="modal-content">
+        <h2>Вход</h2>
+        <input type="text" id="login" name="login" required placeholder="Никнейм или Почта">
+        <input type="password" id="password" name="password" required placeholder="Пароль">
+        <button type="submit" class="btn">Войти</button>
+    </form>
+</div>
+{% endblock %}

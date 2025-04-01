@@ -187,6 +187,20 @@ def choose_components(component_type):
                            component_type=component_type,
                            components=displaying_components)
 
+@app.route('/builds')
+def show_builds():
+    return render_template('builds.html', user=user)
+
+
+@app.route('/login')
+def authorization():
+    return render_template('authorization.html', user=user)
+
+
+@app.route('/register')
+def registration():
+    return render_template('registration.html', user=user)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

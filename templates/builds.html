@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/builds_style.css">
+
+<div class="container">
+    <!-- Блок 1 -->
+    <div class="pc-block">
+        <div class="header">
+            <button class="nickname-btn">@TechGuru</button>
+            <div class="title-budget">
+                <div class="title">Gaming Beast</div>
+                <div class="budget">Бюджет: $1500</div>
+            </div>
+        </div>
+        <div class="content">
+            <img src="https://avatars.mds.yandex.net/i?id=c7fa6cfde24ae58088627212dbe8a75b_l-5233839-images-thumbs&n=13" alt="PC Case" class="pc-image">
+            <div class="specs">
+                Процессор: AMD Ryzen 7 5800X<br>
+                Видеокарта: NVIDIA RTX 3070<br>
+                ОЗУ: 32GB DDR4<br>
+                Накопители: 1TB NVMe SSD<br>
+                Материнская плата: B550<br>
+                Блок питания: 750W 80+ Gold<br>
+                Корпус: NZXT H510<br>
+                Охлаждение процессора: Noctua NH-D15
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок 2 -->
+    <div class="pc-block">
+        <div class="header">
+            <button class="nickname-btn">@PCBuilder</button>
+            <div class="title-budget">
+                <div class="title">Workstation Pro</div>
+                <div class="budget">Бюджет: $2000</div>
+            </div>
+        </div>
+        <div class="content">
+            <img src="https://i.pinimg.com/736x/9f/7b/a6/9f7ba685c445c5552398694b5249ec3c.jpg" alt="PC Case" class="pc-image">
+            <div class="specs">
+                Процессор: Intel Core i9-12900K<br>
+                Видеокарта: NVIDIA RTX 3060<br>
+                ОЗУ: 64GB DDR5<br>
+                Накопители: 2TB NVMe SSD<br>
+                Материнская плата: Z690<br>
+                Блок питания: 850W 80+ Platinum<br>
+                Корпус: Lian Li PC-O11<br>
+                Охлаждение процессора: Corsair H150i
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок 3 -->
+    <div class="pc-block">
+        <div class="header">
+            <button class="nickname-btn">@BudgetKing</button>
+            <div class="title-budget">
+                <div class="title">Budget Gamer</div>
+                <div class="budget">Бюджет: $800</div>
+            </div>
+        </div>
+        <div class="content">
+            <img src="https://i.pinimg.com/736x/9f/7b/a6/9f7ba685c445c5552398694b5249ec3c.jpg" alt="PC Case" class="pc-image">
+            <div class="specs">
+                Процессор: AMD Ryzen 5 5600G<br>
+                Видеокарта: Встроенная Vega<br>
+                ОЗУ: 16GB DDR4<br>
+                Накопители: 512GB SSD<br>
+                Материнская плата: B450<br>
+                Блок питания: 550W 80+ Bronze<br>
+                Корпус: Cooler Master Q300L<br>
+                Охлаждение процессора: Stock Cooler
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

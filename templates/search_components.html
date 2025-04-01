@@ -18,7 +18,7 @@
         </div>
 
         <!-- Динамические фильтры в зависимости от категории -->
-        {% if component == "processors" %}
+        {% if component_type == "processors" %}
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
@@ -31,13 +31,13 @@
                 <option value="asc">По возрастанию</option>
                 <option value="desc">По убыванию</option>
             </select>
-        {% elif component == "videocards" %}
+        {% elif component_type == "videocards" %}
             <h4>Сортировка по мощности</h4>
             <select name="power_sort">
                 <option value="asc">По возрастанию</option>
                 <option value="desc">По убыванию</option>
             </select>
-        {% elif component == "motherboards" %}
+        {% elif component_type == "motherboards" %}
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
@@ -58,7 +58,7 @@
                 <option value="Micro-ATX">Micro-ATX</option>
                 <option value="Mini-ITX">Mini-ITX</option>
             </select>
-        {% elif component == "ram_modules" %}
+        {% elif component_type == "ram_modules" %}
             <h4>Тип</h4>
             <select name="memory_type">
                 <option value="">Любой</option>
@@ -72,7 +72,7 @@
                 <option value="16">16</option>
                 <option value="32">32</option>
             </select>
-        {% elif component == "cooling_systems" %}
+        {% elif component_type == "cooling_systems" %}
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
@@ -85,7 +85,7 @@
                 <option value="asc">По возрастанию</option>
                 <option value="desc">По убыванию</option>
             </select>
-        {% elif component == "storage_devices" %}
+        {% elif component_type == "storage_devices" %}
             <h4>Тип</h4>
             <select name="storage_type">
                 <option value="">Любой</option>
@@ -100,7 +100,7 @@
                 <option value="512">512</option>
                 <option value="1000">1000</option>
             </select>
-        {% elif component == "power_supplies" %}
+        {% elif component_type == "power_supplies" %}
             <h4>Сортировка по мощности</h4>
             <select name="power_sort">
                 <option value="asc">По возрастанию</option>
@@ -124,26 +124,17 @@
             <button>Поиск</button>
         </div>
         <div class="components">
-            <div class="component-item">
-                <div class="component-image"></div>
-                <div class="component-info">
-                    <h3>Процессор Intel Core i7-12700K</h3>
-                    <p>Ядра: 12</p>
-                    <p>Потоки: 20</p>
-                    <p>Частота: 3.6 ГГц (5.0 ГГц Turbo)</p>
-                    <p>Сокет: LGA 1700</p>
+            {% for component in components %}
+                <div class="component-item">
+                    <div class="component-image"></div>
+                    <div class="component-info">
+                        <h3>{{ component[0] }}</h3>
+                        {% for el in component[1:] %}
+                            <p>{{ el }}</p>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="component-item">
-                <div class="component-image"></div>
-                <div class="component-info">
-                    <h3>Видеокарта NVIDIA RTX 4080</h3>
-                    <p>Память: 16 ГБ GDDR6X</p>
-                    <p>Шина: 256-бит</p>
-                    <p>Частота ядра: 2500 МГц</p>
-                    <p>Разъемы: HDMI, 3x DP</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

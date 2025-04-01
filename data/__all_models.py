@@ -8,3 +8,5 @@ from . import videocards
 from . import storage_devices
 from . import power_supplies
 from . import computer_cases
+from . import users
+from . import  configurations

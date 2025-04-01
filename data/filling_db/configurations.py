@@ -6,7 +6,6 @@ cur.execute("DELETE FROM configurations")
 con.commit()
 con.close()
 
-# тестовые значения
 configurations = [('Yes', {'1': 1, "2": 2}, 1)]
 
 from data import db_session

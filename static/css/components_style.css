@@ -26,10 +26,10 @@ body {
 }
 .filters h3 {
     margin: 0;
-    padding: 10px 0;
+    padding: 5px 0;
 }
 .filters h4 {
-    margin: 10px 0 10px 0;
+    margin: 10px 0 5px 0;
 }
 .filters select {
     width: 100%;
@@ -68,7 +68,7 @@ body {
 }
 
 .search-bar {
-    padding: 10px 10px;
+    padding: 5px 10px;
     background-color: #f0f0f0;
     border-bottom: 1px solid #ccc;
     display: flex;
@@ -102,22 +102,27 @@ body {
 
 .components {
     flex: 1;
-    padding: 5px;
+    padding: 10px;
     overflow-y: auto;
 }
 .component-item {
     display: flex;
+    align-items: center; /* Центрируем содержимое по вертикали */
     margin-bottom: 20px;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 8px;
+    position: relative;
 }
 .component-image {
     width: 150px;
     height: 150px;
-    background-color: #eee;
+    background-color: #fff;
     margin-right: 15px;
     border-radius: 6px;
+}
+.component-info {
+    flex: 1; /* Занимает оставшееся пространство */
 }
 .component-info h3 {
     margin: 0 0 10px 0;
@@ -125,4 +130,18 @@ body {
 .component-info p {
     margin: 5px 0;
     color: #666;
+}
+.component-button {
+    margin-right: 900px;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    background-color: #808080;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none; /* Убираем подчеркивание для ссылки */
+}
+.component-button:hover {
+    background-color: #666666;
 }

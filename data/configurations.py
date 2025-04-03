@@ -10,6 +10,7 @@ class Configurations(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    image_path = sqlalchemy.Column(sqlalchemy.String)
     components = sqlalchemy.Column(sqlalchemy.PickleType)
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))

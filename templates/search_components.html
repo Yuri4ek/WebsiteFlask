@@ -126,16 +126,19 @@
         <div class="components">
             {% for component in components %}
                 <div class="component-item">
-                    <div class="component-image"></div>
+                    <div class="component-image">
+                        <img src="{{ component[1] }}" alt="Нету изображения">
+                    </div>
                     <div class="component-info">
                         <h3>{{ component[0] }}</h3>
-                        {% for el in component[1:] %}
+                        {% for el in component[2:] %}
                             <p>{{ el }}</p>
                         {% endfor %}
                     </div>
+                    <a href="/" class="component-button">Выбрать</a>
                 </div>
             {% endfor %}
         </div>
     </div>
-</div>
+</div>=
 {% endblock %}

@@ -62,6 +62,7 @@ db_sess = db_session.create_session()
 for case in cases:
     computerCase = ComputerCases()
     computerCase.name = case[0]
+    computerCase.image_path = f'/static/images/computer_cases/{case[0]}.webp'
     computerCase.form_factor = case[1]
     computerCase.price = case[2]
     computerCase.currency = case[3]

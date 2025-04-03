@@ -60,6 +60,7 @@ def choose_components(component_type):
             tdp = component.tdp
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Сокет: {socket}',
                                           f'Ядра: {cores}',
@@ -73,6 +74,7 @@ def choose_components(component_type):
             tdp = component.tdp
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Потребление: {tdp} Ватт'))
     if component_type == 'motherboards':
@@ -100,6 +102,7 @@ def choose_components(component_type):
             form_factor = component.form_factor
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Сокет: {socket}',
                                           f'Тип памяти: {memory_type}',
@@ -122,6 +125,7 @@ def choose_components(component_type):
             capacity_gb = component.capacity_gb
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Тип памяти: {memory_type}',
                                           f'Объём памяти: {capacity_gb}'))
@@ -142,6 +146,7 @@ def choose_components(component_type):
             tdp = component.tdp
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Сокет: {socket}',
                                           f'Тип системы охлаждения: '
@@ -156,6 +161,7 @@ def choose_components(component_type):
             capacity_gb = component.capacity_gb
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Тип накопителя: {storage_type}',
                                           f'Объём: {capacity_gb} Гб'))
@@ -168,6 +174,7 @@ def choose_components(component_type):
             power = component.power
 
             displaying_components.append((name,
+                                          None,
                                           f'Цена: {price} $',
                                           f'Форм-фактор: {form_factor}',
                                           f'Мощность: {power} Ватт'))
@@ -175,10 +182,12 @@ def choose_components(component_type):
         # делаем корпуса читабельнее
         for component in components:
             name = component.name
+            image_path = component.image_path
             price = component.price
             form_factor = component.form_factor
 
             displaying_components.append((name,
+                                          image_path,
                                           f'Цена: {price} $',
                                           f'Форм-фактор: {form_factor}'))
 
@@ -186,6 +195,7 @@ def choose_components(component_type):
                            user=user,
                            component_type=component_type,
                            components=displaying_components)
+
 
 @app.route('/builds')
 def show_builds():

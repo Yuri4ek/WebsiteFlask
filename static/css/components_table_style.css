@@ -1,0 +1,15 @@
+/* Table */
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 20px auto; /* существующий отступ */
+    margin-top: 100px; /* добавляем больший отступ сверху */
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+th {
+    background-color: #f2f2f2;
+}

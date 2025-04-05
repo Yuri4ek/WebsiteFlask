@@ -3,6 +3,7 @@ from sqlalchemy import inspect
 from data import (db_session, computer_cases, cooling_systems, memory_types,
                   motherboards, power_supplies, processors, ram_modules,
                   sockets, storage_devices, videocards)
+from cookie_functions import *
 
 app = Flask(__name__)
 db_session.global_init("db/components.db")
@@ -17,9 +18,24 @@ user = {
 }
 
 
-@app.route('/')
-def home():
-    return render_template('main.html', user=user)
+@app.route('/', defaults={'component': None})
+@app.route('/<component>')
+def home(component):
+    # Проверяем, есть ли cookie
+    data = get_cookie()
+
+    # Если нет cookie, то создаем
+    if not data:
+        # создаем cookie
+        return set_cookie()
+
+    # Если cookie и component есть, обновляем данные
+    if component:
+        component_type, component_name = component.split(':')
+        return update_cookie(component_type, component_name)
+
+    # если нет никаких изменений
+    return render_template('main.html', selected_component=data)
 
 
 components_types = {'computer_cases': computer_cases.ComputerCases,
@@ -192,24 +208,47 @@ def choose_components(component_type):
                                           f'Форм-фактор: {form_factor}'))
 
     return render_template('search_components.html',
-                           user=user,
                            component_type=component_type,
                            components=displaying_components)
 
 
+@app.route('/components/<component_type>')
+def show_components_table(component_type):
+    component_class = components_types[component_type]
+
+    # все компоненты
+    db_sess = db_session.create_session()
+    components = db_sess.query(component_class).all()
+
+    # название колонн
+    inspector = inspect(component_class)
+    columns = [column.name for column in inspector.mapper.columns]
+
+    return render_template('components_table.html',
+                           keys=columns,
+                           components=components)
+
+
 @app.route('/builds')
 def show_builds():
-    return render_template('builds.html', user=user)
+    return render_template('builds.html')
 
 
 @app.route('/login')
 def authorization():
-    return render_template('authorization.html', user=user)
+    return render_template('authorization.html')
 
 
 @app.route('/register')
 def registration():
-    return render_template('registration.html', user=user)
+    return render_template('registration.html')
+
+
+@app.get("/delete_cookie")
+def delete_json_cookie():
+    resp = make_response("Cookie удален")
+    resp.delete_cookie('configuration_data')
+    return resp
 
 
 if __name__ == '__main__':

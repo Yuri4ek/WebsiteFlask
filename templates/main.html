@@ -5,6 +5,22 @@
 
 <!-- Main container -->
 <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>Конфигурация</h1>
+        <div class="components-list">
+            <p>Процессор: {{ selected_component['processors'] }} </p>
+            <p>Охлаждение процессора: {{ selected_component['cooling_systems'] }} </p>
+            <p>Видеокарта: {{ selected_component['videocards'] }} </p>
+            <p>ОЗУ: {{ selected_component['ram_modules'] }} </p>
+            <p>Материнская плата: {{ selected_component['motherboards'] }} </p>
+            <p>Накопители: {{ selected_component['storage_devices'] }} </p>
+            <p>Блок питания: {{ selected_component['power_supplies'] }} </p>
+            <p>Корпус: {{ selected_component['computer_cases'] }} </p>
+        </div>
+        <a href="/purchase" class="build-button">Собрать конфигурацию</a>
+    </div>
+
     <!-- Components container -->
     <div class="components-container">
         <!-- Row 1: CPU Cooler (centered above CPU) -->

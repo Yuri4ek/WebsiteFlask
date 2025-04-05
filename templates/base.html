@@ -35,12 +35,8 @@
             </div>
         </div>
         <div class="nav-right">
-            {% if user.is_logged_in %}
-                <a href="/profile" class="btn">{{ user.username }}</a>
-            {% else %}
-                <a href="/login" class="btn">Войти</a>
-                <a href="/register" class="btn">Зарегистрироваться</a>
-            {% endif %}
+            <a href="/login" class="btn">Войти</a>
+            <a href="/register" class="btn">Зарегистрироваться</a>
         </div>
     </div>
     <!-- Begin page content -->

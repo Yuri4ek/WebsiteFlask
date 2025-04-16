@@ -6,25 +6,14 @@
 <div class="container">
     <div class="filters">
         <h3>Фильтры</h3>
-        <div>
-            <label><input type="checkbox"> Процессоры</label><br>
-            <label><input type="checkbox"> Видеокарты</label><br>
-            <label><input type="checkbox"> Материнские платы</label><br>
-            <label><input type="checkbox"> Оперативная память</label><br>
-            <label><input type="checkbox"> Охлаждение процессора</label><br>
-            <label><input type="checkbox"> Накопители</label><br>
-            <label><input type="checkbox"> Блоки питания</label><br>
-            <label><input type="checkbox"> Корпуса</label>
-        </div>
-
         <!-- Динамические фильтры в зависимости от категории -->
         {% if component_type == "processors" %}
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
-                <option value="LGA 1700">LGA 1700</option>
-                <option value="AM4">AM4</option>
-                <option value="LGA 1200">LGA 1200</option>
+                {% for socket in sockets %}
+                <option value={{ socket }}>{{ socket.name }}</option>
+                {% endfor %}
             </select>
             <h4>Сортировка по мощности</h4>
             <select name="power_sort">
@@ -41,49 +30,32 @@
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
-                <option value="LGA 1700">LGA 1700</option>
-                <option value="AM4">AM4</option>
-                <option value="LGA 1200">LGA 1200</option>
+                {% for socket in sockets %}
+                <option value={{ socket }}>{{ socket.name }}</option>
+                {% endfor %}
             </select>
             <h4>Тип памяти</h4>
             <select name="memory_type">
                 <option value="">Любой</option>
-                <option value="DDR4">DDR4</option>
-                <option value="DDR5">DDR5</option>
-            </select>
-            <h4>Форм-фактор</h4>
-            <select name="form_factor">
-                <option value="">Любой</option>
-                <option value="ATX">ATX</option>
-                <option value="Micro-ATX">Micro-ATX</option>
-                <option value="Mini-ITX">Mini-ITX</option>
+                {% for memory_type in memory_types %}
+                <option value={{ memory_type }}>{{ memory_type.name }}</option>
+                {% endfor %}
             </select>
         {% elif component_type == "ram_modules" %}
-            <h4>Тип</h4>
+            <h4>Тип памяти</h4>
             <select name="memory_type">
                 <option value="">Любой</option>
-                <option value="DDR4">DDR4</option>
-                <option value="DDR5">DDR5</option>
-            </select>
-            <h4>Объём (ГБ)</h4>
-            <select name="volume">
-                <option value="">Любой</option>
-                <option value="8">8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
+                {% for memory_type in memory_types %}
+                <option value={{ memory_type }}>{{ memory_type.name }}</option>
+                {% endfor %}
             </select>
         {% elif component_type == "cooling_systems" %}
             <h4>Сокет</h4>
             <select name="socket">
                 <option value="">Любой</option>
-                <option value="LGA 1700">LGA 1700</option>
-                <option value="AM4">AM4</option>
-                <option value="LGA 1200">LGA 1200</option>
-            </select>
-            <h4>Сортировка по тепловыделению</h4>
-            <select name="tdp_sort">
-                <option value="asc">По возрастанию</option>
-                <option value="desc">По убыванию</option>
+                {% for socket in sockets %}
+                <option value={{ socket }}>{{ socket.name }}</option>
+                {% endfor %}
             </select>
         {% elif component_type == "storage_devices" %}
             <h4>Тип</h4>
@@ -92,13 +64,6 @@
                 <option value="SSD">SSD</option>
                 <option value="HDD">HDD</option>
                 <option value="NVMe">NVMe</option>
-            </select>
-            <h4>Объём (ГБ)</h4>
-            <select name="volume">
-                <option value="">Любой</option>
-                <option value="256">256</option>
-                <option value="512">512</option>
-                <option value="1000">1000</option>
             </select>
         {% elif component_type == "power_supplies" %}
             <h4>Сортировка по мощности</h4>

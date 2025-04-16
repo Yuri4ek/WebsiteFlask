@@ -114,7 +114,8 @@ def choose_cooling_systems():
 
     return render_template('search_components.html',
                            component_type='cooling_systems',
-                           components=displaying_components)
+                           components=displaying_components,
+                           sockets=sockets_db)
 
 
 @app.route('/choose_components/motherboards')
@@ -157,7 +158,9 @@ def choose_motherboards():
 
     return render_template('search_components.html',
                            component_type='motherboards',
-                           components=displaying_components)
+                           components=displaying_components,
+                           sockets=sockets_db,
+                           memory_types=memory_types_db)
 
 
 @app.route('/choose_components/power_supplies')
@@ -217,7 +220,8 @@ def choose_processors():
 
     return render_template('search_components.html',
                            component_type='processors',
-                           components=displaying_components)
+                           components=displaying_components,
+                           sockets=sockets_db)
 
 
 @app.route('/choose_components/ram_modules')
@@ -249,7 +253,8 @@ def choose_ram_modules():
 
     return render_template('search_components.html',
                            component_type='ram_modules',
-                           components=displaying_components)
+                           components=displaying_components,
+                           memory_types=memory_types_db)
 
 
 @app.route('/choose_components/storage_devices')

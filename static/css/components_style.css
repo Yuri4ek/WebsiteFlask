@@ -21,7 +21,6 @@ body {
     border-right: 1px solid #ccc;
     height: 100%; /* Фильтры на всю высоту контейнера */
     border-radius: 8px;
-    margin-left: 15px;
     margin-right: 15px;
 }
 .filters h3 {

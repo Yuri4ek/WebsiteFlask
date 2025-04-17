@@ -1,19 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask
 from sqlalchemy import inspect
-from data.db_imports import *
+from db_methods import *
 from cookie_functions import *
 
 app = Flask(__name__)
 db_session.global_init("db/components.db")
-
-# надо бд сделать и удалить
-# Имитация данных пользователя (в реальном приложении это будет из базы данных)
-# Для теста можно менять значения
-user = {
-    "is_logged_in": False,
-    # Измените на True, чтобы протестировать авторизованного пользователя
-    "username": "User123"
-}
 
 
 @app.route('/', defaults={'component': None})
@@ -70,11 +61,7 @@ def choose_cooling_systems():
     components = db_sess.query(CoolingSystems).all()
 
     # достаем сокеты для систем охлаждения
-    sockets_db = db_sess.query(Sockets).all()
-    current_sockets = {}
-    for socket in sockets_db:
-        current_sockets[socket.id] = socket.name
-    current_sockets[None] = "Неизвестно"
+    current_sockets, sockets_db = get_sockets()
 
     displaying_components = []
     # делаем системы охлаждения читабельнее
@@ -104,19 +91,12 @@ def choose_motherboards():
     # все компоненты
     db_sess = db_session.create_session()
     components = db_sess.query(MotherBoards).all()
+
     # достаем сокеты для материнских плат
-    sockets_db = db_sess.query(Sockets).all()
-    current_sockets = {}
-    for socket in sockets_db:
-        current_sockets[socket.id] = socket.name
-    current_sockets[None] = "Неизвестно"
+    current_sockets, sockets_db = get_sockets()
 
     # достаем типы памяти для материнских плат
-    memory_types_db = db_sess.query(MemoryTypes).all()
-    current_memory_types = {}
-    for memory_type in memory_types_db:
-        current_memory_types[memory_type.id] = memory_type.name
-    current_memory_types[None] = "Неизвестно"
+    current_memory_types, memory_types_db = get_memory_types()
 
     displaying_components = []
     # делаем материнские платы читабельнее
@@ -176,11 +156,7 @@ def choose_processors():
     components = db_sess.query(Processors).all()
 
     # достаем сокеты для процессоров
-    sockets_db = db_sess.query(Sockets).all()
-    current_sockets = {}
-    for socket in sockets_db:
-        current_sockets[socket.id] = socket.name
-    current_sockets[None] = "Неизвестно"
+    current_sockets, sockets_db = get_sockets()
 
     displaying_components = []
     # делаем процессоры читабельнее
@@ -212,11 +188,7 @@ def choose_ram_modules():
     components = db_sess.query(RamModules).all()
 
     # достаем типы памяти для оперативной памяти
-    memory_types_db = db_sess.query(MemoryTypes).all()
-    current_memory_types = {}
-    for memory_type in memory_types_db:
-        current_memory_types[memory_type.id] = memory_type.name
-    current_memory_types[None] = "Неизвестно"
+    current_memory_types, memory_types_db = get_memory_types()
 
     displaying_components = []
     # делаем оперативную память читабельнее

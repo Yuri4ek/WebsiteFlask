@@ -1,16 +1,6 @@
 from flask import Flask, render_template
 from sqlalchemy import inspect
-from data import db_session
-from data.computer_cases import ComputerCases
-from data.cooling_systems import CoolingSystems
-from data.memory_types import MemoryTypes
-from data.motherboards import MotherBoards
-from data.power_supplies import PowerSupplies
-from data.processors import Processors
-from data.ram_modules import RamModules
-from data.sockets import Sockets
-from data.storage_devices import StorageDevices
-from data.videocards import Videocards
+from data.db_imports import *
 from cookie_functions import *
 
 app = Flask(__name__)
@@ -40,22 +30,13 @@ def home(component):
     # Если cookie и component есть, обновляем данные
     if component:
         component_type, component_name = component.split(':')
-        return update_cookie(component_type, component_name)
+        if (component_type == 'cooling_systems' or component_type == 'motherboards' or
+                component_type == 'processors' or component_type == 'videocards'):
+            return update_cookies(component_type, component_name)
+        return update_cookie('configuration_data', component_type, component_name)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
-
-
-components_types = {'computer_cases': ComputerCases,
-                    'cooling_systems': CoolingSystems,
-                    'memory_types': MemoryTypes,
-                    'motherboards': MotherBoards,
-                    'power_supplies': PowerSupplies,
-                    'processors': Processors,
-                    'ram_modules': RamModules,
-                    'sockets': Sockets,
-                    'storage_devices': StorageDevices,
-                    'videocards': Videocards}
 
 
 @app.route('/choose_components/computer_cases')
@@ -195,7 +176,7 @@ def choose_processors():
     components = db_sess.query(Processors).all()
 
     # достаем сокеты для процессоров
-    sockets_db = db_sess.qurey(Sockets).all()
+    sockets_db = db_sess.query(Sockets).all()
     current_sockets = {}
     for socket in sockets_db:
         current_sockets[socket.id] = socket.name
@@ -337,10 +318,11 @@ def registration():
     return render_template('registration.html')
 
 
-@app.get("/delete_cookie")
-def delete_json_cookie():
+@app.get("/delete_cookies")
+def delete_cookies():
     resp = make_response("Cookie удален")
     resp.delete_cookie('configuration_data')
+    resp.delete_cookie('filter_data')
     return resp
 
 

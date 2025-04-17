@@ -12,7 +12,7 @@
             <select name="socket">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket }}>{{ socket.name }}</option>
+                <option value={{ socket.name }}>{{ socket.name }}</option>
                 {% endfor %}
             </select>
             <h4>Сортировка по мощности</h4>
@@ -31,7 +31,7 @@
             <select name="socket">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket }}>{{ socket.name }}</option>
+                <option value={{ socket.name }}>{{ socket.name }}</option>
                 {% endfor %}
             </select>
             <h4>Тип памяти</h4>
@@ -60,7 +60,7 @@
             <select name="socket">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket }}>{{ socket.name }}</option>
+                <option value={{ socket.name }}>{{ socket.name }}</option>
                 {% endfor %}
             </select>
         {% elif component_type == "storage_devices" %}
@@ -111,5 +111,5 @@
             {% endfor %}
         </div>
     </div>
-</div>=
+</div>
 {% endblock %}

@@ -1,5 +1,6 @@
 from flask import make_response, request, render_template
 import json
+from data.db_imports import *
 
 
 # Установка cookie с JSON
@@ -20,7 +21,8 @@ def set_cookies():
     filter_data = {'socket': None,
                    'memory_type': None,
                    'm2_support': None,
-                   'tdp': None}
+                   'processor_tdp': None,
+                   'videocard_tdp': None}
 
     # Преобразуем JSON в строку
     json_configuration_data = json.dumps(configuration_data)
@@ -56,3 +58,34 @@ def update_cookie(cookie_name, key, value):
         resp.set_cookie('configuration_data', updated_json, max_age=60 * 60)
         return resp
     return "Cookie не найдено!"
+
+
+db_session.global_init("db/components.db")
+
+
+def update_cookies(component_type, component_name):
+    configuration_data = get_cookie('configuration_data')
+    filter_data = get_cookie('filter_data')
+
+    db_sess = db_session.create_session()
+    component = db_sess.query(components_types[component_type]).filter(
+        components_types[component_type].name == component_name).first()
+
+    configuration_data[component_type] = component_name
+    if component_type == 'cooling_systems' or component_type == 'processors':
+        filter_data['socket'] = component.socket_id
+        filter_data['processor_tdp'] = component.tdp
+    elif component_type == 'motherboards':
+        filter_data['socket'] = component.socket_id
+        filter_data['memory_type'] = component.memory_type_id
+        filter_data['m2_support'] = component.m2_support
+    elif component_type == 'videocards':
+        filter_data['videocard_tdp'] = component.tdp
+
+    updated_configuration_json = json.dumps(configuration_data)
+    updated_filter_json = json.dumps(filter_data)
+    resp = make_response(render_template('main.html',
+                                         selected_component=updated_configuration_json))
+    resp.set_cookie('configuration_data', updated_configuration_json, max_age=60 * 60)
+    resp.set_cookie('filter_data', updated_filter_json, max_age=60 * 60)
+    return resp

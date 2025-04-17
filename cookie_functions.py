@@ -72,20 +72,27 @@ def update_cookies(component_type, component_name):
         components_types[component_type].name == component_name).first()
 
     configuration_data[component_type] = component_name
-    if component_type == 'cooling_systems' or component_type == 'processors':
+    if component_type == 'cooling_systems':
         filter_data['socket'] = component.socket_id
         filter_data['processor_tdp'] = component.tdp
+    elif component_type == 'ram_modules':
+        filter_data['memory_type'] = component.memory_type_id
     elif component_type == 'motherboards':
         filter_data['socket'] = component.socket_id
         filter_data['memory_type'] = component.memory_type_id
         filter_data['m2_support'] = component.m2_support
+    elif component_type == 'processors':
+        filter_data['socket'] = component.socket_id
+        filter_data['processor_tdp'] = component.tdp
+        filter_data['memory_type'] = db_sess.query(MotherBoards).filter(
+            MotherBoards.socket_id == component.socket_id).first().memory_type_id
     elif component_type == 'videocards':
         filter_data['videocard_tdp'] = component.tdp
 
     updated_configuration_json = json.dumps(configuration_data)
     updated_filter_json = json.dumps(filter_data)
     resp = make_response(render_template('main.html',
-                                         selected_component=updated_configuration_json))
+                                         selected_component=configuration_data))
     resp.set_cookie('configuration_data', updated_configuration_json, max_age=60 * 60)
     resp.set_cookie('filter_data', updated_filter_json, max_age=60 * 60)
     return resp

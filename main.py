@@ -22,7 +22,8 @@ def home(component):
     if component:
         component_type, component_name = component.split(':')
         if (component_type == 'cooling_systems' or component_type == 'motherboards' or
-                component_type == 'processors' or component_type == 'videocards'):
+                component_type == 'processors' or component_type == 'ram_modules' or
+                component_type == 'videocards'):
             return update_cookies(component_type, component_name)
         return update_cookie('configuration_data', component_type, component_name)
 
@@ -56,9 +57,16 @@ def choose_computer_cases():
 
 @app.route('/choose_components/cooling_systems')
 def choose_cooling_systems():
-    # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(CoolingSystems).all()
+
+    filter_data = get_cookie('filter_data')
+    if filter_data['socket'] or filter_data['processor_tdp']:
+        components = db_sess.query(CoolingSystems).filter(
+            CoolingSystems.socket_id == filter_data['socket'],
+            CoolingSystems.tdp >= filter_data['processor_tdp']).all()
+    else:
+        # все компоненты
+        components = db_sess.query(CoolingSystems).all()
 
     # достаем сокеты для систем охлаждения
     current_sockets, sockets_db = get_sockets()
@@ -88,9 +96,21 @@ def choose_cooling_systems():
 
 @app.route('/choose_components/motherboards')
 def choose_motherboards():
-    # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(MotherBoards).all()
+
+    filter_data = get_cookie('filter_data')
+    if filter_data['socket']:
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.socket_id == filter_data['socket']).all()
+    elif filter_data['memory_type']:
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.memory_type_id == filter_data['memory_type']).all()
+    elif filter_data['m2_support']:
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.m2_support == filter_data['m2_support']).all()
+    else:
+        # все компоненты
+        components = db_sess.query(MotherBoards).all()
 
     # достаем сокеты для материнских плат
     current_sockets, sockets_db = get_sockets()
@@ -126,9 +146,15 @@ def choose_motherboards():
 
 @app.route('/choose_components/power_supplies')
 def choose_power_supplies():
-    # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(PowerSupplies).all()
+
+    filter_data = get_cookie('filter_data')
+    if filter_data['processor_tdp'] or filter_data['videocard_tdp']:
+        total_tdp = (filter_data['processor_tdp'] + filter_data['videocard_tdp']) * 1.3
+        components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= total_tdp).all()
+    else:
+        # все компоненты
+        components = db_sess.query(PowerSupplies).all()
 
     displaying_components = []
     # делаем БП читабельнее
@@ -151,9 +177,16 @@ def choose_power_supplies():
 
 @app.route('/choose_components/processors')
 def choose_processors():
-    # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(Processors).all()
+
+    filter_data = get_cookie('filter_data')
+    if filter_data['socket'] or filter_data['processor_tdp']:
+        components = db_sess.query(Processors).filter(
+            Processors.socket_id == filter_data['socket'],
+            Processors.tdp <= filter_data['processor_tdp']).all()
+    else:
+        # все компоненты
+        components = db_sess.query(Processors).all()
 
     # достаем сокеты для процессоров
     current_sockets, sockets_db = get_sockets()
@@ -183,9 +216,15 @@ def choose_processors():
 
 @app.route('/choose_components/ram_modules')
 def choose_ram_modules():
-    # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(RamModules).all()
+
+    filter_data = get_cookie('filter_data')
+    if filter_data['memory_type']:
+        components = db_sess.query(RamModules).filter(
+            RamModules.memory_type_id == filter_data['memory_type']).all()
+    else:
+        # все компоненты
+        components = db_sess.query(RamModules).all()
 
     # достаем типы памяти для оперативной памяти
     current_memory_types, memory_types_db = get_memory_types()

@@ -41,6 +41,12 @@
                 <option value={{ memory_type }}>{{ memory_type.name }}</option>
                 {% endfor %}
             </select>
+            <h4>Поддержка m2</h4>
+            <select name="m2_support">
+                <option value="">Любой</option>
+                <option value="yes">Есть</option>
+                <option value="no">нет</option>
+            </select>
         {% elif component_type == "ram_modules" %}
             <h4>Тип памяти</h4>
             <select name="memory_type">

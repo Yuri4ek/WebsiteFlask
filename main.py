@@ -30,12 +30,12 @@ user = {
 @app.route('/<component>')
 def home(component):
     # Проверяем, есть ли cookie
-    data = get_cookie()
+    data = get_cookie('configuration_data')
 
     # Если нет cookie, то создаем
     if not data:
         # создаем cookie
-        return set_cookie()
+        return set_cookies()
 
     # Если cookie и component есть, обновляем данные
     if component:
@@ -195,7 +195,7 @@ def choose_processors():
     components = db_sess.query(Processors).all()
 
     # достаем сокеты для процессоров
-    sockets_db = db_sess.query(Sockets).all()
+    sockets_db = db_sess.qurey(Sockets).all()
     current_sockets = {}
     for socket in sockets_db:
         current_sockets[socket.id] = socket.name

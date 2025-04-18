@@ -83,7 +83,9 @@ def choose_cooling_systems():
         tdp = component.tdp
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/coolers/air_cooler.webp'
+                                      if type == "Air" else
+                                      '/static/images/coolers/water_cooler.webp',
                                       f'Цена: {price} $',
                                       f'Сокет: {socket}',
                                       f'Тип системы охлаждения: '
@@ -131,7 +133,7 @@ def choose_motherboards():
         form_factor = component.form_factor
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/motherboards/motherboard.webp',
                                       f'Цена: {price} $',
                                       f'Сокет: {socket}',
                                       f'Тип памяти: {memory_type}',
@@ -169,7 +171,7 @@ def choose_power_supplies():
         power = component.power
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/power_supplies/power_supplie.webp',
                                       f'Цена: {price} $',
                                       f'Форм-фактор: {form_factor}',
                                       f'Мощность: {power} Ватт'))
@@ -205,7 +207,7 @@ def choose_processors():
         tdp = component.tdp
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/processors/processor.webp',
                                       f'Цена: {price} $',
                                       f'Сокет: {socket}',
                                       f'Ядра: {cores}',
@@ -242,7 +244,7 @@ def choose_ram_modules():
         capacity_gb = component.capacity_gb
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/ram_modules/ram_module.webp',
                                       f'Цена: {price} $',
                                       f'Тип памяти: {memory_type}',
                                       f'Объём памяти: {capacity_gb}'))
@@ -268,7 +270,7 @@ def choose_storage_devices():
         capacity_gb = component.capacity_gb
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/storage_devices/storage_device.webp',
                                       f'Цена: {price} $',
                                       f'Тип накопителя: {storage_type}',
                                       f'Объём: {capacity_gb} Гб'))
@@ -292,7 +294,7 @@ def choose_videocards():
         tdp = component.tdp
 
         displaying_components.append((name,
-                                      None,
+                                      '/static/images/videocards/videocard.webp',
                                       f'Цена: {price} $',
                                       f'Потребление: {tdp} Ватт'))
 

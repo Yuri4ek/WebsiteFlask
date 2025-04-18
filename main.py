@@ -21,11 +21,13 @@ def home(component):
     # Если cookie и component есть, обновляем данные
     if component:
         component_type, component_name = component.split(':')
-        if (component_type == 'cooling_systems' or component_type == 'motherboards' or
+        if (
+                component_type == 'cooling_systems' or component_type == 'motherboards' or
                 component_type == 'processors' or component_type == 'ram_modules' or
                 component_type == 'videocards'):
             return update_cookies(component_type, component_name)
-        return update_cookie('configuration_data', component_type, component_name)
+        return update_cookie('configuration_data', component_type,
+                             component_name)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
@@ -150,8 +152,10 @@ def choose_power_supplies():
 
     filter_data = get_cookie('filter_data')
     if filter_data['processor_tdp'] or filter_data['videocard_tdp']:
-        total_tdp = (filter_data['processor_tdp'] + filter_data['videocard_tdp']) * 1.3
-        components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= total_tdp).all()
+        total_tdp = (filter_data['processor_tdp'] + filter_data[
+            'videocard_tdp']) * 1.3
+        components = db_sess.query(PowerSupplies).filter(
+            PowerSupplies.power >= total_tdp).all()
     else:
         # все компоненты
         components = db_sess.query(PowerSupplies).all()
@@ -304,6 +308,17 @@ def show_components_table(component_type):
     # все компоненты
     db_sess = db_session.create_session()
     components = db_sess.query(component_class).all()
+
+    if (component_type == 'processors' or component_type == 'cooling_systems'
+            or component_type == 'motherboards'):
+        current_sockets, sockets_db = get_sockets()
+        for component in components:
+            component.socket_id = current_sockets[component.socket_id]
+    if component_type == 'ram_modules' or component_type == 'motherboards':
+        current_memory_types, memory_types_db = get_memory_types()
+        for component in components:
+            component.memory_type_id = current_memory_types[
+                component.memory_type_id]
 
     # название колонн
     inspector = inspect(component_class)

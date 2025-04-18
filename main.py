@@ -346,7 +346,8 @@ def registration():
 
 @app.get("/delete_cookies")
 def delete_cookies():
-    resp = make_response("Cookie удален")
+    resp = make_response(render_template('main.html',
+                                         selected_component=configuration_data))
     resp.delete_cookie('configuration_data')
     resp.delete_cookie('filter_data')
     return resp

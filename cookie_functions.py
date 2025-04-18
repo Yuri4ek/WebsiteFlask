@@ -2,34 +2,35 @@ from flask import make_response, request, render_template
 import json
 from data.db_imports import *
 
+# данные для конфигурации
+configuration_data = {'computer_cases': 'не выбран',
+                      'cooling_systems': 'не выбран',
+                      'memory_types': 'не выбран',
+                      'motherboards': 'не выбран',
+                      'power_supplies': 'не выбран',
+                      'processors': 'не выбран',
+                      'ram_modules': 'не выбран',
+                      'sockets': 'не выбран',
+                      'storage_devices': 'не выбран',
+                      'videocards': 'не выбран'}
+# данные для фильтров
+filter_data = {'socket': None,
+               'memory_type': None,
+               'm2_support': None,
+               'processor_tdp': None,
+               'videocard_tdp': None}
+
 
 # Установка cookie с JSON
 def set_cookies():
-    # данные для конфигурации
-    configuration_data = {'computer_cases': 'не выбран',
-                          'cooling_systems': 'не выбран',
-                          'memory_types': 'не выбран',
-                          'motherboards': 'не выбран',
-                          'power_supplies': 'не выбран',
-                          'processors': 'не выбран',
-                          'ram_modules': 'не выбран',
-                          'sockets': 'не выбран',
-                          'storage_devices': 'не выбран',
-                          'videocards': 'не выбран'}
-
-    # данные для фильтров
-    filter_data = {'socket': None,
-                   'memory_type': None,
-                   'm2_support': None,
-                   'processor_tdp': None,
-                   'videocard_tdp': None}
-
     # Преобразуем JSON в строку
     json_configuration_data = json.dumps(configuration_data)
     json_filter_data = json.dumps(filter_data)
 
-    resp = make_response(render_template('main.html', selected_component=configuration_data))
-    resp.set_cookie('configuration_data', json_configuration_data, max_age=60 * 60)
+    resp = make_response(
+        render_template('main.html', selected_component=configuration_data))
+    resp.set_cookie('configuration_data', json_configuration_data,
+                    max_age=60 * 60)
     resp.set_cookie('filter_data', json_filter_data, max_age=60 * 60)
     return resp
 
@@ -93,6 +94,7 @@ def update_cookies(component_type, component_name):
     updated_filter_json = json.dumps(filter_data)
     resp = make_response(render_template('main.html',
                                          selected_component=configuration_data))
-    resp.set_cookie('configuration_data', updated_configuration_json, max_age=60 * 60)
+    resp.set_cookie('configuration_data', updated_configuration_json,
+                    max_age=60 * 60)
     resp.set_cookie('filter_data', updated_filter_json, max_age=60 * 60)
     return resp

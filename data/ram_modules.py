@@ -17,3 +17,6 @@ class RamModules(SqlAlchemyBase):
     currency = sqlalchemy.Column(sqlalchemy.String)
 
     memory_type = orm.relationship("MemoryTypes")
+
+    def get(self):
+        return self.id, self.name, self.capacity_gb, self.memory_type_id, self.price, self.currency

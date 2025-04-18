@@ -12,3 +12,7 @@ class PowerSupplies(SqlAlchemyBase):
     power = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
+
+    def get(self):
+        return (self.id, self.name, self.form_factor, self.power, self.price,
+                self.currency)

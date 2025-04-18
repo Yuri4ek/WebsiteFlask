@@ -21,3 +21,7 @@ class MotherBoards(SqlAlchemyBase):
 
     socket = orm.relationship("Sockets")
     memory_type = orm.relationship("MemoryTypes")
+
+    def get(self):
+        return (self.id, self.name, self.socket_id, self.memory_type_id,
+                self.m2_support, self.form_factor, self.price, self.currency)

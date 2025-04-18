@@ -12,3 +12,7 @@ class StorageDevices(SqlAlchemyBase):
     capacity_gb = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
+
+    def get(self):
+        return (self.id, self.name, self.storage_type, self.capacity_gb,
+                self.price, self.currency)

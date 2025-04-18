@@ -13,3 +13,7 @@ class Videocards(SqlAlchemyBase):
     tdp = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
+
+    def get(self):
+        return (self.id, self.name, self.efficiency, self.release_year,
+                self.tdp, self.price, self.currency)

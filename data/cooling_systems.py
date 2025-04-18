@@ -10,10 +10,14 @@ class CoolingSystems(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
     socket_id = sqlalchemy.Column(sqlalchemy.Integer,
-                               sqlalchemy.ForeignKey("sockets.id"))
+                                  sqlalchemy.ForeignKey("sockets.id"))
     tdp = sqlalchemy.Column(sqlalchemy.Integer)
     type = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.REAL)
     currency = sqlalchemy.Column(sqlalchemy.String)
 
     socket = orm.relationship("Sockets")
+
+    def get(self):
+        return (self.id, self.name, self.socket_id, self.tdp, self.type,
+                self.price, self.currency)

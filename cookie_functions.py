@@ -17,8 +17,8 @@ configuration_data = {'computer_cases': 'не выбран',
 filter_data = {'socket': None,
                'memory_type': None,
                'm2_support': None,
-               'processor_tdp': None,
-               'videocard_tdp': None}
+               'processor_tdp': 0,
+               'videocard_tdp': 0}
 
 
 # Установка cookie с JSON
@@ -29,6 +29,21 @@ def set_cookies():
 
     resp = make_response(
         render_template('main.html', selected_component=configuration_data))
+    resp.set_cookie('configuration_data', json_configuration_data,
+                    max_age=60 * 60)
+    resp.set_cookie('filter_data', json_filter_data, max_age=60 * 60)
+    return resp
+
+
+def clear_cookies():
+    # Преобразуем JSON в строку
+    json_configuration_data = json.dumps(configuration_data)
+    json_filter_data = json.dumps(filter_data)
+
+    resp = make_response(
+        render_template('main.html', selected_component=configuration_data))
+
+    # добавляем удаленные cookie
     resp.set_cookie('configuration_data', json_configuration_data,
                     max_age=60 * 60)
     resp.set_cookie('filter_data', json_filter_data, max_age=60 * 60)

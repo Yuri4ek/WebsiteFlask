@@ -32,7 +32,8 @@ def cooling_systems():
     if filter_data['socket'] or filter_data['processor_tdp']:
         components = db_sess.query(CoolingSystems).filter(
             CoolingSystems.socket_id == filter_data['socket'],
-            CoolingSystems.tdp >= filter_data['processor_tdp']).all()
+            CoolingSystems.tdp >= (filter_data['processor_tdp']
+            if filter_data['processor_tdp'] else 0)).all()
     else:
         # все компоненты
         components = db_sess.query(CoolingSystems).all()
@@ -153,7 +154,8 @@ def processors():
     if filter_data['socket'] or filter_data['processor_tdp']:
         components = db_sess.query(Processors).filter(
             Processors.socket_id == filter_data['socket'],
-            Processors.tdp <= filter_data['processor_tdp']).all()
+            Processors.tdp <= (filter_data['processor_tdp']
+            if filter_data['processor_tdp'] else 1000)).all()
     else:
         # все компоненты
         components = db_sess.query(Processors).all()

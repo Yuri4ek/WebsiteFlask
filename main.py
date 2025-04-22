@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import inspect
 from choose_components_methods import *
+from data.forum import Forum
 
 app = Flask(__name__)
 db_session.global_init("db/components.db")
@@ -118,23 +119,19 @@ def registration():
 def clear_cookies_handler():
     return clear_cookies()
 
-#временно
-forums = [
-    {'id': 1, 'title': 'Обсуждение новых процессоров', 'content': 'Обсудим последние новинки в процессорах?'},
-    {'id': 2, 'title': 'Проблемы с видеокартами', 'content': 'У кого какие проблемы с видеокартами?'}
-]
 
-
-# Главная страница форума
+# Страница для отображения списка форумов
 @app.route('/forums')
 def forums_page():
+    db_sess = db_session.create_session()
+    forums = db_sess.query(Forum)  # Получаем все форумы из базы данных
     return render_template('forums.html', forums=forums)
 
 
 # Страница форума с темой
 @app.route('/forum/<int:forum_id>')
 def forum_detail(forum_id):
-    forum = next((forum for forum in forums if forum['id'] == forum_id), None)
+    forum = Forum.query.get(forum_id)  # Получаем форум по ID
     if forum is None:
         return "Форум не найден", 404
     return render_template('forum_detail.html', forum=forum)
@@ -143,12 +140,14 @@ def forum_detail(forum_id):
 # Страница для добавления нового поста на форум
 @app.route('/forum/new', methods=['GET', 'POST'])
 def new_forum_post():
+    db_sess = db_session.create_session()
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        # Добавление нового поста в список
-        new_id = len(forums) + 1
-        forums.append({'id': new_id, 'title': title, 'content': content})
+        # Создание нового форума в базе данных
+        new_forum = Forum(title=title, content=content)
+        db_sess.add(new_forum)
+        db_sess.commit()  # Сохраняем изменения в базе данных
     return render_template('new_forum_post.html')
 
 

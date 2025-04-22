@@ -10,3 +10,4 @@ from . import power_supplies
 from . import computer_cases
 from . import users
 from . import configurations
+from . import forum

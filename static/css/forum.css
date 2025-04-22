@@ -1,0 +1,177 @@
+/* Forum Page */
+h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-width: 900px;
+    margin-top: 20px;
+}
+
+li {
+    background-color: white;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: none;
+}
+
+li:hover {
+    background-color: #f1f1f1; /* Цвет для затемнения фона при наведении */
+}
+
+li p {
+    font-size: 1em;
+    color: #666;
+    margin-top: 10px;
+}
+
+a.create-thread {
+    display: inline-block;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+a.create-thread:hover {
+    background-color: #0056b3; /* Темнеет при наведении */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding-top: 100px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+}
+
+.forum-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 1rem;
+}
+
+.forum-item-title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.forum-item-title {
+    margin: 0;
+}
+
+.btn-secondary {
+    pointer-events: none; /* Prevent the button from being clickable */
+}
+
+/* Forum Page Styles */
+.forum-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.forum-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.create-thread-btn {
+    background-color: #555;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.create-thread-btn:hover {
+    background-color: #666;
+}
+
+.forum-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.forum-items {
+    list-style-type: none;
+    padding: 0;
+}
+
+.forum-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.forum-item:hover {
+    background-color: #f9f9f9;
+}
+
+.forum-card {
+    display: block;
+    text-decoration: none;
+    padding: 20px;
+    color: inherit;
+}
+
+.forum-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.forum-item-title {
+    font-size: 1.4em;
+    color: #333;
+}
+
+.forum-description {
+    font-size: 1em;
+    color: #666;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.forum-post-count {
+    font-size: 0.9em;
+    color: #007BFF;
+}
+
+.btn-secondary {
+    display: inline-block;
+    background-color: #f1f1f1;
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background-color: #e1e1e1;
+}

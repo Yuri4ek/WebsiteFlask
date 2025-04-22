@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import inspect
 from choose_components_methods import *
 
@@ -117,6 +117,39 @@ def registration():
 @app.get("/clear_cookies")
 def clear_cookies_handler():
     return clear_cookies()
+
+#временно
+forums = [
+    {'id': 1, 'title': 'Обсуждение новых процессоров', 'content': 'Обсудим последние новинки в процессорах?'},
+    {'id': 2, 'title': 'Проблемы с видеокартами', 'content': 'У кого какие проблемы с видеокартами?'}
+]
+
+
+# Главная страница форума
+@app.route('/forums')
+def forums_page():
+    return render_template('forums.html', forums=forums)
+
+
+# Страница форума с темой
+@app.route('/forum/<int:forum_id>')
+def forum_detail(forum_id):
+    forum = next((forum for forum in forums if forum['id'] == forum_id), None)
+    if forum is None:
+        return "Форум не найден", 404
+    return render_template('forum_detail.html', forum=forum)
+
+
+# Страница для добавления нового поста на форум
+@app.route('/forum/new', methods=['GET', 'POST'])
+def new_forum_post():
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        # Добавление нового поста в список
+        new_id = len(forums) + 1
+        forums.append({'id': new_id, 'title': title, 'content': content})
+    return render_template('new_forum_post.html')
 
 
 if __name__ == '__main__':

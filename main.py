@@ -131,7 +131,8 @@ def forums_page():
 # Страница форума с темой
 @app.route('/forum/<int:forum_id>')
 def forum_detail(forum_id):
-    forum = Forum.query.get(forum_id)  # Получаем форум по ID
+    db_sess = db_session.create_session()
+    forum = db_sess.query(Forum).get(forum_id)  # Получаем форум по ID
     if forum is None:
         return "Форум не найден", 404
     return render_template('forum_detail.html', forum=forum)

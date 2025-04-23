@@ -5,7 +5,7 @@
 
 <div class="forum-container" role="main">
     <header class="forum-header">
-        <a class="btn btn-primary create-thread-btn" href="/forum/new" aria-label="Создать новую тему">Создать тему</a>
+        <a class="btn btn-primary create-thread-btn" href="/forum/create" aria-label="Создать публикацию">Создать публикацию</a>
     </header>
 
     <section class="forum-list" aria-label="Список тем форума">
@@ -21,7 +21,7 @@
                             </h2>
                             <span class="forum-post-count" aria-label="Количество постов">{{ forum.post_count }}</span>
                         </div>
-                        <p class="forum-description">{{ forum.content | truncate(150, true, '...') }}</p>
+                        <p class="forum-description">{{ forum.content[:90] }}</p>
                         <span class="btn btn-secondary" aria-hidden="true">Читать</span>
                     </article>
                 </a>

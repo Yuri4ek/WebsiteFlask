@@ -139,7 +139,7 @@ def forum_detail(forum_id):
 
 
 # Страница для добавления нового поста на форум
-@app.route('/forum/new', methods=['GET', 'POST'])
+@app.route('/forum/create', methods=['GET', 'POST'])
 def new_forum_post():
     db_sess = db_session.create_session()
     if request.method == 'POST':
@@ -149,7 +149,7 @@ def new_forum_post():
         new_forum = Forum(title=title, content=content)
         db_sess.add(new_forum)
         db_sess.commit()  # Сохраняем изменения в базе данных
-    return render_template('new_forum_post.html')
+    return render_template('create_forum.html')
 
 
 if __name__ == '__main__':

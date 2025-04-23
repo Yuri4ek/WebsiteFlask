@@ -11,13 +11,12 @@
 .modal-content {
     background-color: #fff;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 300px;
+    border: 1px solid #888;
+    width: 500px;
     text-align: center;
 }
 
-input {
+input, textarea {
     width: 90%;
     padding: 10px;
     margin: 10px 0;
@@ -27,7 +26,12 @@ input {
     font-size: 16px;
 }
 
-input::placeholder {
+textarea {
+    height: 300px;
+    resize: vertical;
+}
+
+input::placeholder, textarea::placeholder {
     color: #666;
 }
 
@@ -40,4 +44,14 @@ input::placeholder {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #666;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 20px;
 }

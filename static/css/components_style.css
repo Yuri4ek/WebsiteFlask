@@ -112,6 +112,7 @@ body {
     padding: 10px;
     border-radius: 8px;
     position: relative;
+    background: #fff;
 }
 .component-image {
     width: 150px;

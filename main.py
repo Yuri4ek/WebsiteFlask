@@ -149,6 +149,7 @@ def new_forum_post():
         new_forum = Forum(title=title, content=content)
         db_sess.add(new_forum)
         db_sess.commit()  # Сохраняем изменения в базе данных
+        return redirect('/forums')
     return render_template('create_forum.html')
 
 

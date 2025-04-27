@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import inspect
 from choose_components_methods import *
 from data.forum import Forum
+from data.comment import Comment
 
 app = Flask(__name__)
 db_session.global_init("db/components.db")
@@ -133,6 +134,7 @@ def forums_page():
 def forum_detail(forum_id):
     db_sess = db_session.create_session()
     forum = db_sess.query(Forum).get(forum_id)  # Получаем форум по ID
+
     if forum is None:
         return "Форум не найден", 404
     return render_template('forum_detail.html', forum=forum)
@@ -142,6 +144,7 @@ def forum_detail(forum_id):
 @app.route('/forum/create', methods=['GET', 'POST'])
 def new_forum_post():
     db_sess = db_session.create_session()
+
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -151,6 +154,19 @@ def new_forum_post():
         db_sess.commit()  # Сохраняем изменения в базе данных
         return redirect('/forums')
     return render_template('create_forum.html')
+
+ # Обработчик для добавления комментария
+@app.route('/forum/<int:forum_id>/comment', methods=['POST'])
+def add_comment(forum_id):
+    db_sess = db_session.create_session()
+    forum = db_sess.query(Forum).get(forum_id)
+    if forum is None:
+        return "Форум не найден", 404
+    content = request.form['content']
+    new_comment = Comment(content=content, forum_id=forum_id)
+    db_sess.add(new_comment)
+    db_sess.commit()  # Сохраняем изменения в базе данных
+    return redirect(url_for('forum_detail', forum_id=forum_id))
 
 
 if __name__ == '__main__':

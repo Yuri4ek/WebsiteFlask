@@ -141,7 +141,7 @@ def forum_detail(forum_id):
 
 
 # Страница для добавления нового поста на форум
-@app.route('/forum/create', methods=['GET', 'POST'])
+@app.route('/forum/new_forum_post', methods=['GET', 'POST'])
 def new_forum_post():
     db_sess = db_session.create_session()
 
@@ -155,7 +155,8 @@ def new_forum_post():
         return redirect('/forums')
     return render_template('create_forum.html')
 
- # Обработчик для добавления комментария
+
+""" # Обработчик для добавления комментария
 @app.route('/forum/<int:forum_id>/comment', methods=['POST'])
 def add_comment(forum_id):
     db_sess = db_session.create_session()
@@ -166,8 +167,7 @@ def add_comment(forum_id):
     new_comment = Comment(content=content, forum_id=forum_id)
     db_sess.add(new_comment)
     db_sess.commit()  # Сохраняем изменения в базе данных
-    return redirect(url_for('forum_detail', forum_id=forum_id))
-
+    return redirect(url_for('forum_detail', forum_id=forum_id))"""
 
 if __name__ == '__main__':
     app.run(debug=True)

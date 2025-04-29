@@ -17,8 +17,8 @@ configuration_data = {'computer_cases': 'не выбран',
 filter_data = {'socket': None,
                'memory_type': None,
                'm2_support': None,
-               'processor_tdp': None,
-               'videocard_tdp': None}
+               'processor_tdp': 0,
+               'videocard_tdp': 0}
 
 
 # Установка cookie с JSON

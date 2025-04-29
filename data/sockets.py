@@ -11,9 +11,6 @@ class Sockets(SqlAlchemyBase):
     name = sqlalchemy.Column(sqlalchemy.String)
 
     processors = orm.relationship("Processors", back_populates="socket")
-    motherboards = orm.relationship("MotherBoards", back_populates="socket")
-    cooling_systems = orm.relationship("CoolingSystems",
-                                       back_populates="socket")
 
     def get(self):
         return self.id, self.name

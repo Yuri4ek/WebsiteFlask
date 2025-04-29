@@ -49,9 +49,11 @@ def get_processors_info(processors):
                 socket = elements[2].get_text()
                 cores = int(elements[4].get_text())
                 threads = int(elements[5].get_text())
-                frequency = int(elements[6].get_text().split()[0])
+                processor_frequency = int(elements[6].get_text().split()[0])
                 tdp = int(elements[11].get_text().split()[0])
-                memory_type = elements[18].get_text().split('(')[1].split(')')[0]
+                memory_type, memory_frequency = (
+                    elements[18].get_text().split('(')[1].split(')'))[0].split('-')
+                memory_frequency = int(memory_frequency)
                 pcie_type = ' '.join(elements[19].get_text().split()[2:])
             except:
                 try:
@@ -59,9 +61,11 @@ def get_processors_info(processors):
                     socket = elements[2].get_text()
                     cores = int(elements[3].get_text())
                     threads = int(elements[4].get_text())
-                    frequency = int(elements[5].get_text().split()[0])
+                    processor_frequency = int(elements[5].get_text().split()[0])
                     tdp = int(elements[10].get_text().split()[0])
-                    memory_type = elements[17].get_text().split('(')[1].split(')')[0]
+                    memory_type, memory_frequency = (
+                        elements[17].get_text().split('(')[1].split(')'))[0].split('-')
+                    memory_frequency = int(memory_frequency)
                     pcie_type = ' '.join(elements[18].get_text().split()[2:])
                 except:
                     try:
@@ -69,9 +73,11 @@ def get_processors_info(processors):
                         socket = elements[2].get_text()
                         cores = int(elements[3].get_text().split()[0])
                         threads = int(elements[4].get_text())
-                        frequency = int(elements[5].get_text().split()[0])
+                        processor_frequency = int(elements[5].get_text().split()[0])
                         tdp = int(elements[11].get_text().split()[0])
-                        memory_type = elements[18].get_text().split('(')[1].split(')')[0]
+                        memory_type, memory_frequency = (
+                            elements[18].get_text().split('(')[1].split(')'))[0].split('-')
+                        memory_frequency = int(memory_frequency)
                         pcie_type = ' '.join(elements[19].get_text().split()[2:])
                     except:
                         try:
@@ -79,14 +85,16 @@ def get_processors_info(processors):
                             socket = elements[2].get_text()
                             cores = int(elements[4].get_text().split()[0])
                             threads = int(elements[5].get_text())
-                            frequency = int(elements[6].get_text().split()[0])
+                            processor_frequency = int(elements[6].get_text().split()[0])
                             tdp = int(elements[11].get_text().split()[0])
-                            memory_type = elements[19].get_text().split('(')[1].split(')')[0]
-                            pcie_type = ' '.join(elements[20].get_text().split()[2:])
+                            memory_type, memory_frequency = (
+                                elements[19].get_text().split('(')[1].split(')'))[0].split('-')
+                            memory_frequency = int(memory_frequency)
+                            pcie_type = int(elements[20].get_text().split()[2])
                         except:
                             pass
-            processors_info.append((processor, year, socket, cores, threads, frequency, tdp,
-                                    memory_type, pcie_type))
+            processors_info.append((processor, year, socket, cores, threads, processor_frequency,
+                                    tdp, memory_type, memory_frequency, pcie_type))
         else:
             pass
     return processors_info

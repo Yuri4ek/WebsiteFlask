@@ -1,9 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+import json
+import sqlite3
+from data.db_imports import *
 from pprint import pprint
 
 
-def get_processors_name():
+def get_names():
     processors = []
     for i in range(1, 19):
         url = f'https://technical.city/en/cpu/rating?&pg={i}'  # сюда ссылку на сайт
@@ -32,7 +35,7 @@ def get_processors_name():
     return processors
 
 
-def get_processors_info(processors):
+def get_info(processors):
     processors_info = []
     for processor in processors:
         processor_for_url = processor.replace(' ', '_')
@@ -100,5 +103,69 @@ def get_processors_info(processors):
     return processors_info
 
 
-processors_info = get_processors_info(get_processors_name())
-print(processors_info)
+def get_prices():
+    # Имя JSON-файла
+    json_file = "components_prices.json"
+
+    # Открываем и читаем JSON-файл
+    with open(json_file, "r", encoding="utf-8") as file:
+        # Загружаем JSON в словарь
+        processors_prices = json.load(file)['components']['Процессор']
+    return processors_prices
+
+
+def filling_db(processors_info, processors_prices):
+    # берем сокеты
+    with open('sockets.json', "r", encoding="utf-8") as file:
+        sockets = json.load(file)
+
+    # берем типы памяти
+    with open('memory_types.json', "r", encoding="utf-8") as file:
+        memory_types = json.load(file)
+
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM processors")
+    con.commit()
+    con.close()
+
+    db_session.global_init("../../db/components.db")
+
+    db_sess = db_session.create_session()
+    for current_processor in processors_info:
+        processor = Processors()
+        processor.name = current_processor[0]
+        processor.release_year = current_processor[1]
+        try:
+            processor.socket_id = sockets[current_processor[2]]
+        except:
+            processor.socket_id = None
+        processor.cores = current_processor[3]
+        processor.threads = current_processor[4]
+        processor.processor_frequency = current_processor[5]
+        processor.tdp = current_processor[6]
+        try:
+            processor.memory_type_id = memory_types[current_processor[7]]
+        except:
+            processor.memory_type_id = None
+        processor.memory_frequency = current_processor[8]
+        processor.pcie_type = current_processor[9]
+        for processors_price in processors_prices:
+            if current_processor[0] == processors_price[0]:
+                processor.price_in_rubles = processors_price[1]
+                break
+        db_sess.add(processor)
+    db_sess.commit()
+
+    db_sess = db_session.create_session()
+    processors = db_sess.query(Processors).all()
+
+    for processor in processors:
+        print(processor.name)
+
+
+processors_info = get_info(get_names())
+processors_prices = get_prices()
+
+filling_db(processors_info, processors_prices)

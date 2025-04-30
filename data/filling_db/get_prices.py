@@ -42,7 +42,7 @@ def get_components(file_path):
             sorted_components['components']['Видеокарта'].append((other, price))
             continue
         elif piece1 == 'Процессор':
-            other = ' '.join(other)
+            other = ' '.join(other[1:-1]).replace(' - ', '-')
             sorted_components['components']['Процессор'].append((other, price))
             continue
         elif piece1 == 'Корпус':

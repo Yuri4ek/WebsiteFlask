@@ -18,7 +18,7 @@ class Processors(SqlAlchemyBase):
     memory_type_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("memory_types.id"))
     memory_frequency = sqlalchemy.Column(sqlalchemy.Integer)
     pcie_type = sqlalchemy.Column(sqlalchemy.Integer)
-    price_in_rubles = sqlalchemy.Column(sqlalchemy.REAL)
+    price_in_rubles = sqlalchemy.Column(sqlalchemy.Integer)
 
     socket = orm.relationship("Sockets")
     memory_type = orm.relationship("MemoryTypes")

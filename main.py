@@ -142,14 +142,11 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
-            surname=form.surname.data,
-            name=form.name.data,
-            age=form.age.data,
-            position=form.position.data,
-            speciality=form.speciality.data,
-            address=form.address.data,
+            nickname=form.nickname.data,
+            hashed_password=form.hashed_password.data,
             email=form.email.data
         )
+        print(form)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()

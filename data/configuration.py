@@ -4,7 +4,7 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class Configurations(SqlAlchemyBase):
+class Configuration(SqlAlchemyBase):
     __tablename__ = 'configurations'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

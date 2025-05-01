@@ -10,6 +10,11 @@ from data.sockets import Sockets
 from data.storage_devices import StorageDevices
 from data.videocards import Videocards
 
+from data.user import User
+from data.configuration import Configuration
+from data.forum import Forum
+from data.comment import Comment
+
 components_types = {'computer_cases': ComputerCases,
                     'cooling_systems': CoolingSystems,
                     'memory_types': MemoryTypes,

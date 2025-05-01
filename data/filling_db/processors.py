@@ -54,9 +54,8 @@ def get_info(processors):
                 threads = int(elements[5].get_text())
                 processor_frequency = int(elements[6].get_text().split()[0])
                 tdp = int(elements[11].get_text().split()[0])
-                memory_type, memory_frequency = (
-                    elements[18].get_text().split('(')[1].split(')'))[0].split('-')
-                memory_frequency = int(memory_frequency)
+                if tdp > 1000:
+                    tdp = int(elements[12].get_text().split()[0])
                 pcie_type = ' '.join(elements[19].get_text().split()[2:])
             except:
                 try:
@@ -66,9 +65,8 @@ def get_info(processors):
                     threads = int(elements[4].get_text())
                     processor_frequency = int(elements[5].get_text().split()[0])
                     tdp = int(elements[10].get_text().split()[0])
-                    memory_type, memory_frequency = (
-                        elements[17].get_text().split('(')[1].split(')'))[0].split('-')
-                    memory_frequency = int(memory_frequency)
+                    if tdp > 1000:
+                        tdp = int(elements[11].get_text().split()[0])
                     pcie_type = ' '.join(elements[18].get_text().split()[2:])
                 except:
                     try:
@@ -78,9 +76,8 @@ def get_info(processors):
                         threads = int(elements[4].get_text())
                         processor_frequency = int(elements[5].get_text().split()[0])
                         tdp = int(elements[11].get_text().split()[0])
-                        memory_type, memory_frequency = (
-                            elements[18].get_text().split('(')[1].split(')'))[0].split('-')
-                        memory_frequency = int(memory_frequency)
+                        if tdp > 1000:
+                            tdp = int(elements[12].get_text().split()[0])
                         pcie_type = ' '.join(elements[19].get_text().split()[2:])
                     except:
                         try:
@@ -90,12 +87,45 @@ def get_info(processors):
                             threads = int(elements[5].get_text())
                             processor_frequency = int(elements[6].get_text().split()[0])
                             tdp = int(elements[11].get_text().split()[0])
-                            memory_type, memory_frequency = (
-                                elements[19].get_text().split('(')[1].split(')'))[0].split('-')
-                            memory_frequency = int(memory_frequency)
+                            if tdp > 1000:
+                                tdp = int(elements[12].get_text().split()[0])
                             pcie_type = int(elements[20].get_text().split()[2])
                         except:
                             pass
+            # тип памяти частота памяти
+            try:
+                memory = elements[17].get_text().split('(')[1].split(')')[0]
+                if 'DDR' not in memory:
+                    raise
+            except:
+                try:
+                    memory = elements[18].get_text().split('(')[1].split(')')[0]
+                    if 'DDR' not in memory:
+                        raise
+                except:
+                    memory = elements[19].get_text().split('(')[1].split(')')[0]
+            try:
+                memory_type, memory_frequency = memory.split('-')
+                memory_frequency = int(memory_frequency.split(', ')[1])
+            except:
+                try:
+                    memory1, memory2 = memory.split(', ')
+
+                    memory_type, memory_frequency = memory1.split('-')
+                    memory_frequency = int(memory_frequency)
+                    processors_info.append(
+                        (processor, year, socket, cores, threads, processor_frequency,
+                         tdp, memory_type, memory_frequency, pcie_type))
+
+                    memory_type, memory_frequency = memory2.split('-')
+                    memory_frequency = int(memory_frequency)
+                except:
+                    try:
+                        memory_type, memory_frequency = memory.split('-')
+                        memory_frequency = int(memory_frequency)
+                    except:
+                        memory_type, memory_frequency = None, None
+
             processors_info.append((processor, year, socket, cores, threads, processor_frequency,
                                     tdp, memory_type, memory_frequency, pcie_type))
         else:

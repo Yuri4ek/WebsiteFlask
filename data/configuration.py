@@ -14,4 +14,4 @@ class Configuration(SqlAlchemyBase):
     components = sqlalchemy.Column(sqlalchemy.PickleType)
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))
-    user = orm.relationship('Users')
+    user = orm.relationship('User')

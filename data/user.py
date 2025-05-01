@@ -1,9 +1,11 @@
 import sqlalchemy
-from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from data.db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -11,6 +13,12 @@ class User(SqlAlchemyBase):
     nickname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String,
                               index=True, unique=True, nullable=True)
-    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    configuration = orm.relationship("Configurations", back_populates='user')
+    configuration = orm.relationship("Configuration", back_populates='user')
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)

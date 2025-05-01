@@ -2,7 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import inspect
 from choose_components_methods import *
 
+from flask_login import (LoginManager, login_user, login_required, logout_user,
+                         current_user)
+from forms.login import LoginForm
+from forms.register import RegisterForm
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'configuration_site_secret_key'
 db_session.global_init("db/components.db")
 
 
@@ -104,19 +110,57 @@ def show_builds():
     return render_template('builds.html')
 
 
-@app.route('/login')
-def authorization():
-    return render_template('authorization.html')
-
-
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def registration():
-    return render_template('registration.html')
+    form = RegisterForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('registration.html', form=form,
+                                   message="Пользователь с такой почтой уже существует")
+        user = User(
+            nickname=form.nickname.data,
+            email=form.email.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+
+        return redirect('/login')
+    return render_template('registration.html', form=form)
 
 
-@app.get("/clear_cookies")
-def clear_cookies_handler():
-    return clear_cookies()
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def authorization():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter((User.nickname == form.nickname_email.data) |
+                                          (User.email == form.nickname_email.data)).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=True)
+            return redirect("/")
+        return render_template('authorization.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('authorization.html', form=form)
 
 
 # Страница для отображения списка форумов
@@ -166,6 +210,12 @@ def add_comment(forum_id):
     db_sess.add(new_comment)
     db_sess.commit()  # Сохраняем изменения в базе данных
     return redirect(url_for('forum_detail', forum_id=forum_id))"""
+
+
+@app.get("/clear_cookies")
+def clear_cookies_handler():
+    return clear_cookies()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

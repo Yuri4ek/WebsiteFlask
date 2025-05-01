@@ -3,13 +3,34 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/registration_authorization_style.css">
 
-<div class="container">
-    <form class="modal-content">
-        <h2>Регистрация</h2>
-        <input type="text" id="nickname" name="nickname" required placeholder="Никнейм">
-        <input type="email" id="email" name="email" required placeholder="Почта">
-        <input type="password" id="password" name="password" required placeholder="Пароль">
-        <button type="submit" class="btn">Создать</button>
-    </form>
-</div>
+<h2>Регистрация</h2>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.nickname(class="form-control", type="nickname") }}<br>
+        {% for error in form.nickname.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.email(class="form-control") }}<br>
+        {% for error in form.email.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.password(class="form-control") }}<br>
+        {% for error in form.password.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
 {% endblock %}

@@ -28,10 +28,15 @@
             <a href="/forums" class="dropbtn">Форум</a>
         </div>
         <div class="nav-right">
+        {% if current_user.is_authenticated %}
+            <a href="/logout" class="btn">{{ current_user.nickname }}</a>
+        {% else %}
             <a href="/login" class="btn">Войти</a>
             <a href="/register" class="btn">Зарегистрироваться</a>
+        {% endif %}
         </div>
     </div>
+
     <!-- Begin page content -->
     <main role="main" class="container">
         {% block content %}{% endblock %}

@@ -27,10 +27,6 @@ input {
     font-size: 16px;
 }
 
-input::placeholder {
-    color: #666;
-}
-
 .btn {
     width: 90%;
     padding: 10px;

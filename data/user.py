@@ -6,7 +6,7 @@ from data.db_session import SqlAlchemyBase
 
 
 class User(SqlAlchemyBase, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'users'  # Была ошибка: должно быть tablename
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -16,6 +16,7 @@ class User(SqlAlchemyBase, UserMixin):
     password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     configuration = orm.relationship("Configuration", back_populates='user')
+    forums = orm.relationship("Forum", back_populates='user')  # Добавлено!
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

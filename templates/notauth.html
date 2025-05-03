@@ -5,7 +5,7 @@
 
 <div class="forum-container" role="main">
     <header class="forum-header">
-        <a class="btn btn-primary create-thread-btn" href="/forum/new_forum_post" aria-label="Создать публикацию">Создать публикацию</a>
+        <h2>Для добавления форума нужна авторизация</h2>
     </header>
 
     <section class="forum-list" aria-label="Список тем форума">
@@ -23,9 +23,6 @@
                         </div>
                         <p class="forum-description">{{ forum.content[:90] }}</p>
                     </article>
-                    <h2 class="forum-item-title">
-                                <h3>{{ user.nickname }}</h3>
-                            </h2>
                 </a>
             </li>
             {% endfor %}

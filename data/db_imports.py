@@ -8,6 +8,7 @@ from data.processors import Processors
 from data.ram_modules import RamModules
 from data.sockets import Sockets
 from data.HDDs import HDDs
+from data.SSDs import SSDs
 from data.videocards import Videocards
 
 components_types = {'computer_cases': ComputerCases,
@@ -19,4 +20,5 @@ components_types = {'computer_cases': ComputerCases,
                     'ram_modules': RamModules,
                     'sockets': Sockets,
                     'HHDs': HDDs,
+                    'SSDs': SSDs,
                     'videocards': Videocards}

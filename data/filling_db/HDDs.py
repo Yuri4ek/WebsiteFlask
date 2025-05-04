@@ -27,7 +27,7 @@ def filling_db(HDDs_info):
 
     db_sess = db_session.create_session()
     for HDD_info in HDDs_info:
-        capacity_gb, type, frequency, *name = HDD_info[0].split()
+        capacity_gb, type, *name = HDD_info[0].split()
         name = f"{capacity_gb} {' '.join(name)}"
         if capacity_gb[-2:] == "Tb":
             capacity_gb = int(capacity_gb[:-2]) * 1000

@@ -11,8 +11,8 @@ def get_info():
     # Открываем и читаем JSON-файл
     with open(json_file, "r", encoding="utf-8") as file:
         # Загружаем JSON в словарь
-        processors_prices = json.load(file)['components']['Оперативная память']
-    return processors_prices
+        rams_info = json.load(file)['components']['Оперативная память']
+    return rams_info
 
 
 def filling_db(rams_info):
@@ -42,7 +42,7 @@ def filling_db(rams_info):
 
         ramModule = RamModules()
         ramModule.name = ram_info[0]
-        ramModule.capacity_gb = int(capacity_gb)
+        ramModule.capacity_gb = capacity_gb
         ramModule.frequency = frequency
         ramModule.memory_type_id = memory_type_id
         ramModule.price_in_rubles = ram_info[1]

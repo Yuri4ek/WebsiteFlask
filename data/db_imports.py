@@ -9,6 +9,9 @@ from data.ram_modules import RamModules
 from data.sockets import Sockets
 from data.storage_devices import StorageDevices
 from data.videocards import Videocards
+from data.forum import Forum
+from data.comment import Comment
+from data.users import Users
 
 from data.user import User
 from data.configuration import Configuration

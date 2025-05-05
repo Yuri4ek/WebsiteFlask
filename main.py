@@ -11,7 +11,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'configuration_site_secret_key'
 db_session.global_init("db/components.db")
 
-
+# Временно (на удаление)
+user = {
+       'name': 'Иван Иванов',
+       'email': 'ivan@example.com',
+       'registration_date': '2023-10-26',
+       'bio': 'Увлекаюсь Python и Flask.'
+   }
 @app.route('/', defaults={'component': None})
 @app.route('/<component>')
 def home(component):
@@ -199,6 +205,16 @@ def new_forum_post():
             db_sess.commit()  # Сохраняем изменения в базе данных
             return redirect('/forums')
     return render_template('create_forum.html')
+
+# пробная версия профиля
+@app.route('/profile')
+def profile():
+    return render_template('profile.html', user=user)
+@app.route('/edit_profile')
+def edit_profile():
+    # Временно
+    # Здесь будет логика для редактирования профиля
+    return "Страница редактирования профиля (еще не реализована)"
 
 
 

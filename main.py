@@ -121,6 +121,7 @@ def show_builds():
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
     form = RegisterForm()
+
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
@@ -160,8 +161,8 @@ def authorization():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter((User.nickname == form.nickname_email.data) |
-                                          (User.email == form.nickname_email.data)).first()
+        user = db_sess.query(User).filter(
+            (User.nickname == form.nickname_email.data) | (User.email == form.nickname_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=True)
             return redirect("/")
@@ -176,8 +177,11 @@ def authorization():
 def forums_page():
     db_sess = db_session.create_session()
     forums = db_sess.query(Forum).all()
-    return render_template('forums.html', forums=forums,
-                           user=current_user if current_user.is_authenticated else None)
+    if current_user.is_authenticated:
+        return render_template('forums.html', forums=forums,
+                           user=current_user)
+    else:
+        return render_template('notauth.html', forums=forums)
 
 
 # Просмотр конкретного форума

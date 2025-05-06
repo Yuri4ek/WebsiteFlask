@@ -46,85 +46,64 @@ def get_info(processors):
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            elements = soup.find_all('td', {'class': 'tdc2'})
-            try:
-                year = int(elements[0].get_text())
-                socket = elements[2].get_text()
-                cores = int(elements[4].get_text())
-                threads = int(elements[5].get_text())
-                processor_frequency = int(elements[6].get_text().split()[0])
-                tdp = int(elements[11].get_text().split()[0])
-                if tdp > 1000:
-                    tdp = int(elements[12].get_text().split()[0])
-                pcie_type = ' '.join(elements[19].get_text().split()[2:])
-            except:
-                try:
-                    year = int(elements[0].get_text())
-                    socket = elements[2].get_text()
-                    cores = int(elements[3].get_text())
-                    threads = int(elements[4].get_text())
-                    processor_frequency = int(elements[5].get_text().split()[0])
-                    tdp = int(elements[10].get_text().split()[0])
-                    if tdp > 1000:
-                        tdp = int(elements[11].get_text().split()[0])
-                    pcie_type = ' '.join(elements[18].get_text().split()[2:])
-                except:
+            elements = soup.find_all('td')
+
+            i = 0
+            elements_len = len(elements)
+            while i < elements_len:
+                if 'Год выхода' in elements[i].get_text():
+                    year = int(elements[i + 1].get_text())
+                    i += 1
+                elif 'Socket' in elements[i].get_text():
+                    socket = elements[i + 1].get_text()
+                    i += 1
+                elif 'Количество ядер' in elements[i].get_text():
                     try:
-                        year = int(elements[0].get_text())
-                        socket = elements[2].get_text()
-                        cores = int(elements[3].get_text().split()[0])
-                        threads = int(elements[4].get_text())
-                        processor_frequency = int(elements[5].get_text().split()[0])
-                        tdp = int(elements[11].get_text().split()[0])
-                        if tdp > 1000:
-                            tdp = int(elements[12].get_text().split()[0])
-                        pcie_type = ' '.join(elements[19].get_text().split()[2:])
+                        cores = int(elements[i + 1].get_text())
+                    except:
+                        cores = int(elements[i + 1].get_text().split()[0])
+                    i += 1
+                elif 'Количество потоков' in elements[i].get_text():
+                    threads = int(elements[i + 1].get_text())
+                    i += 1
+                elif 'Базовая частота' in elements[i].get_text():
+                    processor_frequency = int(elements[i + 1].get_text().split()[0])
+                    i += 1
+                elif 'TDP' in elements[i].get_text():
+                    try:
+                        tdp = int(elements[i + 1].get_text().split()[0])
                     except:
                         try:
-                            year = int(elements[0].get_text())
-                            socket = elements[2].get_text()
-                            cores = int(elements[4].get_text().split()[0])
-                            threads = int(elements[5].get_text())
-                            processor_frequency = int(elements[6].get_text().split()[0])
-                            tdp = int(elements[11].get_text().split()[0])
-                            if tdp > 1000:
-                                tdp = int(elements[12].get_text().split()[0])
-                            pcie_type = int(elements[20].get_text().split()[2])
+                            tdp = int(elements[i + 1].get_text().split()[0].split('-')[1])
                         except:
-                            pass
-            # тип памяти частота памяти
-            try:
-                memory = elements[17].get_text().split('(')[1].split(')')[0]
-                if 'DDR' not in memory:
-                    raise
-            except:
-                try:
-                    memory = elements[18].get_text().split('(')[1].split(')')[0]
-                    if 'DDR' not in memory:
-                        raise
-                except:
-                    memory = elements[19].get_text().split('(')[1].split(')')[0]
-            try:
-                memory_type, memory_frequency = memory.split('-')
-                memory_frequency = int(memory_frequency.split(', ')[1])
-            except:
-                try:
-                    memory1, memory2 = memory.split(', ')
-
-                    memory_type, memory_frequency = memory1.split('-')
-                    memory_frequency = int(memory_frequency)
-                    processors_info.append(
-                        (processor, year, socket, cores, threads, processor_frequency,
-                         tdp, memory_type, memory_frequency, pcie_type))
-
-                    memory_type, memory_frequency = memory2.split('-')
-                    memory_frequency = int(memory_frequency)
-                except:
+                            tdp = None
+                    i += 1
+                elif 'Контроллер PCIe' in elements[i].get_text():
+                    pcie_type = int(elements[i + 1].get_text().split()[2].split('.')[0])
+                    i += 1
+                elif 'Контроллер оперативной памяти' in elements[i].get_text():
+                    memory = elements[i + 1].get_text().split('(')[1].split(')')[0]
                     try:
-                        memory_type, memory_frequency = memory.split('-')
+                        memory1, memory2 = memory.split(', ')
+                        memory_type, memory_frequency = memory1.split('-')
+                        memory_frequency = int(memory_frequency)
+                        processors_info.append(
+                            (processor, year, socket, cores, threads, processor_frequency,
+                             tdp, memory_type, memory_frequency, pcie_type))
+
+                        memory_type, memory_frequency = memory2.split('-')
                         memory_frequency = int(memory_frequency)
                     except:
-                        memory_type, memory_frequency = None, None
+                        try:
+                            memory_type, memory_frequency = memory.split('-')
+                            memory_frequency = int(memory_frequency)
+                        except:
+                            try:
+                                memory_frequency = int(memory_frequency.split(', ')[1])
+                            except:
+                                memory_frequency = None
+                    i += 1
+                i += 1
 
             processors_info.append((processor, year, socket, cores, threads, processor_frequency,
                                     tdp, memory_type, memory_frequency, pcie_type))
@@ -144,7 +123,7 @@ def get_prices():
     return processors_prices
 
 
-def filling_db(processors_info, processors_prices):
+def filling_db(processors_info):
     # берем сокеты
     with open('sockets.json', "r", encoding="utf-8") as file:
         sockets = json.load(file)
@@ -181,10 +160,6 @@ def filling_db(processors_info, processors_prices):
             processor.memory_type_id = None
         processor.memory_frequency = current_processor[8]
         processor.pcie_type = current_processor[9]
-        for processors_price in processors_prices:
-            if current_processor[0] == processors_price[0]:
-                processor.price_in_rubles = processors_price[1]
-                break
         db_sess.add(processor)
     db_sess.commit()
 
@@ -195,7 +170,50 @@ def filling_db(processors_info, processors_prices):
         print(processor.name)
 
 
-processors_info = get_info(get_names())
-processors_prices = get_prices()
+def filling_db_prices(processors_price):
+    db_session.global_init("../../db/components.db")
+    db_sess = db_session.create_session()
 
-filling_db(processors_info, processors_prices)
+    # берем данные видеокард
+    processors = db_sess.query(Processors).all()
+
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM processors")
+    con.commit()
+    con.close()
+
+    db_session.global_init("../../db/components.db")
+
+    db_sess = db_session.create_session()
+    for current_processor in processors:
+        processor = Processors()
+        processor.name = current_processor.name
+        processor.release_year = current_processor.release_year
+        processor.socket_id = current_processor.socket_id
+        processor.cores = current_processor.cores
+        processor.threads = current_processor.threads
+        processor.processor_frequency = current_processor.processor_frequency
+        processor.tdp = current_processor.tdp
+        processor.memory_type_id = current_processor.memory_type_id
+        processor.memory_frequency = current_processor.memory_frequency
+        processor.pcie_type = current_processor.pcie_type
+        for processor_price in processors_price:
+            if current_processor.name == processor_price[0]:
+                processor.price_in_rubles = processor_price[1]
+                break
+        db_sess.add(processor)
+    db_sess.commit()
+
+    processors = db_sess.query(Processors).all()
+
+    for processor in processors:
+        print(processor.name)
+
+
+processors_info = get_info(get_names())
+processors_price = get_prices()
+
+filling_db(processors_info)
+filling_db_prices(processors_price)

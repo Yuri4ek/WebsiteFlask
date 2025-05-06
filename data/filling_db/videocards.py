@@ -135,6 +135,7 @@ def filling_db_prices(videocards_price):
         for videocard_price in videocards_price:
             if current_videocard.name.lower() in videocard_price[0].lower():
                 videocard.price_in_rubles = videocard_price[1]
+                break
         db_sess.add(videocard)
     db_sess.commit()
 
@@ -144,9 +145,8 @@ def filling_db_prices(videocards_price):
         print(videocard.name)
 
 
-videocards_name = get_names()
-videocards_info = get_info(videocards_name)
-filling_db(videocards_info)
-
+videocards_info = get_info(get_names())
 videocards_price = get_prices()
+
+filling_db(videocards_info)
 filling_db_prices(videocards_price)

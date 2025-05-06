@@ -162,7 +162,8 @@ def authorization():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(
-            (User.nickname == form.nickname_email.data) | (User.email == form.nickname_email.data)).first()
+            (User.nickname == form.nickname_email.data) | (
+                        User.email == form.nickname_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=True)
             return redirect("/")
@@ -179,7 +180,7 @@ def forums_page():
     forums = db_sess.query(Forum).all()
     if current_user.is_authenticated:
         return render_template('forums.html', forums=forums,
-                           user=current_user)
+                               user=current_user)
     else:
         return render_template('notauth.html', forums=forums)
 

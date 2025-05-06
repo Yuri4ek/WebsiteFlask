@@ -13,11 +13,13 @@ db_session.global_init("db/components.db")
 
 # Временно (на удаление)
 user = {
-       'name': 'Иван Иванов',
-       'email': 'ivan@example.com',
-       'registration_date': '2023-10-26',
-       'bio': 'Увлекаюсь Python и Flask.'
-   }
+    'name': 'Иван Иванов',
+    'email': 'ivan@example.com',
+    'registration_date': '2023-10-26',
+    'bio': 'Увлекаюсь Python и Flask.'
+}
+
+
 @app.route('/', defaults={'component': None})
 @app.route('/<component>')
 def home(component):
@@ -174,7 +176,9 @@ def authorization():
 def forums_page():
     db_sess = db_session.create_session()
     forums = db_sess.query(Forum).all()
-    return render_template('forums.html', forums=forums, user=current_user if current_user.is_authenticated else None)
+    return render_template('forums.html', forums=forums,
+                           user=current_user if current_user.is_authenticated else None)
+
 
 # Просмотр конкретного форума
 @app.route('/forum/<int:forum_id>')
@@ -206,16 +210,18 @@ def new_forum_post():
             return redirect('/forums')
     return render_template('create_forum.html')
 
+
 # пробная версия профиля
 @app.route('/profile')
 def profile():
     return render_template('profile.html', user=user)
+
+
 @app.route('/edit_profile')
 def edit_profile():
     # Временно
     # Здесь будет логика для редактирования профиля
     return "Страница редактирования профиля (еще не реализована)"
-
 
 
 """ # Обработчик для добавления комментария

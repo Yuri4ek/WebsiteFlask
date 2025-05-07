@@ -114,7 +114,7 @@ def get_info(processors):
 
 def get_prices():
     # Имя JSON-файла
-    json_file = "components_prices.json"
+    json_file = "data_files/components_prices.json"
 
     # Открываем и читаем JSON-файл
     with open(json_file, "r", encoding="utf-8") as file:
@@ -125,11 +125,11 @@ def get_prices():
 
 def filling_db(processors_info):
     # берем сокеты
-    with open('sockets.json', "r", encoding="utf-8") as file:
+    with open('data_files/sockets.json', "r", encoding="utf-8") as file:
         sockets = json.load(file)
 
     # берем типы памяти
-    with open('memory_types.json', "r", encoding="utf-8") as file:
+    with open('data_files/memory_types.json', "r", encoding="utf-8") as file:
         memory_types = json.load(file)
 
     # удаляем старые данные
@@ -199,10 +199,14 @@ def filling_db_prices(processors_price):
         processor.memory_type_id = current_processor.memory_type_id
         processor.memory_frequency = current_processor.memory_frequency
         processor.pcie_type = current_processor.pcie_type
+        price_flag = True
         for processor_price in processors_price:
-            if current_processor.name == processor_price[0]:
+            if current_processor.name.lower() in processor_price[0].lower():
                 processor.price_in_rubles = processor_price[1]
+                price_flag = False
                 break
+        if price_flag:
+            processor.price_in_rubles = current_processor.price_in_rubles
         db_sess.add(processor)
     db_sess.commit()
 
@@ -212,8 +216,10 @@ def filling_db_prices(processors_price):
         print(processor.name)
 
 
+'''# данные (раз в месяц обновлять)
 processors_info = get_info(get_names())
-processors_price = get_prices()
+filling_db(processors_info)'''
 
-filling_db(processors_info)
+# цены (раз в день обновлять)
+processors_price = get_prices()
 filling_db_prices(processors_price)

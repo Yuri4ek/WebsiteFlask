@@ -6,7 +6,7 @@ from pprint import pprint
 
 def get_info():
     # Имя JSON-файла
-    json_file = "components_prices.json"
+    json_file = "data_files/components_prices.json"
 
     # Открываем и читаем JSON-файл
     with open(json_file, "r", encoding="utf-8") as file:
@@ -17,7 +17,7 @@ def get_info():
 
 def filling_db(rams_info):
     # берем типы памяти
-    with open('memory_types.json', "r", encoding="utf-8") as file:
+    with open('data_files/memory_types.json', "r", encoding="utf-8") as file:
         memory_types = json.load(file)
 
     # удаляем старые данные

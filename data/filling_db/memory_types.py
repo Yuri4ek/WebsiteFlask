@@ -27,4 +27,4 @@ def filling_db():
         print(memory_type.name)
 
 
-filling_db()
+filling_db() # обновлять только после анонса новых типов

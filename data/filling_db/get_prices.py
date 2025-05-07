@@ -78,8 +78,9 @@ def get_components(file_path):
     return sorted_components
 
 
-# Specify path to your XLSX file
-file_name = "regard_price_230425_21.xlsx"
+# день, месяц, год (последние две цифры)
+date = "070525"
+file_name = f"data_files/regard_price_{date}_21.xlsx"
 
 # Call function to print contents
 components = get_components(file_name)
@@ -88,7 +89,7 @@ components = get_components(file_name)
 json_data = json.dumps(components, indent=4, ensure_ascii=False)
 
 # Запись JSON в файл
-with open("components_prices.json", "w", encoding="utf-8") as file:
+with open("data_files/components_prices.json", "w", encoding="utf-8") as file:
     file.write(json_data)
 
 print(json_data)

@@ -6,7 +6,7 @@ from pprint import pprint
 
 def get_info():
     # Имя JSON-файла
-    json_file = "components_prices.json"
+    json_file = "data_files/components_prices.json"
 
     # Открываем и читаем JSON-файл
     with open(json_file, "r", encoding="utf-8") as file:
@@ -70,6 +70,6 @@ def filling_db(SSDs_info, M2_SSDs_info):
         print(SSD.name)
 
 
+# m2ssd это только те, у которых в названии написано m2, другие ssd тоже могут быть типа m2
 SSDs_info, M2_SSDs_info = get_info()
-
 filling_db(SSDs_info, M2_SSDs_info)

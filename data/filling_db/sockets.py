@@ -70,7 +70,7 @@ def make_json(sockets):
     json_data = json.dumps(sockets_json, indent=4, ensure_ascii=False)
 
     # Запись JSON в файл
-    with open("sockets.json", "w", encoding="utf-8") as file:
+    with open("data_files/sockets.json", "w", encoding="utf-8") as file:
         file.write(json_data)
 
 
@@ -96,7 +96,7 @@ def filling_db(current_sockets):
         print(socket.name)
 
 
+# обновлять при выходе нового сокета
 sockets = get_sockets(get_names())
-
 filling_db(sockets)
 make_json(sockets)

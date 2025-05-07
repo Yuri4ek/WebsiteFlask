@@ -74,7 +74,7 @@ def get_info(videocards):
 
 def get_prices():
     # Имя JSON-файла
-    json_file = "components_prices.json"
+    json_file = "data_files/components_prices.json"
 
     # Открываем и читаем JSON-файл
     with open(json_file, "r", encoding="utf-8") as file:
@@ -132,10 +132,14 @@ def filling_db_prices(videocards_price):
         videocard.tdp = current_videocard.tdp
         videocard.memory_capacity = current_videocard.memory_capacity
         videocard.pcie_type = current_videocard.pcie_type
+        price_flag = True
         for videocard_price in videocards_price:
             if current_videocard.name.lower() in videocard_price[0].lower():
                 videocard.price_in_rubles = videocard_price[1]
+                price_flag = False
                 break
+        if price_flag:
+            videocard.price_in_rubles = current_videocard.price_in_rubles
         db_sess.add(videocard)
     db_sess.commit()
 
@@ -144,9 +148,10 @@ def filling_db_prices(videocards_price):
     for videocard in videocards:
         print(videocard.name)
 
-
+'''# данные (раз в месяц обновлять)
 videocards_info = get_info(get_names())
-videocards_price = get_prices()
+filling_db(videocards_info)'''
 
-filling_db(videocards_info)
+# цены (раз в день обновлять)
+videocards_price = get_prices()
 filling_db_prices(videocards_price)

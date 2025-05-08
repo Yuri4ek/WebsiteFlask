@@ -12,5 +12,5 @@ run(['python', 'computer_cases.py'])
 
 '''
 run(['python', 'motherboards.py'])
-run(['python', 'cooling_systems.py'])
+run(['python', 'air_coolers.py'])
 '''

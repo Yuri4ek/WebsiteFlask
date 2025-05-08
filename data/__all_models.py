@@ -7,7 +7,7 @@ from . import HDDs
 from . import SSDs
 from . import power_supplies
 from . import computer_cases
-from . import cooling_systems
+from . import air_coolers
 from . import motherboards
 
 from . import users

@@ -1,6 +1,7 @@
 from data import db_session
 from data.computer_cases import ComputerCases
-from data.cooling_systems import CoolingSystems
+from data.air_coolers import AirCoolers
+from data.water_coolers import WaterCoolers
 from data.memory_types import MemoryTypes
 from data.motherboards import MotherBoards
 from data.power_supplies import PowerSupplies
@@ -12,7 +13,8 @@ from data.SSDs import SSDs
 from data.videocards import Videocards
 
 components_types = {'computer_cases': ComputerCases,
-                    'cooling_systems': CoolingSystems,
+                    'air_coolers': AirCoolers,
+                    'water_coolers': WaterCoolers,
                     'memory_types': MemoryTypes,
                     'motherboards': MotherBoards,
                     'power_supplies': PowerSupplies,

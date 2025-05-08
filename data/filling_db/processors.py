@@ -214,9 +214,9 @@ def filling_db_prices(processors_price):
         print(processor.name)
 
 
-'''# данные (раз в месяц обновлять)
+# данные (раз в месяц обновлять)
 processors_info = get_info(get_names())
-filling_db(processors_info)'''
+filling_db(processors_info)
 
 # цены (раз в день обновлять)
 processors_price = get_prices()

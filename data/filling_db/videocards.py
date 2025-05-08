@@ -148,9 +148,9 @@ def filling_db_prices(videocards_price):
     for videocard in videocards:
         print(videocard.name)
 
-'''# данные (раз в месяц обновлять)
+# данные (раз в месяц обновлять)
 videocards_info = get_info(get_names())
-filling_db(videocards_info)'''
+filling_db(videocards_info)
 
 # цены (раз в день обновлять)
 videocards_price = get_prices()

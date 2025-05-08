@@ -139,7 +139,7 @@ def filling_db(motherboards_info):
                     motherboard.socket_id = sockets[socket]
                     break
         except:
-            motherboard.socket_id = None
+            continue
         motherboard.chipset = current_motherboard[2]
         try:
             motherboard.memory_type_id = memory_types[current_motherboard[3]]
@@ -160,5 +160,52 @@ def filling_db(motherboards_info):
         print(motherBoard.name)
 
 
-motherboards_info = get_info(get_names())
-filling_db(motherboards_info)
+def filling_db_prices(motherboards_price):
+    db_session.global_init("../../db/components.db")
+    db_sess = db_session.create_session()
+
+    # берем данные материнских плат
+    motherboards = db_sess.query(MotherBoards).all()
+
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM motherboards")
+    con.commit()
+    con.close()
+
+    # добавляем цены
+    for current_motherboard in motherboards:
+        motherboard = MotherBoards()
+        motherboard.name = current_motherboard.name
+        motherboard.socket_id = current_motherboard.socket_id
+        motherboard.chipset = current_motherboard.chipset
+        motherboard.memory_type_id = current_motherboard.memory_type_id
+        motherboard.memory_slots = current_motherboard.memory_slots
+        motherboard.memory_max = current_motherboard.memory_max
+        motherboard.m2_quantity = current_motherboard.m2_quantity
+        motherboard.pcie_type = current_motherboard.pcie_type
+        motherboard.form_factor = current_motherboard.form_factor
+        price_flag = True
+        for motherboard_price in motherboards_price:
+            if current_motherboard.name.lower() in motherboard_price[0].lower():
+                motherboard.price_in_rubles = motherboard_price[1]
+                price_flag = False
+                break
+        if price_flag:
+            motherboard.price_in_rubles = current_motherboard.price_in_rubles
+        db_sess.add(motherboard)
+    db_sess.commit()
+
+    db_sess = db_session.create_session()
+    motherBoards = db_sess.query(MotherBoards).all()
+
+    for motherBoard in motherBoards:
+        print(motherBoard.name)
+
+
+# данные (раз в месяц обновлять)
+filling_db(get_info(get_names()))
+
+# цены (раз в день обновлять)
+filling_db_prices(get_prices())

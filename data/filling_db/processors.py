@@ -174,7 +174,7 @@ def filling_db_prices(processors_price):
     db_session.global_init("../../db/components.db")
     db_sess = db_session.create_session()
 
-    # берем данные видеокард
+    # берем данные процессоров
     processors = db_sess.query(Processors).all()
 
     # удаляем старые данные
@@ -184,9 +184,7 @@ def filling_db_prices(processors_price):
     con.commit()
     con.close()
 
-    db_session.global_init("../../db/components.db")
-
-    db_sess = db_session.create_session()
+    # добавляем цены
     for current_processor in processors:
         processor = Processors()
         processor.name = current_processor.name

@@ -12,7 +12,14 @@
             <select name="socket">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket.name }}>{{ socket.name }}</option>
+                <option value={{ socket }}>{{ socket }}</option>
+                {% endfor %}
+            </select>
+            <h4>Тип памяти</h4>
+            <select name="memory_type">
+                <option value="">Любой</option>
+                {% for memory_type in memory_types %}
+                <option value={{ memory_type }}>{{ memory_type }}</option>
                 {% endfor %}
             </select>
             <h4>Сортировка по мощности</h4>
@@ -31,14 +38,14 @@
             <select name="socket">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket.name }}>{{ socket.name }}</option>
+                <option value={{ socket }}>{{ socket }}</option>
                 {% endfor %}
             </select>
             <h4>Тип памяти</h4>
             <select name="memory_type">
                 <option value="">Любой</option>
                 {% for memory_type in memory_types %}
-                <option value={{ memory_type }}>{{ memory_type.name }}</option>
+                <option value={{ memory_type }}>{{ memory_type }}</option>
                 {% endfor %}
             </select>
             <h4>Поддержка m2</h4>
@@ -52,24 +59,8 @@
             <select name="memory_type">
                 <option value="">Любой</option>
                 {% for memory_type in memory_types %}
-                <option value={{ memory_type }}>{{ memory_type.name }}</option>
+                <option value={{ memory_type }}>{{ memory_type }}</option>
                 {% endfor %}
-            </select>
-        {% elif component_type == "cooling_systems" %}
-            <h4>Сокет</h4>
-            <select name="socket">
-                <option value="">Любой</option>
-                {% for socket in sockets %}
-                <option value={{ socket.name }}>{{ socket.name }}</option>
-                {% endfor %}
-            </select>
-        {% elif component_type == "storage_devices" %}
-            <h4>Тип</h4>
-            <select name="storage_type">
-                <option value="">Любой</option>
-                <option value="SSD">SSD</option>
-                <option value="HDD">HDD</option>
-                <option value="NVMe">NVMe</option>
             </select>
         {% elif component_type == "power_supplies" %}
             <h4>Сортировка по мощности</h4>
@@ -98,11 +89,11 @@
             {% for component in components %}
                 <div class="component-item">
                     <div class="component-image">
-                        <img src="{{ component[1] }}" alt="Нету изображения">
+                        <img src="{{ component_image }}" alt="Нету изображения">
                     </div>
                     <div class="component-info">
                         <h3>{{ component[0] }}</h3>
-                        {% for el in component[2:] %}
+                        {% for el in component[1:] %}
                             <p>{{ el }}</p>
                         {% endfor %}
                     </div>

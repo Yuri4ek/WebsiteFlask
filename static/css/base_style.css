@@ -64,7 +64,7 @@ body {
 
 /* Dropdown menu for Components */
 .dropdown {
-    position: relative;
+    position: center;
     display: inline-block;
 }
 .dropdown-content {

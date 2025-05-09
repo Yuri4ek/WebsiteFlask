@@ -24,22 +24,17 @@ user = {
 @app.route('/<component>')
 def home(component):
     # Проверяем, есть ли cookie
-    data = get_cookie('configuration_data')
+    data = get_cookie()
 
     # Если нет cookie, то создаем
     if not data:
         # создаем cookie
-        return set_cookies()
+        return set_cookie()
 
     # Если cookie и component есть, обновляем данные
     if component:
         component_type, component_name = component.split(':')
-        if (component_type == 'cooling_systems' or component_type == 'motherboards' or
-                component_type == 'processors' or component_type == 'ram_modules' or
-                component_type == 'videocards'):
-            return update_cookies(component_type, component_name)
-        return update_cookie('configuration_data', component_type,
-                             component_name)
+        return update_cookie(component_type, component_name)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
@@ -50,9 +45,14 @@ def choose_computer_cases():
     return computer_cases()
 
 
-@app.route('/choose_components/cooling_systems')
-def choose_cooling_systems():
-    return cooling_systems()
+@app.route('/choose_components/air_coolers')
+def choose_air_coolers():
+    return air_coolers()
+
+
+@app.route('/choose_components/water_coolers')
+def choose_water_coolers():
+    return water_coolers()
 
 
 @app.route('/choose_components/motherboards')
@@ -75,9 +75,14 @@ def choose_ram_modules():
     return ram_modules()
 
 
-@app.route('/choose_components/storage_devices')
-def choose_storage_devices():
-    return storage_devices()
+@app.route('/choose_components/SSDs')
+def choose_SSDs():
+    return ssds()
+
+
+@app.route('/choose_components/HDDs')
+def choose_HDDs():
+    return hdds()
 
 
 @app.route('/choose_components/videocards')
@@ -98,13 +103,13 @@ def show_components_table(component_type):
     components = [el.get() for el in db_sess.query(component_class).all()]
 
     if component_type == 'processors' or component_type == 'motherboards':
-        current_sockets = list(get_sockets().keys())
+        current_sockets = get_sockets()
         i = columns.index("socket_id")
         for component in components:
             component[i] = current_sockets[int(component[i]) - 1] if component[i] else None
     if component_type == 'ram_modules' or component_type == 'motherboards' or component_type == 'processors':
         i = columns.index("memory_type_id")
-        current_memory_types = list(get_memory_types().keys())
+        current_memory_types = get_memory_types()
         for component in components:
             component[i] = current_memory_types[int(component[i]) - 1] if component[i] else None
 
@@ -243,9 +248,9 @@ def add_comment(forum_id):
     return redirect(url_for('forum_detail', forum_id=forum_id))"""
 
 
-@app.get("/clear_cookies")
-def clear_cookies_handler():
-    return clear_cookies()
+@app.get("/clear_cookie")
+def clear_cookie():
+    return clear_cookie()
 
 
 if __name__ == '__main__':

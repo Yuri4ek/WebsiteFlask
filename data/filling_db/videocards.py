@@ -1,270 +1,157 @@
+import requests
+from bs4 import BeautifulSoup
+import json
 import sqlite3
 
-con = sqlite3.connect("../../db/components.db")
-cur = con.cursor()
-cur.execute("DELETE FROM videocards")
-con.commit()
-con.close()
+from data.db_imports import *
+from pprint import pprint
 
-videocards = [
-    [1, "GeForce RTX 5090 D", 100.00, 2025, 575, 2499.99, "USD"],
-    [2, "GeForce RTX 5090", 87.72, 2025, 575, 2299.99, "USD"],
-    [3, "GeForce RTX 4090", 85.93, 2022, 450, 1599.99, "USD"],
-    [4, "GeForce RTX 5080", 80.83, 2025, 360, 1499.99, "USD"],
-    [5, "GeForce RTX 4080", 77.29, 2022, 320, 1199.99, "USD"],
-    [6, "GeForce RTX 4080 SUPER", 76.76, 2024, 320, 999.99, "USD"],
-    [7, "GeForce RTX 5070", 71.25, 2025, 250, 799.99, "USD"],
-    [8, "GeForce RTX 5070 Ti", 71.25, 2025, 300, 899.99, "USD"],
-    [9, "GeForce RTX 4070 Ti SUPER", 71.14, 2024, 285, 849.99, "USD"],
-    [10, "GeForce RTX 4070 Ti", 70.96, 2023, 285, 799.99, "USD"],
-    [11, "Radeon RX 7900 XTX", 69.45, 2022, 355, 999.99, "USD"],
-    [12, "RTX 5000 Ada Generation", 68.76, 2023, 250, 3999.99, "USD"],
-    [13, "GeForce RTX 4070 SUPER", 67.22, 2024, 220, 599.99, "USD"],
-    [14, "GeForce RTX 3090 Ti", 66.19, 2022, 450, 1499.99, "USD"],
-    [15, "RTX 5880 Ada Generation", 64.88, 2024, 285, 3499.99, "USD"],
-    [16, "Radeon PRO W7800", 64.88, 2023, 260, 2499.99, "USD"],
-    [17, "Radeon PRO W7900", 64.80, 2023, 295, 3999.99, "USD"],
-    [18, "Radeon RX 7900 XT", 64.60, 2022, 300, 899.99, "USD"],
-    [19, "RTX 6000 Ada Generation", 64.20, 2022, 300, 6799.99, "USD"],
-    [20, "GeForce RTX 4090 D", 64.15, 2023, 425, 1499.99, "USD"],
-    [21, "RTX 4500 Ada Generation", 63.08, 2023, 210, 2999.99, "USD"],
-    [22, "Radeon RX 6950 XT", 62.91, 2022, 335, 799.99, "USD"],
-    [23, "GeForce RTX 3080 Ti", 60.38, 2021, 350, 999.99, "USD"],
-    [24, "Radeon RX 7900 GRE", 60.37, 2023, 260, 649.99, "USD"],
-    [25, "GeForce RTX 4070", 60.33, 2023, 200, 549.99, "USD"],
-    [26, "Radeon RX 6900 XT", 59.78, 2020, 300, 699.99, "USD"],
-    [27, "Radeon RX 6900", 59.78, 2020, 255, 649.99, "USD"],
-    [28, "GeForce RTX 3090", 59.65, 2020, 350, 1299.99, "USD"],
-    [29, "GeForce RTX 3080 12 GB", 59.51, 2022, 350, 899.99, "USD"],
-    [30, "GeForce RTX 3080", 56.32, 2020, 320, 799.99, "USD"],
-    [31, "Radeon RX 6800 XT", 55.89, 2020, 300, 649.99, "USD"],
-    [32, "Radeon RX 7800 XT", 54.13, 2023, 263, 499.99, "USD"],
-    [33, "RTX 4000 Ada Generation", 53.00, 2023, 130, 1999.99, "USD"],
-    [34, "GeForce RTX 3070 Ti", 52.47, 2021, 290, 599.99, "USD"],
-    [35, "Radeon PRO W7700", 51.96, 2023, 190, 1499.99, "USD"],
-    [36, "GeForce RTX 4060 Ti 16 GB", 50.87, 2023, 165, 499.99, "USD"],
-    [37, "GeForce RTX 4060 Ti", 50.83, 2023, 160, 399.99, "USD"],
-    [38, "Quadro RTX A6000", 50.68, 2020, 300, 4699.99, "USD"],
-    [39, "RTX A5000", 50.44, 2021, 230, 2499.99, "USD"],
-    [40, "Radeon RX 7700 XT", 50.17, 2023, 245, 449.99, "USD"],
-    [41, "Radeon RX 7700", 50.17, 2023, 200, 399.99, "USD"],
-    [42, "GeForce RTX 3070", 49.85, 2020, 220, 499.99, "USD"],
-    [43, "Radeon RX 6800", 49.49, 2020, 250, 579.99, "USD"],
-    [44, "RTX A5500", 48.47, 2022, 230, 3999.99, "USD"],
-    [45, "GeForce RTX 2080 Ti", 48.43, 2018, 250, 799.99, "USD"],
-    [46, "RTX A4500", 47.94, 2021, 200, 2999.99, "USD"],
-    [47, "Radeon RX 6750 XT", 46.43, 2022, 250, 399.99, "USD"],
-    [48, "GeForce RTX 3060 Ti", 45.65, 2020, 200, 399.99, "USD"],
-    [49, "RTX 4000 SFF Ada Generation", 45.46, 2023, 70, 1499.99, "USD"],
-    [50, "Radeon Pro W6800", 44.35, 2021, 250, 2249.99, "USD"],
-    [51, "Quadro GV100", 44.33, 2018, 250, 8999.99, "USD"],
-    [52, "Radeon RX 6700 XT", 44.33, 2021, 230, 479.99, "USD"],
-    [53, "GeForce RTX 4060", 44.17, 2023, 115, 299.99, "USD"],
-    [54, "Quadro RTX 8000", 44.16, 2018, 260, 5999.99, "USD"],
-    [55, "Radeon RX 6750 GRE 12 GB", 44.07, 2023, 250, 349.99, "USD"],
-    [56, "RTX A4000", 43.80, 2021, 140, 999.99, "USD"],
-    [57, "GeForce RTX 2080 Super", 43.67, 2019, 250, 499.99, "USD"],
-    [58, "TITAN Xp", 43.44, 2017, 250, 799.99, "USD"],
-    [59, "Radeon RX 6700", 42.98, 2021, 175, 329.99, "USD"],
-    [60, "L40S", 42.23, 2022, 300, 7999.99, "USD"],
-    [61, "TITAN RTX", 42.17, 2018, 280, 2499.99, "USD"],
-    [62, "GeForce RTX 2080", 41.96, 2018, 215, 399.99, "USD"],
-    [63, "A10G", 41.87, 2021, 150, 3999.99, "USD"],
-    [64, "Quadro RTX 6000", 41.67, 2018, 260, 3999.99, "USD"],
-    [65, "GeForce GTX 1080 Ti", 41.56, 2017, 250, 399.99, "USD"],
-    [66, "GeForce RTX 2070 Super", 40.73, 2019, 215, 399.99, "USD"],
-    [67, "Radeon Pro W5700X", 39.34, 2019, 205, 999.99, "USD"],
-    [68, "RTX 2000 Ada Generation", 38.96, 2024, 70, 799.99, "USD"],
-    [69, "Radeon RX 7600 XT", 38.45, 2024, 190, 329.99, "USD"],
-    [70, "Radeon RX 6650 XT", 38.42, 2022, 176, 299.99, "USD"],
-    [71, "TITAN V", 38.30, 2017, 250, 2999.99, "USD"],
-    [72, "GeForce RTX 3060", 38.21, 2021, 170, 329.99, "USD"],
-    [73, "TITAN V CEO Edition", 37.99, 2018, 250, 3499.99, "USD"],
-    [74, "Radeon RX 6750 GRE", 37.49, 2023, 250, 319.99, "USD"],
-    [75, "Radeon RX 6750 GRE 10 GB", 37.49, 2023, 170, 299.99, "USD"],
-    [76, "Radeon RX 7600", 37.15, 2023, 165, 269.99, "USD"],
-    [77, "Radeon RX 5700 XT 50th Anniversary", 36.91, 2019, 225, 449.99,
-     "USD"],
-    [78, "GeForce RTX 2060 Super", 36.87, 2019, 175, 349.99, "USD"],
-    [79, "Radeon RX 6600 XT", 36.86, 2021, 160, 379.99, "USD"],
-    [80, "Radeon RX 5700 XT", 36.75, 2019, 225, 399.99, "USD"],
-    [81, "Radeon VII", 36.70, 2019, 295, 699.99, "USD"],
-    [82, "GeForce RTX 2070", 36.10, 2018, 175, 349.99, "USD"],
-    [83, "GeForce RTX 2060 12 GB", 35.61, 2021, 184, 299.99, "USD"],
-    [84, "Quadro RTX 5000", 35.18, 2018, 230, 2299.99, "USD"],
-    [85, "Radeon Pro V620", 34.96, 2021, 300, 2499.99, "USD"],
-    [86, "Radeon Pro Vega II", 34.88, 2019, 475, 3999.99, "USD"],
-    [87, "GeForce GTX 1080", 34.81, 2016, 180, 249.99, "USD"],
-    [88, "Radeon Pro W6800X Duo", 34.79, 2021, 400, 4999.99, "USD"],
-    [89, "Radeon Pro W6800X", 34.79, 2021, 200, 2499.99, "USD"],
-    [90, "Arc B580", 34.65, 2025, 190, 349.99, "USD"],
-    [91, "Quadro P6000", 34.61, 2016, 250, 1999.99, "USD"],
-    [92, "Radeon Pro W6600", 34.53, 2021, 100, 649.99, "USD"],
-    [93, "Radeon RX 6600 LE", 34.41, 2023, 132, 259.99, "USD"],
-    [94, "GeForce RTX 3060 8 GB", 34.26, 2022, 170, 299.99, "USD"],
-    [95, "Quadro RTX 4000", 34.05, 2018, 160, 899.99, "USD"],
-    [96, "Radeon PRO W7600", 33.93, 2023, 130, 599.99, "USD"],
-    [97, "Quadro GP100", 33.88, 2016, 235, 6999.99, "USD"],
-    [98, "Radeon RX 6600", 33.80, 2021, 132, 329.99, "USD"],
-    [99, "Radeon Pro W5700", 33.14, 2019, 205, 799.99, "USD"],
-    [100, "GeForce GTX 1070 Ti", 32.86, 2017, 180, 299.99, "USD"],
-    [101, "GeForce GTX 1070 SLI", 32.73, 2016, 300, 399.99, "USD"],
-    [102, "GeForce RTX 4050", 32.25, 2023, 100, 199.99, "USD"],
-    [103, "Radeon RX 5700", 32.14, 2019, 180, 349.99, "USD"],
-    [104, "Radeon RX Vega 64", 31.71, 2017, 295, 399.99, "USD"],
-    [105, "GeForce RTX 2060", 31.59, 2019, 160, 299.99, "USD"],
-    [106, "Radeon Pro Vega II Duo", 31.35, 2019, 475, 5999.99, "USD"],
-    [107, "RTX A2000 12 GB", 30.64, 2021, 70, 649.99, "USD"],
-    [108, "RTX A2000", 30.38, 2021, 70, 599.99, "USD"],
-    [109, "Radeon RX 5600 XT", 30.23, 2020, 150, 279.99, "USD"],
-    [110, "GeForce GTX 1070", 30.21, 2016, 150, 249.99, "USD"],
-    [111, "Arc B570", 30.19, 2025, 150, 299.99, "USD"],
-    [112, "Radeon PRO W7500", 29.54, 2023, 70, 429.99, "USD"],
-    [113, "Arc A770", 29.49, 2022, 225, 329.99, "USD"],
-    [114, "Radeon Pro WX 8200", 29.45, 2018, 230, 999.99, "USD"],
-    [115, "Radeon RX Vega 56", 29.41, 2017, 210, 299.99, "USD"],
-    [116, "Radeon Pro W6600X", 29.33, 2021, 120, 699.99, "USD"],
-    [117, "Titan X Pascal", 29.13, 2016, 250, 999.99, "USD"],
-    [118, "Radeon Vega Frontier Edition", 29.10, 2017, 300, 999.99, "USD"],
-    [119, "Radeon Pro Vega 64", 28.89, 2017, 250, 799.99, "USD"],
-    [120, "GeForce GTX 1660 Ti", 28.87, 2019, 120, 279.99, "USD"],
-    [121, "Radeon Pro VII", 28.83, 2020, 250, 1899.99, "USD"],
-    [122, "GeForce GTX 1660 Super", 28.43, 2019, 125, 229.99, "USD"],
-    [123, "Quadro P5000", 28.29, 2016, 180, 1899.99, "USD"],
-    [124, "GeForce RTX 3050 8 GB", 28.21, 2022, 130, 249.99, "USD"],
-    [125, "Radeon Pro 5700 XT", 28.11, 2020, 130, 599.99, "USD"],
-    [126, "Radeon RX 5600 OEM", 27.69, 2020, 150, 249.99, "USD"],
-    [127, "Arc A750", 27.56, 2022, 225, 249.99, "USD"],
-    [128, "Radeon PRO WX 9100", 27.47, 2017, 230, 1499.99, "USD"],
-    [129, "Tesla P40", 27.43, 2016, 250, 2999.99, "USD"],
-    [130, "Radeon Pro V520", 27.41, 2020, 225, 1999.99, "USD"],
-    [131, "Arc A580", 26.71, 2023, 175, 179.99, "USD"],
-    [132, "GeForce RTX 3050 OEM", 26.69, 2022, 130, 229.99, "USD"],
-    [133, "Quadro M6000 24 GB", 26.65, 2016, 250, 2499.99, "USD"],
-    [134, "Radeon Pro 5700", 26.49, 2020, 130, 499.99, "USD"],
-    [135, "GeForce GTX 1660", 26.07, 2019, 120, 219.99, "USD"],
-    [136, "Quadro P4000", 25.90, 2017, 105, 799.99, "USD"],
-    [137, "Radeon Pro SSG", 24.54, 2016, 260, 1499.99, "USD"],
-    [138, "RTX A1000", 24.30, 2024, 50, 399.99, "USD"],
-    [139, "GeForce RTX 3050 6 GB", 23.93, 2024, 70, 179.99, "USD"],
-    [140, "Tesla T4", 23.89, 2018, 70, 1999.99, "USD"],
-    [141, "GeForce GTX 1060 6 GB", 22.93, 2016, 120, 199.99, "USD"],
-    [142, "GeForce GTX 1650 SUPER", 22.73, 2019, 100, 169.99, "USD"],
-    [143, "GeForce GTX 1060 3 GB", 21.44, 2016, 120, 179.99, "USD"],
-    [144, "Radeon RX 6500 XT", 21.37, 2022, 107, 199.99, "USD"],
-    [145, "Radeon RX 590", 20.97, 2018, 175, 179.99, "USD"],
-    [146, "Quadro P2200", 20.91, 2019, 75, 429.99, "USD"],
-    [147, "Arc Pro A60", 20.80, 2023, 130, 249.99, "USD"],
-    [148, "Radeon Pro W5500", 20.43, 2020, 125, 399.99, "USD"],
-    [149, "Radeon RX 5500 XT", 20.37, 2019, 130, 169.99, "USD"],
-    [150, "GeForce GTX 1060 5 GB", 20.33, 2017, 120, 189.99, "USD"],
-    [151, "Tesla P4", 20.27, 2016, 75, 1299.99, "USD"],
-    [152, "CMP 40HX", 19.92, 2021, 185, 399.99, "USD"],
-    [153, "Radeon RX 580", 19.77, 2017, 185, 149.99, "USD"],
-    [154, "Radeon RX 5500", 19.65, 2019, 110, 159.99, "USD"],
-    [155, "Radeon RX 480", 19.21, 2016, 150, 139.99, "USD"],
-    [156, "Radeon Pro Duo", 18.30, 2016, 350, 1499.99, "USD"],
-    [157, "CMP 30HX", 18.19, 2021, 125, 299.99, "USD"],
-    [158, "GeForce RTX 5060", 18.17, 2025, 170, 349.99, "USD"],
-    [159, "Radeon Pro 5500 XT", 18.17, 2020, 125, 349.99, "USD"],
-    [160, "Radeon RX 470", 18.11, 2016, 120, 129.99, "USD"],
-    [161, "Radeon Pro W6400", 17.86, 2022, 50, 229.99, "USD"],
-    [162, "GeForce GTX 1650", 17.62, 2019, 75, 149.99, "USD"],
-    [163, "Radeon Pro WX 7100", 17.45, 2016, 130, 599.99, "USD"],
-    [164, "Radeon RX 580 2048SP", 17.13, 2018, 150, 139.99, "USD"],
-    [165, "T1000 8 GB", 17.12, 2021, 50, 399.99, "USD"],
-    [166, "Radeon RX 6400", 17.09, 2022, 53, 159.99, "USD"],
-    [167, "T1000", 17.06, 2021, 50, 349.99, "USD"],
-    [168, "Radeon RX 5300", 16.97, 2020, 100, 129.99, "USD"],
-    [169, "Radeon Pro W5500X", 16.44, 2019, 125, 399.99, "USD"],
-    [170, "Quadro P2000", 16.25, 2017, 75, 429.99, "USD"],
-    [171, "Radeon Pro 5300", 15.97, 2020, 85, 299.99, "USD"],
-    [172, "Radeon RX 570", 15.58, 2017, 120, 129.99, "USD"],
-    [173, "GeForce RTX 3050 4 GB", 15.44, 2022, 90, 159.99, "USD"],
-    [174, "Radeon RX 580X", 15.14, 2018, 185, 149.99, "USD"],
-    [175, "RTX A500", 14.98, 2021, 60, 249.99, "USD"],
-    [176, "P106-100", 14.87, 2017, 120, 199.99, "USD"],
-    [177, "Radeon RX Vega M", 14.71, 2018, 15, 99.99, "USD"],
-    [178, "T600", 14.50, 2021, 40, 199.99, "USD"],
-    [179, "Quadro T1000", 14.49, 2019, 50, 349.99, "USD"],
-    [180, "GeForce GTX 1050 Ti", 14.14, 2016, 70, 129.99, "USD"],
-    [181, "Arc A380", 13.97, 2022, 75, 139.99, "USD"],
-    [182, "L4", 13.43, 2023, 72, 1999.99, "USD"],
-    [183, "RTX A400", 12.62, 2024, 50, 199.99, "USD"],
-    [184, "Radeon PRO W6300", 12.43, 2022, 25, 199.99, "USD"],
-    [185, "Radeon Pro WX 5100", 12.39, 2016, 75, 399.99, "USD"],
-    [186, "Arc A310", 12.22, 2022, 75, 119.99, "USD"],
-    [187, "GeForce GTX 1050 3 GB", 11.35, 2018, 75, 119.99, "USD"],
-    [188, "GeForce GTX 1050", 11.24, 2016, 60, 109.99, "USD"],
-    [189, "GeForce GTX 1630", 11.17, 2022, 75, 149.99, "USD"],
-    [190, "Radeon Instinct MI25", 11.13, 2017, 300, 2999.99, "USD"],
-    [191, "Quadro P1000", 10.02, 2017, 40, 299.99, "USD"],
-    [192, "Radeon RX 460", 9.17, 2016, 75, 99.99, "USD"],
-    [193, "Quadro M2000", 8.94, 2016, 75, 399.99, "USD"],
-    [194, "T400 4 GB", 8.46, 2021, 30, 159.99, "USD"],
-    [195, "FirePro S7150", 8.43, 2016, 150, 1999.99, "USD"],
-    [196, "Radeon Pro WX 4100", 8.19, 2016, 50, 299.99, "USD"],
-    [197, "Quadro P620", 8.18, 2018, 40, 199.99, "USD"],
-    [198, "Radeon RX 560", 8.17, 2017, 75, 99.99, "USD"],
-    [199, "P104-100", 8.11, 2017, None, 199.99, "USD"],
-    [200, "T400", 8.07, 2021, 30, 139.99, "USD"],
-    [201, "Quadro P600", 7.42, 2017, 40, 179.99, "USD"],
-    [202, "Radeon RX 560X", 7.08, 2018, 75, 109.99, "USD"],
-    [203, "Tesla M10", 6.70, 2016, 225, 1999.99, "USD"],
-    [204, "GRID M3-3020", 6.61, 2016, None, 1499.99, "USD"],
-    [205, "P102-100", 6.59, 2018, 250, 299.99, "USD"],
-    [206, "Radeon Pro V340 MxGPU", 6.38, 2018, 300, 2999.99, "USD"],
-    [207, "Radeon Pro V340", 6.38, 2018, 230, 2499.99, "USD"],
-    [208, "Radeon RX 550", 6.08, 2017, 50, 79.99, "USD"],
-    [209, "Radeon PRO WX 3100", 5.77, 2017, 65, 199.99, "USD"],
-    [210, "GeForce GT 1030", 5.48, 2017, 30, 89.99, "USD"],
-    [211, "P106-090", 5.47, 2017, 75, 149.99, "USD"],
-    [212, "Radeon Pro WX 3200", 5.41, 2019, 65, 199.99, "USD"],
-    [213, "UHD Graphics 770", 5.31, 2022, 15, 49.99, "USD"],
-    [214, "Radeon RX 550X", 5.28, 2018, 50, 89.99, "USD"],
-    [215, "Radeon R7 350", 4.82, 2016, 55, 79.99, "USD"],
-    [216, "Radeon RX Vega 11", 4.71, 2018, 35, 39.99, "USD"],
-    [217, "Radeon 550", 4.71, 2017, 50, 69.99, "USD"],
-    [218, "Iris Xe Graphics MAX", 4.41, 2020, 25, 99.99, "USD"],
-    [219, "Radeon RX 570X", 4.30, 2018, 120, 129.99, "USD"],
-    [220, "Radeon PRO WX 2100", 4.16, 2017, 35, 149.99, "USD"],
-    [221, "UHD Graphics P750", 3.93, 2021, 15, 39.99, "USD"],
-    [222, "GRID M10-8Q", 3.92, 2016, 225, 1999.99, "USD"],
-    [223, "UHD Graphics 750", 3.88, 2021, 15, 39.99, "USD"],
-    [224, "GRID M40", 3.81, 2016, 50, 999.99, "USD"],
-    [225, "Quadro P400", 3.69, 2017, 30, 129.99, "USD"],
-    [226, "UHD Graphics 730", 3.58, 2023, 15, 39.99, "USD"],
-    [227, "Radeon 540", 3.14, 2017, 50, 69.99, "USD"],
-    [228, "Radeon 550X", 3.13, 2019, 50, 79.99, "USD"],
-    [229, "UHD Graphics Xe 750 32EUs (Rocket Lake)", 2.86, 2021, None, 39.99,
-     "USD"],
-    [230, "GeForce GT 1010", 2.70, 2021, 30, 69.99, "USD"],
-    [231, "HD Graphics P630", 2.68, 2016, 15, 29.99, "USD"],
-    [232, "UHD Graphics 630", 2.67, 2017, 15, 29.99, "USD"],
-    [233, "UHD Graphics 710", 2.46, 2022, 15, 29.99, "USD"],
-    [234, "Radeon R5 430 OEM", 2.31, 2016, 50, 59.99, "USD"]
-]
 
-from data import db_session
-from data.videocards import Videocards
+def get_names():
+    videocards = []
+    for i in range(1, 9):
+        url = f'https://technical.city/en/video/rating?&pg={i}'  # сюда ссылку на сайт
+        response = requests.get(url)
 
-db_session.global_init("../../db/components.db")
+        # Проверяем успешность запроса
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-db_sess = db_session.create_session()
-for curent_videocard in videocards:
-    videocard = Videocards()
-    videocard.name = curent_videocard[1]
-    videocard.efficiency = curent_videocard[2]
-    videocard.release_year = curent_videocard[3]
-    videocard.tdp = curent_videocard[4]
-    videocard.price = curent_videocard[5]
-    videocard.currency = curent_videocard[6]
+            # Найдем таблицу с рейтингом процессоров
+            table = soup.find('table')
 
-    db_sess.add(videocard)
-db_sess.commit()
+            # Извлекаем заголовки таблицы
+            headers = [header.text for header in table.find_all('th')]
+            # Извлекаем строки таблицы
+            for row in table.find_all('tr')[1:]:  # Пропускаем заголовок
+                cols = row.find_all('td')
+                data = [col.text.strip() for col in cols]
+                try:
+                    if int(data[5]) > 2018 and (data[2] == 'desktop' or data[2] == 'workstation'):
+                        videocards.append(data[1])
+                except:
+                    pass
+        else:
+            print(f'Ошибка при загрузке страницы: {response.status_code}')
+    return videocards
 
-db_sess = db_session.create_session()
-current_videocards = db_sess.query(Videocards).all()
 
-for videocard in current_videocards:
-    print(videocard.name)
+def get_info(videocards):
+    videocards_info = []
+    for videocard in videocards:
+        videocard_for_url = videocard.replace(' ', '_')
+        url = f'https://www.chaynikam.info/{videocard_for_url}.html'  # сюда ссылку на сайт
+        response = requests.get(url)
+
+        # Проверяем успешность запроса
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            elements = soup.find_all('td')
+
+            i = 0
+            elements_len = len(elements)
+            while i < elements_len:
+                if 'Год выхода' == elements[i].get_text():
+                    year = int(elements[i + 1].get_text())
+                    i += 1
+                elif 'Интерфейс' == elements[i].get_text():
+                    pcie_type = int(elements[i + 1].get_text().split()[1].split('.')[0])
+                    i += 1
+                elif 'Объем' == elements[i].get_text():
+                    memory_capacity = int(float(elements[i + 1].get_text().split()[0]) / 1000)
+                    i += 1
+                elif 'Макс. потребляемая энергия (TDP)' == elements[i].get_text():
+                    tdp = int(elements[i + 1].get_text().split()[0])
+                    i += 1
+                i += 1
+
+            videocards_info.append((videocard, year, tdp, memory_capacity, pcie_type))
+        else:
+            pass
+    return videocards_info
+
+
+def get_prices():
+    # Имя JSON-файла
+    json_file = "data_files/components_prices.json"
+
+    # Открываем и читаем JSON-файл
+    with open(json_file, "r", encoding="utf-8") as file:
+        # Загружаем JSON в словарь
+        videocards_prices = json.load(file)['components']['Видеокарта']
+    return videocards_prices
+
+
+def filling_db(videocards_info):
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM videocards")
+    con.commit()
+    con.close()
+
+    db_session.global_init("../../db/components.db")
+
+    db_sess = db_session.create_session()
+    for current_videocard in videocards_info:
+        videocard = Videocards()
+        videocard.name = current_videocard[0]
+        videocard.release_year = current_videocard[1]
+        videocard.tdp = current_videocard[2]
+        videocard.memory_capacity = current_videocard[3]
+        videocard.pcie_type = current_videocard[4]
+        db_sess.add(videocard)
+    db_sess.commit()
+
+    db_sess = db_session.create_session()
+    videocards = db_sess.query(Videocards).all()
+
+    for videocard in videocards:
+        print(videocard.name)
+
+
+def filling_db_prices(videocards_price):
+    db_session.global_init("../../db/components.db")
+    db_sess = db_session.create_session()
+
+    # берем данные видеокард
+    videocards = db_sess.query(Videocards).all()
+
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM videocards")
+    con.commit()
+    con.close()
+
+    for current_videocard in videocards:
+        videocard = Videocards()
+        videocard.name = current_videocard.name
+        videocard.release_year = current_videocard.release_year
+        videocard.tdp = current_videocard.tdp
+        videocard.memory_capacity = current_videocard.memory_capacity
+        videocard.pcie_type = current_videocard.pcie_type
+        price_flag = True
+        for videocard_price in videocards_price:
+            if current_videocard.name.lower() in videocard_price[0].lower():
+                videocard.price_in_rubles = videocard_price[1]
+                price_flag = False
+                break
+        if price_flag:
+            videocard.price_in_rubles = current_videocard.price_in_rubles
+        db_sess.add(videocard)
+    db_sess.commit()
+
+    videocards = db_sess.query(Videocards).all()
+
+    for videocard in videocards:
+        print(videocard.name)
+
+# данные (раз в месяц обновлять)
+videocards_info = get_info(get_names())
+filling_db(videocards_info)
+
+# цены (раз в день обновлять)
+videocards_price = get_prices()
+filling_db_prices(videocards_price)

@@ -8,12 +8,12 @@ class Videocards(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
-    efficiency = sqlalchemy.Column(sqlalchemy.REAL)
     release_year = sqlalchemy.Column(sqlalchemy.Integer)
     tdp = sqlalchemy.Column(sqlalchemy.Integer)
-    price = sqlalchemy.Column(sqlalchemy.REAL)
-    currency = sqlalchemy.Column(sqlalchemy.String)
+    memory_capacity = sqlalchemy.Column(sqlalchemy.Integer)
+    pcie_type = sqlalchemy.Column(sqlalchemy.Integer)
+    price_in_rubles = sqlalchemy.Column(sqlalchemy.Integer)
 
     def get(self):
-        return (self.id, self.name, self.efficiency, self.release_year,
-                self.tdp, self.price, self.currency)
+        return (self.id, self.name, self.tdp, self.release_year,
+                self.memory_capacity, self.pcie_type, self.price_in_rubles)

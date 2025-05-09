@@ -1,181 +1,50 @@
+import json
 import sqlite3
+from data.db_imports import *
+from pprint import pprint
 
-con = sqlite3.connect("../../db/components.db")
-cur = con.cursor()
-cur.execute("DELETE FROM power_supplies")
-con.commit()
-con.close()
 
-power_supplies = [
-    [1, 'Aerocool VX PLUS 350w', 'ATX', '350 W', 35, 'USD'],
-    [2, 'Chieftec SMART 400w', 'ATX', '400 W', 40, 'USD'],
-    [3, 'Chieftec COMPACT 450W', 'SFX', '450 W', 50, 'USD'],
-    [4, 'Corsair SF450 Gold', 'SFX', '450 W', 90, 'USD'],
-    [5, 'Corsair SF450 Platinum', 'SFX', '450 W', 110, 'USD'],
-    [6, 'Thermaltake Toughpower SFX 450w', 'SFX', '450 W', 85, 'USD'],
-    [7, 'Asus TUF GAMING 450B Bronze', 'ATX', '450 W', 60, 'USD'],
-    [8, 'Cougar GX-S450', 'ATX', '450 W', 55, 'USD'],
-    [9, 'Thermaltake Smart BM2 450W', 'ATX', '450 W', 58, 'USD'],
-    [10, 'be quiet! SFX L Power 500W', 'SFX-L', '500 W', 100, 'USD'],
-    [11, 'Fractal Design Ion SFX-L 500W', 'SFX-L', '500 W', 95, 'USD'],
-    [12, 'Seasonic Focus SGX 500W (2021)', 'SFX', '500 W', 105, 'USD'],
-    [13, 'Aerocool KCAS PLUS 500W', 'ATX', '500 W', 45, 'USD'],
-    [14, 'Deepcool DN500', 'ATX', '500 W', 50, 'USD'],
-    [15, 'Segotep SG-500AE', 'ATX', '500 W', 48, 'USD'],
-    [16, 'Chieftec COMPACT 550W', 'SFX', '550 W', 60, 'USD'],
-    [17, 'Cooler Master V550 SFX GOLD', 'SFX', '550 W', 110, 'USD'],
-    [18, 'EVGA SuperNOVA 550 GM', 'SFX', '550 W', 100, 'USD'],
-    [19, 'FSP DAGGER PRO 550w', 'SFX', '550 W', 95, 'USD'],
-    [20, 'Thermaltake Toughpower SFX 550w', 'SFX', '550 W', 90, 'USD'],
-    [21, 'Aerocool ECO 550w', 'ATX', '550 W', 40, 'USD'],
-    [22, 'Chieftec Powerplay Gold 550w', 'ATX', '550 W', 70, 'USD'],
-    [23, 'Cooler Master V550 SFX GOLD', 'SFX', '550 W', 110, 'USD'],
-    [24, 'Deepcool DN550', 'ATX', '550 W', 55, 'USD'],
-    [25, 'EVGA SuperNOVA 550 GM', 'SFX', '550 W', 100, 'USD'],
-    [26, 'Seasonic Focus GX-550', 'ATX', '550 W', 85, 'USD'],
-    [27, 'Thermaltake Toughpower GF 550w', 'ATX', '550 W', 75, 'USD'],
-    [28, 'be quiet! SFX L Power 600W', 'SFX-L', '600 W', 120, 'USD'],
-    [29, 'Corsair SF600 Gold', 'SFX', '600 W', 130, 'USD'],
-    [30, 'Corsair SF600 Platinum', 'SFX', '600 W', 150, 'USD'],
-    [31, 'Aerocool Cylon 600w', 'ATX', '600 W', 50, 'USD'],
-    [32, 'Cooler Master MWE 600 WHITE - V2', 'ATX', '600 W', 55, 'USD'],
-    [33, 'EVGA 600 BQ', 'ATX', '600 W', 60, 'USD'],
-    [34, 'Thermaltake TR2 S 600w', 'ATX', '600 W', 58, 'USD'],
-    [35, '1STPLAYER SFX PLATINUM 650w', 'SFX', '650 W', 140, 'USD'],
-    [36, 'Chieftec COMPACT 650W', 'SFX', '650 W', 70, 'USD'],
-    [37, 'Cooler Master V650 SFX GOLD', 'SFX', '650 W', 130, 'USD'],
-    [38, 'EVGA SuperNOVA 650 GM', 'SFX', '650 W', 120, 'USD'],
-    [39, 'Fractal Design Ion SFX-L 650W', 'SFX-L', '650 W', 125, 'USD'],
-    [40, 'FSP DAGGER PRO 650w', 'SFX', '650 W', 115, 'USD'],
-    [41, 'Seasonic Focus SGX 650W (2021)', 'SFX', '650 W', 135, 'USD'],
-    [42, 'Seasonic Focus SPX 650W (2021)', 'SFX', '650 W', 140, 'USD'],
-    [43, 'Thermaltake Toughpower SFX 650w', 'SFX', '650 W', 125, 'USD'],
-    [44, 'Aerocool AERO WHITE 650W', 'ATX', '650 W', 60, 'USD'],
-    [45, 'Asus TUF GAMING 650B Bronze', 'ATX', '650 W', 80, 'USD'],
-    [46, 'Chieftec Proton 650W', 'ATX', '650 W', 65, 'USD'],
-    [47, 'Cooler Master V650 Gold I Multi', 'ATX', '650 W', 100, 'USD'],
-    [48, 'Corsair RM650x', 'ATX', '650 W', 110, 'USD'],
-    [49, 'Cougar VTE X2 650', 'ATX', '650 W', 70, 'USD'],
-    [50, 'Deepcool PN650M', 'ATX', '650 W', 85, 'USD'],
-    [51, 'EVGA SuperNOVA 650 GA', 'ATX', '650 W', 90, 'USD'],
-    [52, 'FSP HYDRO G PRO 650w', 'ATX', '650 W', 95, 'USD'],
-    [53, 'Seasonic Focus GM-650', 'ATX', '650 W', 100, 'USD'],
-    [54, 'Super Flower Leadex Gold III 650W Rev.3', 'ATX', '650 W', 105,
-     'USD'],
-    [55, 'Thermaltake Smart PRO RGB 650w', 'ATX', '650 W', 85, 'USD'],
-    [56, 'Xilence Gaming Series XN320', 'ATX', '650 W', 75, 'USD'],
-    [57, 'Aerocool KCAS PLUS 700W', 'ATX', '700 W', 65, 'USD'],
-    [58, 'Deepcool DA700', 'ATX', '700 W', 70, 'USD'],
-    [59, 'Thermaltake Toughpower GX1 700w', 'ATX', '700 W', 90, 'USD'],
-    [60, '1STPLAYER SFX PLATINUM 750w', 'SFX', '750 W', 160, 'USD'],
-    [61, 'Asus ROG LOKI SFX-L 750 Platinum GAMING', 'SFX-L', '750 W', 180,
-     'USD'],
-    [62, 'Cooler Master V750 SFX GOLD', 'SFX', '750 W', 140, 'USD'],
-    [63, 'Corsair SF750 Platinum', 'SFX', '750 W', 170, 'USD'],
-    [64, 'EVGA SuperNOVA 750 GM', 'SFX', '750 W', 135, 'USD'],
-    [65, 'FSP DAGGER PRO 750w', 'SFX', '750 W', 130, 'USD'],
-    [66, 'Seasonic Focus SGX 750W (2021)', 'SFX', '750 W', 150, 'USD'],
-    [67, 'Seasonic Focus SPX 750W (2021)', 'SFX', '750 W', 155, 'USD'],
-    [68, 'Thermaltake Toughpower SFX 750w', 'SFX', '750 W', 145, 'USD'],
-    [69, 'Adata XPG KYBER 750', 'ATX', '750 W', 95, 'USD'],
-    [70, 'ARDOR GAMING ORIGIN 750WGF', 'ATX', '750 W', 85, 'USD'],
-    [71, 'be quiet! Pure Power 11 FM 750W', 'ATX', '750 W', 100, 'USD'],
-    [72, 'Chieftec Steelpower 750w', 'ATX', '750 W', 80, 'USD'],
-    [73, 'Corsair CV750', 'ATX', '750 W', 75, 'USD'],
-    [74, 'Corsair RM750x SHIFT', 'ATX', '750 W', 120, 'USD'],
-    [75, 'Cougar STX750', 'ATX', '750 W', 85, 'USD'],
-    [76, 'Deepcool PN750M', 'ATX', '750 W', 95, 'USD'],
-    [77, 'EVGA SuperNOVA 750 G7', 'ATX', '750 W', 110, 'USD'],
-    [78, 'FSP HYDRO G PRO 750w', 'ATX', '750 W', 105, 'USD'],
-    [79, 'MSI MPG A750G', 'ATX', '750 W', 130, 'USD'],
-    [80, 'Seasonic Focus SGX 750W (2021)', 'SFX', '750 W', 150, 'USD'],
-    [81, 'Silverstone DA750R Gold White', 'ATX', '750 W', 115, 'USD'],
-    [82, 'Thermaltake Smart BM2 750W', 'ATX', '750 W', 90, 'USD'],
-    [83, 'Thermaltake Toughpower GF3 750w', 'ATX', '750 W', 110, 'USD'],
-    [84, 'Xilence Perfomance X XN073 750w', 'ATX', '750 W', 85, 'USD'],
-    [85, 'Silverstone SX800-LTI', 'SFX-L', '800 W', 190, 'USD'],
-    [86, 'Cougar GX 800W', 'ATX', '800 W', 100, 'USD'],
-    [87, 'Asus ROG LOKI SFX-L 850 Platinum GAMING', 'SFX-L', '850 W', 200,
-     'USD'],
-    [88, 'Asus ROG LOKI SFX-L 850W Platinum White Edition', 'SFX-L', '850 W',
-     210, 'USD'],
-    [89, 'Cooler Master V850 SFX GOLD', 'SFX', '850 W', 150, 'USD'],
-    [90, 'Corsair SF850L', 'SFX-L', '850 W', 180, 'USD'],
-    [91, 'EVGA SuperNOVA 850 GM', 'SFX', '850 W', 145, 'USD'],
-    [92, 'FSP DAGGER PRO 850w', 'SFX', '850 W', 140, 'USD'],
-    [93, 'Silverstone Extreme 850R Platinum', 'SFX', '850 W', 200, 'USD'],
-    [94, 'Thermaltake Toughpower SFX 850w', 'SFX', '850 W', 160, 'USD'],
-    [95, 'Adata XPG CORE REACTOR 850', 'ATX', '850 W', 120, 'USD'],
-    [96, 'ARDOR GAMING ORIGIN 850WGF', 'ATX', '850 W', 100, 'USD'],
-    [97, 'be quiet! DARK POWER 12 850W', 'ATX', '850 W', 150, 'USD'],
-    [98, 'Chieftec PowerPlay Platinum 850w', 'ATX', '850 W', 130, 'USD'],
-    [99, 'Cooler Master XG850 PLUS', 'ATX', '850 W', 140, 'USD'],
-    [100, 'Cougar GEC 850', 'ATX', '850 W', 110, 'USD'],
-    [101, 'Deepcool PQ850G', 'ATX', '850 W', 125, 'USD'],
-    [102, 'EVGA SuperNOVA 850 G7', 'ATX', '850 W', 135, 'USD'],
-    [103, 'FSP HYDRO G PRO 850w', 'ATX', '850 W', 130, 'USD'],
-    [104, 'MSI MAG A850GL PCIE5 WHITE', 'ATX', '850 W', 145, 'USD'],
-    [105, 'Seasonic Focus PX-850', 'ATX', '850 W', 150, 'USD'],
-    [106, 'Silverstone Extreme 850R Platinum', 'SFX', '850 W', 200, 'USD'],
-    [107, 'Super Flower Leadex VI Platinum Pro 850W', 'ATX', '850 W', 140,
-     'USD'],
-    [108, 'Thermaltake Toughpower GF1 ARGB 850w', 'ATX', '850 W', 135, 'USD'],
-    [109, 'Thermaltake Toughpower SFX 850w', 'SFX', '850 W', 160, 'USD'],
-    [110, 'Asus ROG LOKI SFX-L 1000 Platinum GAMING', 'SFX-L', '1000 W', 230,
-     'USD'],
-    [111, 'Corsair SF1000L', 'SFX-L', '1000 W', 200, 'USD'],
-    [112, 'Silverstone SX1000 Platinum', 'SFX-L', '1000 W', 220, 'USD'],
-    [113, 'Silverstone SX1000R Platinum', 'SFX-L', '1000 W', 225, 'USD'],
-    [114, 'Thermaltake Toughpower SFX 1000w', 'SFX-L', '1000 W', 190, 'USD'],
-    [115, '1STPLAYER NGDP ATX 3.1 GOLD 1000W', 'ATX', '1000 W', 150, 'USD'],
-    [116, 'Asus ROG STRIX 1000 Gold Aura Edition', 'ATX', '1000 W', 180,
-     'USD'],
-    [117, 'be quiet! Straight power 12 1000W', 'ATX', '1000 W', 160, 'USD'],
-    [118, 'Corsair RM1000x SHIFT', 'ATX', '1000 W', 170, 'USD'],
-    [119, 'EVGA SuperNOVA 1000 G3 2018', 'ATX', '1000 W', 160, 'USD'],
-    [120, 'FSP HYDRO G PRO 1000w', 'ATX', '1000 W', 155, 'USD'],
-    [121, 'MSI MPG A1000G', 'ATX', '1000 W', 180, 'USD'],
-    [122, 'Seasonic Vertex GX-1000', 'ATX', '1000 W', 170, 'USD'],
-    [123, 'Super Flower Leadex V Gold Pro 1000W', 'ATX', '1000 W', 165, 'USD'],
-    [124, 'Zalman TeraMax 1000W', 'ATX', '1000 W', 150, 'USD'],
-    [125, 'Cougar POLAR 1050', 'ATX', '1050 W', 170, 'USD'],
-    [126, 'Xilence Perfomance X XN076 1050w', 'ATX', '1050 W', 160, 'USD'],
-    [127, 'Cooler Master V1100 SFX PLATINUM', 'SFX', '1100 W', 250, 'USD'],
-    [128, 'Asus ROG LOKI SFX-L 1200W Titanium', 'SFX-L', '1200 W', 300, 'USD'],
-    [129, 'be quiet! Straight Power 11 1200W Platinum', 'ATX', '1200 W', 200,
-     'USD'],
-    [130, 'Deepcool PX1200G WH', 'ATX', '1200 W', 190, 'USD'],
-    [131, 'Super Flower Leadex SE Platinum 1200W', 'ATX', '1200 W', 195,
-     'USD'],
-    [132, 'Thermaltake Toughpower PF3 1200W Platinum ATX 3.0', 'ATX', '1200 W',
-     210, 'USD'],
-    [133, 'Segotep GM1250W ATX 3.0', 'ATX', '1250 W', 180, 'USD'],
-    [134, 'Cooler Master V1300 SFX PLATINUM', 'SFX', '1300 W', 280, 'USD'],
-    [135, 'Cooler Master V1300 Platinum', 'ATX', '1300 W', 220, 'USD'],
-    [136, 'Seasonic Prime PX-1300', 'ATX', '1300 W', 230, 'USD'],
-    [137, 'Thermaltake Toughpower TF1 1550W', 'ATX', '1550 W', 250, 'USD'],
-    [138, 'Seasonic Prime PX-1600', 'ATX', '1600 W', 270, 'USD'],
-    [139, 'Cooler Master M2000 Platinum', 'ATX', '2000 W', 350, 'USD']
-]
+def get_info():
+    # Имя JSON-файла
+    json_file = "data_files/components_prices.json"
 
-from data import db_session
-from data.power_supplies import PowerSupplies
+    # Открываем и читаем JSON-файл
+    with open(json_file, "r", encoding="utf-8") as file:
+        # Загружаем JSON в словарь
+        PSUs_info = json.load(file)['components']['Блок питания']
+    return PSUs_info
 
-db_session.global_init("../../db/components.db")
 
-db_sess = db_session.create_session()
-for power_supplie in power_supplies:
-    powerSupplie = PowerSupplies()
-    powerSupplie.name = power_supplie[1]
-    powerSupplie.form_factor = power_supplie[2]
-    powerSupplie.power = int(power_supplie[3].split(' ')[0])
-    powerSupplie.price = power_supplie[4]
-    powerSupplie.currency = power_supplie[5]
-    db_sess.add(powerSupplie)
-db_sess.commit()
+def filling_db(PSUs_info):
+    # удаляем старые данные
+    con = sqlite3.connect("../../db/components.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM power_supplies")
+    con.commit()
+    con.close()
 
-db_sess = db_session.create_session()
-current_powerSupplies = db_sess.query(PowerSupplies).all()
+    db_session.global_init("../../db/components.db")
 
-for current_powerSupplie in current_powerSupplies:
-    print(current_powerSupplie.name)
+    db_sess = db_session.create_session()
+    for PSU_info in PSUs_info:
+        power, *other = PSU_info[0].split()
+        power = int(power[:-1])
+
+        PSU = PowerSupplies()
+        PSU.name = PSU_info[0]
+        PSU.power = power
+        PSU.price_in_rubles = PSU_info[1]
+
+        db_sess.add(PSU)
+    db_sess.commit()
+
+    db_sess = db_session.create_session()
+    PSUs = db_sess.query(PowerSupplies).all()
+
+    for PSU in PSUs:
+        print(PSU.name)
+
+
+PSUs_info = get_info()
+
+filling_db(PSUs_info)

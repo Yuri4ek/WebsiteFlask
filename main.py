@@ -32,14 +32,14 @@ def home(component):
         return set_cookies()
 
     # Если cookie и component есть, обновляем данные
-    '''if component:
+    if component:
         component_type, component_name = component.split(':')
         if (component_type == 'cooling_systems' or component_type == 'motherboards' or
                 component_type == 'processors' or component_type == 'ram_modules' or
                 component_type == 'videocards'):
             return update_cookies(component_type, component_name)
         return update_cookie('configuration_data', component_type,
-                             component_name)'''
+                             component_name)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
@@ -89,24 +89,24 @@ def choose_videocards():
 def show_components_table(component_type):
     component_class = components_types[component_type]
 
-    # все компоненты
-    db_sess = db_session.create_session()
-    components = db_sess.query(component_class).all()
-
-    if (component_type == 'processors' or component_type == 'cooling_systems'
-            or component_type == 'motherboards'):
-        current_sockets, sockets_db = get_sockets()
-        for component in components:
-            component.socket_id = current_sockets[component.socket_id]
-    if component_type == 'ram_modules' or component_type == 'motherboards':
-        current_memory_types, memory_types_db = get_memory_types()
-        for component in components:
-            component.memory_type_id = current_memory_types[
-                component.memory_type_id]
-
     # название колонн
     inspector = inspect(component_class)
     columns = [column.name for column in inspector.mapper.columns]
+
+    # все компоненты
+    db_sess = db_session.create_session()
+    components = [el.get() for el in db_sess.query(component_class).all()]
+
+    if component_type == 'processors' or component_type == 'motherboards':
+        current_sockets = list(get_sockets().keys())
+        i = columns.index("socket_id")
+        for component in components:
+            component[i] = current_sockets[int(component[i]) - 1] if component[i] else None
+    if component_type == 'ram_modules' or component_type == 'motherboards' or component_type == 'processors':
+        i = columns.index("memory_type_id")
+        current_memory_types = list(get_memory_types().keys())
+        for component in components:
+            component[i] = current_memory_types[int(component[i]) - 1] if component[i] else None
 
     return render_template('components_table.html',
                            keys=columns,
@@ -163,7 +163,7 @@ def authorization():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(
             (User.nickname == form.nickname_email.data) | (
-                        User.email == form.nickname_email.data)).first()
+                    User.email == form.nickname_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=True)
             return redirect("/")

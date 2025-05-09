@@ -1,27 +1,17 @@
-from data.db_imports import *
-
-db_session.global_init("db/components.db")
+import json
 
 
 def get_sockets():
-    db_sess = db_session.create_session()
+    # берем сокеты
+    with open('data/filling_db/data_files/sockets.json', "r", encoding="utf-8") as file:
+        sockets = json.load(file)
 
-    sockets_db = db_sess.query(Sockets).all()
-    current_sockets = {}
-    for socket in sockets_db:
-        current_sockets[socket.id] = socket.name
-    current_sockets[None] = "Неизвестно"
-
-    return current_sockets, sockets_db
+    return sockets
 
 
 def get_memory_types():
-    db_sess = db_session.create_session()
+    # берем типы памяти
+    with open('data/filling_db/data_files/memory_types.json', "r", encoding="utf-8") as file:
+        memory_types = json.load(file)
 
-    memory_types_db = db_sess.query(MemoryTypes).all()
-    current_memory_types = {}
-    for memory_type in memory_types_db:
-        current_memory_types[memory_type.id] = memory_type.name
-    current_memory_types[None] = "Неизвестно"
-
-    return current_memory_types, memory_types_db
+    return memory_types

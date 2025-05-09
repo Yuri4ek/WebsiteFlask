@@ -22,6 +22,6 @@ class MotherBoards(SqlAlchemyBase):
     memory_type = orm.relationship("MemoryTypes")
 
     def get(self):
-        return (self.id, self.name, self.socket_id, self.chipset, self.memory_type_id,
+        return [self.id, self.name, self.socket_id, self.chipset, self.memory_type_id,
                 self.memory_slots, self.memory_max, self.m2_quantity, self.pcie_type,
-                self.form_factor, self.price_in_rubles)
+                self.form_factor, self.price_in_rubles]

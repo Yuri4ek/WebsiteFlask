@@ -17,4 +17,4 @@ class RamModules(SqlAlchemyBase):
     memory_type = orm.relationship("MemoryTypes")
 
     def get(self):
-        return self.id, self.name, self.capacity_gb, self.frequency, self.memory_type_id, self.price_in_rubles
+        return [self.id, self.name, self.capacity_gb, self.frequency, self.memory_type_id, self.price_in_rubles]

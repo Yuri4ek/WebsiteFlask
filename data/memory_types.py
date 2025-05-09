@@ -13,4 +13,4 @@ class MemoryTypes(SqlAlchemyBase):
     motherboards = orm.relationship("Processors", back_populates="memory_type")
 
     def get(self):
-        return self.id, self.name
+        return [self.id, self.name]

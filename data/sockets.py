@@ -13,4 +13,4 @@ class Sockets(SqlAlchemyBase):
     processors = orm.relationship("Processors", back_populates="socket")
 
     def get(self):
-        return self.id, self.name
+        return [self.id, self.name]

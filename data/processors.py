@@ -24,6 +24,6 @@ class Processors(SqlAlchemyBase):
     memory_type = orm.relationship("MemoryTypes")
 
     def get(self):
-        return (self.id, self.name, self.release_year, self.socket_id, self.cores, self.threads,
+        return [self.id, self.name, self.release_year, self.socket_id, self.cores, self.threads,
                 self.processor_frequency, self.tdp, self.memory_type_id, self.memory_frequency,
-                self.pcie_type, self.price_in_rubles)
+                self.pcie_type, self.price_in_rubles]

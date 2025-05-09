@@ -12,4 +12,4 @@ class PowerSupplies(SqlAlchemyBase):
     price_in_rubles = sqlalchemy.Column(sqlalchemy.Integer)
 
     def get(self):
-        return self.id, self.name, self.power, self.price_in_rubles
+        return [self.id, self.name, self.power, self.price_in_rubles]

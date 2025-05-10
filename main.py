@@ -46,6 +46,8 @@ def home(component):
         else:
             component_info = component_info[0].get()[1:]
 
+        if component_type == "air_coolers" or component_type == "water_coolers":
+            component_type = "cooling_systems"
         return update_cookie(component_type, component_info)
 
     # если нет никаких изменений

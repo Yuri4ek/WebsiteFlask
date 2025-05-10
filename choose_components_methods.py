@@ -22,9 +22,14 @@ def computer_cases():
 
 
 def air_coolers():
+    current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(AirCoolers).all()
+    if current_configuration_data['processors'] != ['не выбран']:
+        tdp = current_configuration_data['processors'][6]
+        components = db_sess.query(AirCoolers).filter(AirCoolers.tdp >= tdp).all()
+    else:
+        components = db_sess.query(AirCoolers).all()
 
     displaying_components = []
     # делаем системы охлаждения читабельнее
@@ -36,14 +41,19 @@ def air_coolers():
                                       f'Отвод тепла: {tdp} Ватт'))
 
     return render_template('search_components.html',
-                           component_type='cooling_systems', components=displaying_components,
+                           component_type='air_coolers', components=displaying_components,
                            component_image='/static/images/air_cooler.webp')
 
 
 def water_coolers():
+    current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(WaterCoolers).all()
+    if current_configuration_data['processors'] != ['не выбран']:
+        tdp = current_configuration_data['processors'][6]
+        components = db_sess.query(WaterCoolers).filter(WaterCoolers.tdp >= tdp).all()
+    else:
+        components = db_sess.query(WaterCoolers).all()
 
     displaying_components = []
     # делаем системы охлаждения читабельнее
@@ -55,7 +65,7 @@ def water_coolers():
                                       f'Отвод тепла: {tdp} Ватт'))
 
     return render_template('search_components.html',
-                           component_type='cooling_systems', components=displaying_components,
+                           component_type='water_coolers', components=displaying_components,
                            component_image='/static/images/water_cooler.webp')
 
 
@@ -70,35 +80,51 @@ def motherboards():
     # все компоненты
     db_sess = db_session.create_session()
     if current_configuration_data['processors'] != ['не выбран']:
-        processor_name = current_configuration_data['processors'][0]
         socket_id = current_configuration_data['processors'][2]
         memory_type_id = current_configuration_data['processors'][7]
         if isinstance(memory_type_id, list):
             components = db_sess.query(MotherBoards).filter(
-                or_(
-                    and_(
-                        MotherBoards.socket_id == socket_id,
-                        MotherBoards.memory_type_id == memory_type_id[0],
-                        MotherBoards.price_in_rubles != 0
-                    ),
-                    and_(
-                        MotherBoards.socket_id == socket_id,
-                        MotherBoards.memory_type_id == memory_type_id[1],
-                        MotherBoards.price_in_rubles != 0
-                    )
+                and_(
+                    or_(MotherBoards.memory_type_id == memory_type_id[0],
+                        MotherBoards.memory_type_id == memory_type_id[1]),
+                    MotherBoards.socket_id == socket_id,
+                    MotherBoards.price_in_rubles != 0
                 )
             ).all()
+
+            if len(components) == 0:
+                components = db_sess.query(MotherBoards).filter(
+                    and_(
+                        or_(MotherBoards.memory_type_id == memory_type_id[0],
+                            MotherBoards.memory_type_id == memory_type_id[1]),
+                        MotherBoards.socket_id == socket_id
+                    )
+                ).all()
         else:
             components = db_sess.query(MotherBoards).filter(
-                MotherBoards.socket_id == socket_id, MotherBoards.memory_type_id == memory_type_id,
-                MotherBoards.price_in_rubles != 0).all()
+                MotherBoards.socket_id == socket_id,
+                MotherBoards.memory_type_id == memory_type_id,
+                MotherBoards.price_in_rubles != 0
+            ).all()
+
+            if len(components) == 0:
+                components = db_sess.query(MotherBoards).filter(
+                    MotherBoards.socket_id == socket_id,
+                    MotherBoards.memory_type_id == memory_type_id
+                ).all()
     elif current_configuration_data['ram_modules'] != ['не выбран']:
+        RAM_name = current_configuration_data['ram_modules'][0]
+        memory_slots = get_memory_slots(RAM_name)
         memory_type_id = current_configuration_data['ram_modules'][3]
         components = db_sess.query(MotherBoards).filter(
-            MotherBoards.memory_type_id == memory_type_id, MotherBoards.price_in_rubles != 0).all()
+            MotherBoards.memory_type_id == memory_type_id,
+            MotherBoards.memory_slots >= memory_slots,
+            MotherBoards.price_in_rubles != 0).all()
+
         if len(components) == 0:
             components = db_sess.query(MotherBoards).filter(
-                MotherBoards.memory_type_id == memory_type_id).all()
+                MotherBoards.memory_type_id == memory_type_id,
+                MotherBoards.memory_slots >= memory_slots).all()
     else:
         components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
 
@@ -108,9 +134,8 @@ def motherboards():
         id, name, socket_id, chipset, memory_type_id, \
             memory_slots, memory_max, m2_quantity, pcie_type, \
             form_factor, price_in_rubles = component.get()
-        socket = current_sockets[int(socket_id) - 1] if socket_id else 'Неизвестно'
-        memory_type = current_memory_types[
-            int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
+        socket = current_sockets[socket_id - 1] if socket_id else 'Неизвестно'
+        memory_type = current_memory_types[memory_type_id - 1] if memory_type_id else 'Неизвестно'
 
         displaying_components.append((name,
                                       f'Цена: {price_in_rubles} Рублей' if price_in_rubles
@@ -131,9 +156,16 @@ def motherboards():
 
 
 def power_supplies():
+    current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(PowerSupplies).all()
+    tdp = 0
+    if current_configuration_data['processors'] != ['не выбран']:
+        tdp += current_configuration_data['processors'][6]
+    if current_configuration_data['videocards'] != ['не выбран']:
+        tdp += current_configuration_data['videocards'][1]
+    tdp *= 1.3
+    components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= tdp).all()
 
     displaying_components = []
     # делаем БП читабельнее
@@ -150,15 +182,62 @@ def power_supplies():
 
 
 def processors():
-    # все компоненты
-    db_sess = db_session.create_session()
-    components = db_sess.query(Processors).filter(Processors.price_in_rubles != 0).all()
-
     # достаем сокеты для процессоров
     current_sockets = get_sockets()
 
     # достаем типы памяти для процессоров
     current_memory_types = get_memory_types()
+
+    current_configuration_data = get_cookie()
+    # все компоненты
+    db_sess = db_session.create_session()
+    if current_configuration_data['motherboards'] != ['не выбран']:
+        socket_id = current_configuration_data['motherboards'][1]
+        memory_type_id = current_configuration_data['motherboards'][3]
+        components = db_sess.query(Processors).filter(
+            Processors.socket_id == socket_id,
+            Processors.memory_type_id == memory_type_id,
+            Processors.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.socket_id == socket_id,
+                Processors.memory_type_id == memory_type_id
+            ).all()
+    elif current_configuration_data['ram_modules'] != ['не выбран']:
+        memory_type_id = current_configuration_data['ram_modules'][3]
+        components = db_sess.query(Processors).filter(
+            Processors.memory_type_id == memory_type_id, Processors.price_in_rubles != 0).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.memory_type_id == memory_type_id).all()
+    elif current_configuration_data['cooling_systems'] != ['не выбран']:
+        tdp = current_configuration_data['cooling_systems'][1]
+        components = db_sess.query(Processors).filter(
+            Processors.tdp <= tdp,
+            Processors.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.tdp <= tdp
+            ).all()
+    elif current_configuration_data['power_supplies'] != ['не выбран']:
+        power = current_configuration_data['power_supplies'][1]
+        max_processor_tdp = power // 2.5
+        components = db_sess.query(Processors).filter(
+            Processors.tdp <= max_processor_tdp,
+            Processors.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.tdp <= max_processor_tdp
+            ).all()
+    else:
+        components = db_sess.query(Processors).filter(Processors.price_in_rubles != 0).all()
 
     displaying_components = []
     # делаем процессоры читабельнее
@@ -188,12 +267,41 @@ def processors():
 
 
 def ram_modules():
-    # все компоненты
-    db_sess = db_session.create_session()
-    components = db_sess.query(RamModules).all()
+    # флаг для проверки кол-во модулей памяти
+    memory_slots_flag = False
 
     # достаем типы памяти для оперативной памяти
     current_memory_types = get_memory_types()
+
+    current_configuration_data = get_cookie()
+    # все компоненты
+    db_sess = db_session.create_session()
+    if current_configuration_data['motherboards'] != ['не выбран']:
+        memory_slots_flag = True
+
+        memory_type_id = current_configuration_data['motherboards'][3]
+        components = db_sess.query(RamModules).filter(
+            RamModules.memory_type_id == memory_type_id,
+            RamModules.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(RamModules).filter(
+                RamModules.memory_type_id == memory_type_id
+            ).all()
+    elif current_configuration_data['processors'] != ['не выбран']:
+        memory_type_id = current_configuration_data['processors'][7]
+        components = db_sess.query(RamModules).filter(
+            RamModules.memory_type_id == memory_type_id,
+            RamModules.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(RamModules).filter(
+                RamModules.memory_type_id == memory_type_id
+            ).all()
+    else:
+        components = db_sess.query(RamModules).all()
 
     displaying_components = []
     # делаем оперативную память читабельнее
@@ -201,6 +309,10 @@ def ram_modules():
         id, name, capacity_gb, frequency, memory_type_id, price_in_rubles = component.get()
         memory_type = current_memory_types[
             int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
+        if memory_slots_flag:
+            memory_slots = get_memory_slots(name)
+            if memory_slots > current_configuration_data['motherboards'][4]:
+                continue
 
         displaying_components.append((name,
                                       f'Цена: {price_in_rubles} Рублей',
@@ -254,9 +366,23 @@ def hdds():
 
 
 def videocards():
+    current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(Videocards).filter(Videocards.price_in_rubles != 0).all()
+    if current_configuration_data['power_supplies'] != ['не выбран']:
+        power = current_configuration_data['power_supplies'][1]
+        max_videocard_tdp = power // 2.5
+        components = db_sess.query(Videocards).filter(
+            Videocards.tdp <= max_videocard_tdp,
+            Videocards.price_in_rubles != 0
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Videocards).filter(
+                Videocards.tdp <= max_videocard_tdp
+            ).all()
+    else:
+        components = db_sess.query(Videocards).filter(Videocards.price_in_rubles != 0).all()
 
     displaying_components = []
     # делаем видеокарты читабельнее

@@ -79,8 +79,12 @@ def choose_power_supplies():
     return power_supplies()
 
 
-@app.route('/choose_components/processors')
+@app.route('/choose_components/processors/')
 def choose_processors():
+    # Получаем параметр filters из query string
+    filters = request.args.get('filters', None)
+    print(filters)
+
     return processors()
 
 

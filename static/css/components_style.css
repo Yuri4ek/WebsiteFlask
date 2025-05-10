@@ -60,6 +60,22 @@ body {
     border-radius: 4px;
     font-size: 14px;
 }
+.price-button {
+    width: 60%;
+    position: center;
+    background-color: #555;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+}
+.price-button:hover {
+    background-color: #666;
+}
 
 .right-section {
     display: flex;

@@ -9,76 +9,60 @@
         <!-- Динамические фильтры в зависимости от категории -->
         {% if component_type == "processors" %}
             <h4>Сокет</h4>
-            <select name="socket">
+            <select name="socket" onchange="applyFilters()">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket }}>{{ socket }}</option>
+                <option value="{{ socket }}">{{ socket }}</option>
                 {% endfor %}
             </select>
             <h4>Тип памяти</h4>
-            <select name="memory_type">
+            <select name="memory_type" onchange="applyFilters()">
                 <option value="">Любой</option>
                 {% for memory_type in memory_types %}
-                <option value={{ memory_type }}>{{ memory_type }}</option>
+                <option value="{{ memory_type }}">{{ memory_type }}</option>
                 {% endfor %}
-            </select>
-            <h4>Сортировка по мощности</h4>
-            <select name="power_sort">
-                <option value="asc">По возрастанию</option>
-                <option value="desc">По убыванию</option>
-            </select>
-        {% elif component_type == "videocards" %}
-            <h4>Сортировка по мощности</h4>
-            <select name="power_sort">
-                <option value="asc">По возрастанию</option>
-                <option value="desc">По убыванию</option>
             </select>
         {% elif component_type == "motherboards" %}
             <h4>Сокет</h4>
-            <select name="socket">
+            <select name="socket" onchange="applyFilters()">
                 <option value="">Любой</option>
                 {% for socket in sockets %}
-                <option value={{ socket }}>{{ socket }}</option>
+                <option value="{{ socket }}">{{ socket }}</option>
                 {% endfor %}
             </select>
             <h4>Тип памяти</h4>
-            <select name="memory_type">
+            <select name="memory_type" onchange="applyFilters()">
                 <option value="">Любой</option>
                 {% for memory_type in memory_types %}
-                <option value={{ memory_type }}>{{ memory_type }}</option>
+                <option value="{{ memory_type }}">{{ memory_type }}</option>
                 {% endfor %}
             </select>
             <h4>Поддержка m2</h4>
-            <select name="m2_support">
+            <select name="m2_support" onchange="applyFilters()">
                 <option value="">Любой</option>
                 <option value="yes">Есть</option>
-                <option value="no">нет</option>
+                <option value="no">Нет</option>
             </select>
         {% elif component_type == "ram_modules" %}
             <h4>Тип памяти</h4>
-            <select name="memory_type">
+            <select name="memory_type" onchange="applyFilters()">
                 <option value="">Любой</option>
                 {% for memory_type in memory_types %}
-                <option value={{ memory_type }}>{{ memory_type }}</option>
+                <option value="{{ memory_type }}">{{ memory_type }}</option>
                 {% endfor %}
-            </select>
-        {% elif component_type == "power_supplies" %}
-            <h4>Сортировка по мощности</h4>
-            <select name="power_sort">
-                <option value="asc">По возрастанию</option>
-                <option value="desc">По убыванию</option>
             </select>
         {% endif %}
 
         <h4>Цена</h4>
         <div class="price-range">
             <div class="price-input">
-                <input type="number" name="price_from"  placeholder="От">
+                <input type="number" name="price_from" placeholder="От" oninput="updatePriceFilter()">
             </div>
             <div class="price-input">
-                <input type="number" name="price_to" placeholder="До">
+                <input type="number" name="price_to" placeholder="До" oninput="updatePriceFilter()">
             </div>
         </div>
+        <a class="price-button" onclick="applyFilters()">Показать с ценами</a>
     </div>
     <div class="right-section">
         <div class="search-bar">
@@ -103,4 +87,47 @@
         </div>
     </div>
 </div>
+
+<script>
+let priceFrom = '';
+let priceTo = '';
+
+function updatePriceFilter() {
+    priceFrom = document.querySelector('input[name="price_from"]').value;
+    priceTo = document.querySelector('input[name="price_to"]').value;
+}
+
+function applyFilters() {
+    const filters = [];
+
+    // Собираем значения фильтров
+    const selects = document.querySelectorAll('.filters select');
+    selects.forEach(select => {
+        const filterType = select.name;
+        const filterValue = select.value;
+        if (filterValue && filterValue !== '') {
+            filters.push(`${filterType}:${filterValue}`);
+        }
+    });
+
+    // Добавляем фильтры по цене, если они заданы
+    if (priceFrom && priceFrom !== '') {
+        filters.push(`price_from:${priceFrom}`);
+    }
+    if (priceTo && priceTo !== '') {
+        filters.push(`price_to:${priceTo}`);
+    }
+
+    // Формируем URL
+    const componentType = '{{ component_type }}';
+    let url = `/choose_components/${componentType}`;
+    if (filters.length > 0) {
+        url += `?filters=${filters.join(',')}`;
+    }
+
+    // Перенаправляем на сформированный URL
+    window.location.href = url;
+}
+</script>
+
 {% endblock %}

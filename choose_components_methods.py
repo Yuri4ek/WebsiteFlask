@@ -59,15 +59,26 @@ def water_coolers():
 
 
 def motherboards():
-    # все компоненты
-    db_sess = db_session.create_session()
-    components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
-
     # достаем сокеты для материнских плат
     current_sockets = get_sockets()
 
     # достаем типы памяти для материнских плат
     current_memory_types = get_memory_types()
+
+    current_configuration_data = get_cookie()
+    # все компоненты
+    db_sess = db_session.create_session()
+    if current_configuration_data['processors'] != ['не выбран']:
+        components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
+    elif current_configuration_data['ram_modules'] != ['не выбран']:
+        memory_type_id = current_configuration_data['ram_modules'][3]
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.memory_type_id == memory_type_id, MotherBoards.price_in_rubles != 0).all()
+        if len(components) == 0:
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.memory_type_id == memory_type_id).all()
+    else:
+        components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
 
     displaying_components = []
     # делаем материнские платы читабельнее
@@ -80,7 +91,8 @@ def motherboards():
             int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
 
         displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
+                                      f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                      else 'Цена неизвестна',
                                       f'Сокет: {socket}',
                                       f'Тип памяти: {memory_type}',
                                       f'Кол-во слотов для ОЗУ: {memory_slots}',
@@ -136,7 +148,8 @@ def processors():
             int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
 
         displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
+                                      f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                      else 'Цена неизвестна',
                                       f'Год выпуска: {release_year}',
                                       f'Сокет: {socket}',
                                       f'Ядра / Потоки: {cores} / {threads}',
@@ -229,7 +242,8 @@ def videocards():
         id, name, tdp, release_year, memory_capacity, pcie_type, price_in_rubles = component.get()
 
         displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
+                                      f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                      else 'Цена неизвестна',
                                       f'Год выпуска: {release_year}',
                                       f'Объём видеопамяти: {memory_capacity} Гигабайт',
                                       f'Тип pcie: {pcie_type}',

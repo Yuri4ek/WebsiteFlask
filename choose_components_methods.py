@@ -1,5 +1,6 @@
 from db_methods import *
 from cookie_functions import *
+from sqlalchemy import and_, or_
 
 
 def computer_cases():
@@ -69,7 +70,28 @@ def motherboards():
     # все компоненты
     db_sess = db_session.create_session()
     if current_configuration_data['processors'] != ['не выбран']:
-        components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
+        processor_name = current_configuration_data['processors'][0]
+        socket_id = current_configuration_data['processors'][2]
+        memory_type_id = current_configuration_data['processors'][7]
+        if isinstance(memory_type_id, list):
+            components = db_sess.query(MotherBoards).filter(
+                or_(
+                    and_(
+                        MotherBoards.socket_id == socket_id,
+                        MotherBoards.memory_type_id == memory_type_id[0],
+                        MotherBoards.price_in_rubles != 0
+                    ),
+                    and_(
+                        MotherBoards.socket_id == socket_id,
+                        MotherBoards.memory_type_id == memory_type_id[1],
+                        MotherBoards.price_in_rubles != 0
+                    )
+                )
+            ).all()
+        else:
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.socket_id == socket_id, MotherBoards.memory_type_id == memory_type_id,
+                MotherBoards.price_in_rubles != 0).all()
     elif current_configuration_data['ram_modules'] != ['не выбран']:
         memory_type_id = current_configuration_data['ram_modules'][3]
         components = db_sess.query(MotherBoards).filter(

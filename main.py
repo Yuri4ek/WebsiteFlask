@@ -9,7 +9,9 @@ from forms.register import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'configuration_site_secret_key'
+
 db_session.global_init("db/components.db")
+db_sess = db_session.create_session()
 
 # Временно (на удаление)
 user = {
@@ -34,7 +36,17 @@ def home(component):
     # Если cookie и component есть, обновляем данные
     if component:
         component_type, component_name = component.split(':')
-        return update_cookie(component_type, component_name)
+
+        component_class = components_types[component_type]
+        # данные компонента
+        component_info = db_sess.query(component_class).filter(
+            component_class.name == component_name).all()
+        if len(component_info) > 1:
+            component_info = [component.get()[1:] for component in component_info]
+        else:
+            component_info = component_info[0].get()[1:]
+
+        return update_cookie(component_type, component_info)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
@@ -99,7 +111,6 @@ def show_components_table(component_type):
     columns = [column.name for column in inspector.mapper.columns]
 
     # все компоненты
-    db_sess = db_session.create_session()
     components = [el.get() for el in db_sess.query(component_class).all()]
 
     if component_type == 'processors' or component_type == 'motherboards':
@@ -248,8 +259,13 @@ def add_comment(forum_id):
     return redirect(url_for('forum_detail', forum_id=forum_id))"""
 
 
+@app.get("/print_cookie")
+def print_cookie():
+    return get_cookie()
+
+
 @app.get("/clear_cookie")
-def clear_cookie():
+def clear_cookie_handler():
     return clear_cookie()
 
 

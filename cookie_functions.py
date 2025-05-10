@@ -52,10 +52,19 @@ def get_cookie():
 
 # Изменение JSON в cookie
 def update_cookie(key, value):
-    data = get_cookie('configuration_data')
+    data = get_cookie()
     if data:
         # Изменяем данные
-        data[key] = value
+        if isinstance(value[0], list):
+            new_value = []
+            for i in range(len(value[0])):
+                if value[0][i] == value[1][i]:
+                    new_value.append(value[0][i])
+                else:
+                    new_value.append((value[0][i], value[1][i]))
+            data[key] = new_value
+        else:
+            data[key] = value
 
         # Преобразуем обратно в строку
         updated_json = json.dumps(data)

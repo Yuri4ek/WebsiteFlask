@@ -102,8 +102,12 @@ def choose_motherboards():
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "socket" in filters or "memory_type" in filters or "m2_support" in filters:
+            filter_type, filter_value = filters.split(':')
+            return motherboards_with_filter(price_from, price_to, filter_type, filter_value)
 
     return motherboards(price_from, price_to)
+
 
 @app.route('/choose_components/power_supplies')
 def choose_power_supplies():
@@ -127,6 +131,9 @@ def choose_processors():
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "socket" in filters or "memory_type" in filters:
+            filter_type, filter_value = filters.split(':')
+            return processors_with_filter(price_from, price_to, filter_type, filter_value)
 
     return processors(price_from, price_to)
 
@@ -140,6 +147,9 @@ def choose_ram_modules():
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "memory_type" in filters:
+            filter_type, filter_value = filters.split(':')
+            return ram_modules_with_filter(price_from, price_to, filter_type, filter_value)
 
     return ram_modules(price_from, price_to)
 

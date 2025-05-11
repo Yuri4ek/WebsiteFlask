@@ -146,6 +146,82 @@ def motherboards(price_from, price_to):
                                                         MotherBoards.price_in_rubles >= price_from,
                                                         MotherBoards.price_in_rubles <= price_to).all()
 
+    displaying_components = get_displaying_motherboards(components, current_sockets,
+                                                        current_memory_types)
+
+    return render_template('search_components.html',
+                           component_type='motherboards',
+                           components=displaying_components,
+                           component_image='/static/images/motherboard.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
+
+
+def motherboards_with_filter(price_from, price_to, filter_type, filter_value):
+    # достаем сокеты для материнских плат
+    current_sockets = get_sockets()
+
+    # достаем типы памяти для материнских плат
+    current_memory_types = get_memory_types()
+
+    # все компоненты
+    db_sess = db_session.create_session()
+    if filter_type == "socket":
+        socket_id = current_sockets.index(filter_value) + 1
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.socket_id == socket_id,
+            MotherBoards.price_in_rubles != 0,
+            MotherBoards.price_in_rubles >= price_from,
+            MotherBoards.price_in_rubles <= price_to
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.socket_id == socket_id,
+            ).all()
+    elif filter_type == "memory_type":
+        memory_type_id = current_memory_types.index(filter_value) + 1
+        components = db_sess.query(MotherBoards).filter(
+            MotherBoards.memory_type_id == memory_type_id,
+            MotherBoards.price_in_rubles != 0,
+            MotherBoards.price_in_rubles >= price_from,
+            MotherBoards.price_in_rubles <= price_to).all()
+
+        if len(components) == 0:
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.memory_type_id == memory_type_id).all()
+    elif filter_type == "m2_support":
+        if filter_value == "True":
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.m2_quantity > 0,
+                MotherBoards.price_in_rubles != 0,
+                MotherBoards.price_in_rubles >= price_from,
+                MotherBoards.price_in_rubles <= price_to).all()
+
+            if len(components) == 0:
+                components = db_sess.query(MotherBoards).filter(
+                    MotherBoards.m2_quantity > 0).all()
+        else:
+            components = db_sess.query(MotherBoards).filter(
+                MotherBoards.m2_quantity == 0,
+                MotherBoards.price_in_rubles != 0,
+                MotherBoards.price_in_rubles >= price_from,
+                MotherBoards.price_in_rubles <= price_to).all()
+
+            if len(components) == 0:
+                components = db_sess.query(MotherBoards).filter(
+                    MotherBoards.m2_quantity == 0).all()
+
+    displaying_components = get_displaying_motherboards(components, current_sockets,
+                                                        current_memory_types)
+
+    return render_template('search_components.html',
+                           component_type='motherboards',
+                           components=displaying_components,
+                           component_image='/static/images/motherboard.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
+
+
+def get_displaying_motherboards(components, current_sockets, current_memory_types):
     displaying_components = []
     # делаем материнские платы читабельнее
     for component in components:
@@ -165,12 +241,7 @@ def motherboards(price_from, price_to):
                                       f'Кол-во слотов m2: {m2_quantity}',
                                       f'Тип pcie: {pcie_type}',
                                       f'Форм-фактор: {form_factor}'))
-
-    return render_template('search_components.html',
-                           component_type='motherboards',
-                           components=displaying_components,
-                           component_image='/static/images/motherboard.webp',
-                           sockets=current_sockets, memory_types=current_memory_types)
+    return displaying_components
 
 
 def power_supplies(price_from, price_to):
@@ -269,6 +340,59 @@ def processors(price_from, price_to):
                                                       Processors.price_in_rubles >= price_from,
                                                       Processors.price_in_rubles <= price_to).all()
 
+    displaying_components = get_displaying_processors(components, current_sockets,
+                                                      current_memory_types)
+
+    return render_template('search_components.html',
+                           component_type='processors', components=displaying_components,
+                           component_image='/static/images/processor.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
+
+
+def processors_with_filter(price_from, price_to, filter_type, filter_value):
+    # достаем сокеты для процессоров
+    current_sockets = get_sockets()
+
+    # достаем типы памяти для процессоров
+    current_memory_types = get_memory_types()
+
+    # все компоненты
+    db_sess = db_session.create_session()
+    if filter_type == "socket":
+        socket_id = current_sockets.index(filter_value) + 1
+        components = db_sess.query(Processors).filter(
+            Processors.socket_id == socket_id,
+            Processors.price_in_rubles != 0,
+            Processors.price_in_rubles >= price_from,
+            Processors.price_in_rubles <= price_to
+        ).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.socket_id == socket_id,
+            ).all()
+    elif filter_type == "memory_type":
+        memory_type_id = current_memory_types.index(filter_value) + 1
+        components = db_sess.query(Processors).filter(
+            Processors.memory_type_id == memory_type_id,
+            Processors.price_in_rubles != 0,
+            Processors.price_in_rubles >= price_from,
+            Processors.price_in_rubles <= price_to).all()
+
+        if len(components) == 0:
+            components = db_sess.query(Processors).filter(
+                Processors.memory_type_id == memory_type_id).all()
+
+    displaying_components = get_displaying_processors(components, current_sockets,
+                                                      current_memory_types)
+
+    return render_template('search_components.html',
+                           component_type='processors', components=displaying_components,
+                           component_image='/static/images/processor.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
+
+
+def get_displaying_processors(components, current_sockets, current_memory_types):
     displaying_components = []
     # делаем процессоры читабельнее
     for component in components:
@@ -289,11 +413,7 @@ def processors(price_from, price_to):
                                       f'Максимальная частота памяти: {memory_frequency} Мегагерц',
                                       f'Тип pcie: {pcie_type}',
                                       f'Потребление: {tdp} Ватт'))
-
-    return render_template('search_components.html',
-                           component_type='processors', components=displaying_components,
-                           component_image='/static/images/processor.webp',
-                           sockets=current_sockets, memory_types=current_memory_types)
+    return displaying_components
 
 
 def ram_modules(price_from, price_to):
@@ -339,6 +459,48 @@ def ram_modules(price_from, price_to):
             RamModules.price_in_rubles >= price_from,
             RamModules.price_in_rubles <= price_to).all()
 
+    displaying_components = get_displaying_ram_modules(components, current_memory_types,
+                                                       memory_slots_flag,
+                                                       current_configuration_data)
+
+    return render_template('search_components.html',
+                           component_type='ram_modules', components=displaying_components,
+                           component_image='/static/images/ram_module.webp',
+                           memory_types=current_memory_types)
+
+
+def ram_modules_with_filter(price_from, price_to, filter_type, filter_value):
+    # флаг для проверки кол-во модулей памяти
+    memory_slots_flag = False
+
+    # достаем типы памяти для оперативной памяти
+    current_memory_types = get_memory_types()
+
+    # все компоненты
+    db_sess = db_session.create_session()
+    if filter_type == "memory_type":
+        memory_type_id = current_memory_types.index(filter_value) + 1
+        components = db_sess.query(RamModules).filter(
+            RamModules.memory_type_id == memory_type_id,
+            RamModules.price_in_rubles != 0,
+            RamModules.price_in_rubles >= price_from,
+            RamModules.price_in_rubles <= price_to).all()
+
+        if len(components) == 0:
+            components = db_sess.query(RamModules).filter(
+                RamModules.memory_type_id == memory_type_id).all()
+
+    displaying_components = get_displaying_ram_modules(components, current_memory_types,
+                                                       memory_slots_flag,
+                                                       current_configuration_data=[])
+    return render_template('search_components.html',
+                           component_type='ram_modules', components=displaying_components,
+                           component_image='/static/images/ram_module.webp',
+                           memory_types=current_memory_types)
+
+
+def get_displaying_ram_modules(components, current_memory_types, memory_slots_flag,
+                               current_configuration_data):
     displaying_components = []
     # делаем оперативную память читабельнее
     for component in components:
@@ -355,11 +517,7 @@ def ram_modules(price_from, price_to):
                                       f'Тип памяти: {memory_type}',
                                       f'Объём памяти: {capacity_gb} Гигабайт',
                                       f'Частота памяти: {frequency} Мегагерц'))
-
-    return render_template('search_components.html',
-                           component_type='ram_modules', components=displaying_components,
-                           component_image='/static/images/ram_module.webp',
-                           memory_types=current_memory_types)
+    return displaying_components
 
 
 def ssds(price_from, price_to):

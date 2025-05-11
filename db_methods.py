@@ -55,5 +55,4 @@ def get_price_limit(filters):
     else:
         price_from = 0
         price_to = 1000000
-    print(price_from, price_to)
     return price_from, price_to

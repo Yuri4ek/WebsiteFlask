@@ -84,6 +84,7 @@ body {
 }
 
 .search-bar {
+    position: relative;
     padding: 5px 10px;
     background-color: #ddd;
     border-bottom: 1px solid #ccc;
@@ -92,6 +93,21 @@ body {
     border-radius: 8px;
     margin: 10px 10px 10px 0;
     height: 50px;
+}
+.search-preview {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #f9f9f9;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 10;
+    display: none;
+}
+.search-preview.show {
+    display: block;
 }
 .search-bar input {
     flex: 1;
@@ -164,3 +180,4 @@ body {
 .component-button:hover {
     background-color: #777;
 }
+

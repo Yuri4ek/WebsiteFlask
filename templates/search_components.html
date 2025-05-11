@@ -3,6 +3,8 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/components_style.css">
 
+
+
 <div class="container">
     <div class="filters">
         <h3>Фильтры</h3>
@@ -69,13 +71,14 @@
     </div>
     <div class="right-section">
         <div class="search-bar">
-            <input type="text" placeholder="Поиск комплектующих...">
-            <button>Поиск</button>
+            <input type="text" name="search_query" placeholder="Поиск комплектующих..." oninput="showSearchPreview()">
+            <div class="search-preview" id="searchPreview"></div>
+            <button onclick="applySearch()">Поиск</button>
         </div>
         <div class="components">
             {% if components == [] %}
                 <h4>К сожалению нету комплектующих под ваши запросы(</h4>
-                <h4>Если вы просто собирали конфигурацию без использовании фильтров, то значит к выбранному вами компоненту нету подходящих(</h4>
+                <h4>Если вы просто собирали конфигурацию без использования фильтров, то значит к выбранному вами компоненту нету подходящих(</h4>
                 <h4>Очистите выбор и выбирайте дальше)</h4>
                 <h4>А если вы использовали фильтры, то под эти фильтры нету комплектующих(</h4>
             {% endif %}
@@ -106,8 +109,22 @@ function updatePriceFilter() {
     priceTo = document.querySelector('input[name="price_to"]').value;
 }
 
+function showSearchPreview() {
+    const searchInput = document.querySelector('input[name="search_query"]').value;
+    const preview = document.getElementById('searchPreview');
+
+    if (searchInput && searchInput.trim() !== '') {
+        preview.textContent = 'При работе с поиском не работает проверка на совместимость';
+        preview.classList.add('show');
+    } else {
+        preview.textContent = 'При работе с поиском не работает проверка на совместимость';
+        preview.classList.remove('show');
+    }
+}
+
 function applyFilters() {
     const filters = [];
+    const searchQuery = document.querySelector('input[name="search_query"]').value;
 
     // Собираем значения фильтров
     const selects = document.querySelectorAll('.filters select');
@@ -127,6 +144,11 @@ function applyFilters() {
         filters.push(`price_to:${priceTo}`);
     }
 
+    // Добавляем поисковый запрос, если он задан
+    if (searchQuery && searchQuery !== '') {
+        filters.push(`search:${encodeURIComponent(searchQuery)}`);
+    }
+
     // Формируем URL
     const componentType = '{{ component_type }}';
     let url = `/choose_components/${componentType}`;
@@ -136,6 +158,10 @@ function applyFilters() {
 
     // Перенаправляем на сформированный URL
     window.location.href = url;
+}
+
+function applySearch() {
+    applyFilters();
 }
 </script>
 

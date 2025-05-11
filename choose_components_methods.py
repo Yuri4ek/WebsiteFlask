@@ -249,10 +249,11 @@ def power_supplies(price_from, price_to):
     # все компоненты
     db_sess = db_session.create_session()
     tdp = 0
-    if current_configuration_data['processors'] != ['не выбран']:
-        tdp += current_configuration_data['processors'][6] * 1.3
     if current_configuration_data['videocards'] != ['не выбран']:
-        tdp += current_configuration_data['videocards'][1] * 1.5
+        tdp += current_configuration_data['videocards'][1] * 1.6
+    elif current_configuration_data['processors'] != ['не выбран']:
+        tdp += current_configuration_data['processors'][6] * 2
+    tdp += 40
     components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= tdp,
                                                      PowerSupplies.price_in_rubles >= price_from,
                                                      PowerSupplies.price_in_rubles <= price_to).all()
@@ -569,7 +570,10 @@ def videocards(price_from, price_to):
     db_sess = db_session.create_session()
     if current_configuration_data['power_supplies'] != ['не выбран']:
         power = current_configuration_data['power_supplies'][1]
-        max_videocard_tdp = power // 1.7
+        if power >= 900:
+            max_videocard_tdp = power // 1.7
+        else:
+            max_videocard_tdp = power // 2
         components = db_sess.query(Videocards).filter(
             Videocards.tdp <= max_videocard_tdp,
             Videocards.price_in_rubles != 0,

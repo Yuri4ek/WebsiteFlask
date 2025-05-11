@@ -126,16 +126,6 @@ function applyFilters() {
     const filters = [];
     const searchQuery = document.querySelector('input[name="search_query"]').value;
 
-    // Собираем значения фильтров
-    const selects = document.querySelectorAll('.filters select');
-    selects.forEach(select => {
-        const filterType = select.name;
-        const filterValue = select.value;
-        if (filterValue && filterValue !== '') {
-            filters.push(`${filterType}:${filterValue}`);
-        }
-    });
-
     // Добавляем фильтры по цене, если они заданы
     if (priceFrom && priceFrom !== '') {
         filters.push(`price_from:${priceFrom}`);
@@ -148,6 +138,16 @@ function applyFilters() {
     if (searchQuery && searchQuery !== '') {
         filters.push(`search:${encodeURIComponent(searchQuery)}`);
     }
+
+    // Собираем значения фильтров
+    const selects = document.querySelectorAll('.filters select');
+    selects.forEach(select => {
+        const filterType = select.name;
+        const filterValue = select.value;
+        if (filterValue && filterValue !== '') {
+            filters.push(`${filterType}:${filterValue}`);
+        }
+    });
 
     // Формируем URL
     const componentType = '{{ component_type }}';

@@ -22,6 +22,7 @@
                 <option value="{{ memory_type }}">{{ memory_type }}</option>
                 {% endfor %}
             </select>
+            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
         {% elif component_type == "motherboards" %}
             <h4>Сокет</h4>
             <select name="socket" onchange="applyFilters()">
@@ -40,9 +41,10 @@
             <h4>Поддержка m2</h4>
             <select name="m2_support" onchange="applyFilters()">
                 <option value="">Любой</option>
-                <option value="yes">Есть</option>
-                <option value="no">Нет</option>
+                <option value="True">Есть</option>
+                <option value="False">Нет</option>
             </select>
+            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
         {% elif component_type == "ram_modules" %}
             <h4>Тип памяти</h4>
             <select name="memory_type" onchange="applyFilters()">
@@ -51,6 +53,7 @@
                 <option value="{{ memory_type }}">{{ memory_type }}</option>
                 {% endfor %}
             </select>
+            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
         {% endif %}
 
         <h4>Цена</h4>

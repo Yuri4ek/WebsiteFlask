@@ -3,10 +3,12 @@ from cookie_functions import *
 from sqlalchemy import and_, or_
 
 
-def computer_cases():
+def computer_cases(price_from, price_to):
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(ComputerCases).all()
+    components = db_sess.query(ComputerCases).filter(
+        ComputerCases.price_in_rubles >= price_from,
+        ComputerCases.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем корпуса читабельнее
@@ -21,15 +23,19 @@ def computer_cases():
                            component_image='/static/images/computer_case.webp')
 
 
-def air_coolers():
+def air_coolers(price_from, price_to):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
     if current_configuration_data['processors'] != ['не выбран']:
         tdp = current_configuration_data['processors'][6]
-        components = db_sess.query(AirCoolers).filter(AirCoolers.tdp >= tdp).all()
+        components = db_sess.query(AirCoolers).filter(AirCoolers.tdp >= tdp,
+                                                      AirCoolers.price_in_rubles >= price_from,
+                                                      AirCoolers.price_in_rubles <= price_to).all()
     else:
-        components = db_sess.query(AirCoolers).all()
+        components = db_sess.query(AirCoolers).filter(
+            AirCoolers.price_in_rubles >= price_from,
+            AirCoolers.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем системы охлаждения читабельнее
@@ -45,15 +51,19 @@ def air_coolers():
                            component_image='/static/images/air_cooler.webp')
 
 
-def water_coolers():
+def water_coolers(price_from, price_to):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
     if current_configuration_data['processors'] != ['не выбран']:
         tdp = current_configuration_data['processors'][6]
-        components = db_sess.query(WaterCoolers).filter(WaterCoolers.tdp >= tdp).all()
+        components = db_sess.query(WaterCoolers).filter(WaterCoolers.tdp >= tdp,
+                                                        WaterCoolers.price_in_rubles >= price_from,
+                                                        WaterCoolers.price_in_rubles <= price_to).all()
     else:
-        components = db_sess.query(WaterCoolers).all()
+        components = db_sess.query(WaterCoolers).filter(
+            WaterCoolers.price_in_rubles >= price_from,
+            WaterCoolers.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем системы охлаждения читабельнее
@@ -69,7 +79,7 @@ def water_coolers():
                            component_image='/static/images/water_cooler.webp')
 
 
-def motherboards():
+def motherboards(price_from, price_to):
     # достаем сокеты для материнских плат
     current_sockets = get_sockets()
 
@@ -88,7 +98,9 @@ def motherboards():
                     or_(MotherBoards.memory_type_id == memory_type_id[0],
                         MotherBoards.memory_type_id == memory_type_id[1]),
                     MotherBoards.socket_id == socket_id,
-                    MotherBoards.price_in_rubles != 0
+                    MotherBoards.price_in_rubles != 0,
+                    MotherBoards.price_in_rubles >= price_from,
+                    MotherBoards.price_in_rubles <= price_to
                 )
             ).all()
 
@@ -104,7 +116,9 @@ def motherboards():
             components = db_sess.query(MotherBoards).filter(
                 MotherBoards.socket_id == socket_id,
                 MotherBoards.memory_type_id == memory_type_id,
-                MotherBoards.price_in_rubles != 0
+                MotherBoards.price_in_rubles != 0,
+                MotherBoards.price_in_rubles >= price_from,
+                MotherBoards.price_in_rubles <= price_to
             ).all()
 
             if len(components) == 0:
@@ -119,14 +133,18 @@ def motherboards():
         components = db_sess.query(MotherBoards).filter(
             MotherBoards.memory_type_id == memory_type_id,
             MotherBoards.memory_slots >= memory_slots,
-            MotherBoards.price_in_rubles != 0).all()
+            MotherBoards.price_in_rubles != 0,
+            MotherBoards.price_in_rubles >= price_from,
+            MotherBoards.price_in_rubles <= price_to).all()
 
         if len(components) == 0:
             components = db_sess.query(MotherBoards).filter(
                 MotherBoards.memory_type_id == memory_type_id,
                 MotherBoards.memory_slots >= memory_slots).all()
     else:
-        components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0).all()
+        components = db_sess.query(MotherBoards).filter(MotherBoards.price_in_rubles != 0,
+                                                        MotherBoards.price_in_rubles >= price_from,
+                                                        MotherBoards.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем материнские платы читабельнее
@@ -155,17 +173,21 @@ def motherboards():
                            sockets=current_sockets, memory_types=current_memory_types)
 
 
-def power_supplies():
+def power_supplies(price_from, price_to):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
     tdp = 0
     if current_configuration_data['processors'] != ['не выбран']:
-        tdp += current_configuration_data['processors'][6]
+        tdp += current_configuration_data['processors'][6] * 1.3
     if current_configuration_data['videocards'] != ['не выбран']:
-        tdp += current_configuration_data['videocards'][1]
-    tdp *= 1.3
-    components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= tdp).all()
+        tdp += current_configuration_data['videocards'][1] * 1.5
+    components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= tdp,
+                                                     PowerSupplies.price_in_rubles >= price_from,
+                                                     PowerSupplies.price_in_rubles <= price_to).all()
+
+    if len(components) == 0:
+        components = db_sess.query(PowerSupplies).filter(PowerSupplies.power >= tdp).all()
 
     displaying_components = []
     # делаем БП читабельнее
@@ -181,7 +203,7 @@ def power_supplies():
                            component_image='/static/images/power_supplie.webp')
 
 
-def processors():
+def processors(price_from, price_to):
     # достаем сокеты для процессоров
     current_sockets = get_sockets()
 
@@ -197,7 +219,9 @@ def processors():
         components = db_sess.query(Processors).filter(
             Processors.socket_id == socket_id,
             Processors.memory_type_id == memory_type_id,
-            Processors.price_in_rubles != 0
+            Processors.price_in_rubles != 0,
+            Processors.price_in_rubles >= price_from,
+            Processors.price_in_rubles <= price_to
         ).all()
 
         if len(components) == 0:
@@ -208,7 +232,9 @@ def processors():
     elif current_configuration_data['ram_modules'] != ['не выбран']:
         memory_type_id = current_configuration_data['ram_modules'][3]
         components = db_sess.query(Processors).filter(
-            Processors.memory_type_id == memory_type_id, Processors.price_in_rubles != 0).all()
+            Processors.memory_type_id == memory_type_id, Processors.price_in_rubles != 0,
+            Processors.price_in_rubles >= price_from,
+            Processors.price_in_rubles <= price_to).all()
 
         if len(components) == 0:
             components = db_sess.query(Processors).filter(
@@ -229,7 +255,9 @@ def processors():
         max_processor_tdp = power // 2.5
         components = db_sess.query(Processors).filter(
             Processors.tdp <= max_processor_tdp,
-            Processors.price_in_rubles != 0
+            Processors.price_in_rubles != 0,
+            Processors.price_in_rubles >= price_from,
+            Processors.price_in_rubles <= price_to
         ).all()
 
         if len(components) == 0:
@@ -237,7 +265,9 @@ def processors():
                 Processors.tdp <= max_processor_tdp
             ).all()
     else:
-        components = db_sess.query(Processors).filter(Processors.price_in_rubles != 0).all()
+        components = db_sess.query(Processors).filter(Processors.price_in_rubles != 0,
+                                                      Processors.price_in_rubles >= price_from,
+                                                      Processors.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем процессоры читабельнее
@@ -266,7 +296,7 @@ def processors():
                            sockets=current_sockets, memory_types=current_memory_types)
 
 
-def ram_modules():
+def ram_modules(price_from, price_to):
     # флаг для проверки кол-во модулей памяти
     memory_slots_flag = False
 
@@ -282,7 +312,9 @@ def ram_modules():
         memory_type_id = current_configuration_data['motherboards'][3]
         components = db_sess.query(RamModules).filter(
             RamModules.memory_type_id == memory_type_id,
-            RamModules.price_in_rubles != 0
+            RamModules.price_in_rubles != 0,
+            RamModules.price_in_rubles >= price_from,
+            RamModules.price_in_rubles <= price_to
         ).all()
 
         if len(components) == 0:
@@ -293,7 +325,9 @@ def ram_modules():
         memory_type_id = current_configuration_data['processors'][7]
         components = db_sess.query(RamModules).filter(
             RamModules.memory_type_id == memory_type_id,
-            RamModules.price_in_rubles != 0
+            RamModules.price_in_rubles != 0,
+            RamModules.price_in_rubles >= price_from,
+            RamModules.price_in_rubles <= price_to
         ).all()
 
         if len(components) == 0:
@@ -301,7 +335,9 @@ def ram_modules():
                 RamModules.memory_type_id == memory_type_id
             ).all()
     else:
-        components = db_sess.query(RamModules).all()
+        components = db_sess.query(RamModules).filter(
+            RamModules.price_in_rubles >= price_from,
+            RamModules.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем оперативную память читабельнее
@@ -326,10 +362,12 @@ def ram_modules():
                            memory_types=current_memory_types)
 
 
-def ssds():
+def ssds(price_from, price_to):
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(SSDs).all()
+    components = db_sess.query(SSDs).filter(
+        SSDs.price_in_rubles >= price_from,
+        SSDs.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем накопители читабельнее
@@ -346,10 +384,12 @@ def ssds():
                            component_image='/static/images/SSD.webp')
 
 
-def hdds():
+def hdds(price_from, price_to):
     # все компоненты
     db_sess = db_session.create_session()
-    components = db_sess.query(HDDs).all()
+    components = db_sess.query(HDDs).filter(
+        HDDs.price_in_rubles >= price_from,
+        HDDs.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем накопители читабельнее
@@ -365,16 +405,18 @@ def hdds():
                            component_image='/static/images/HDD.webp')
 
 
-def videocards():
+def videocards(price_from, price_to):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
     if current_configuration_data['power_supplies'] != ['не выбран']:
         power = current_configuration_data['power_supplies'][1]
-        max_videocard_tdp = power // 2.5
+        max_videocard_tdp = power // 1.7
         components = db_sess.query(Videocards).filter(
             Videocards.tdp <= max_videocard_tdp,
-            Videocards.price_in_rubles != 0
+            Videocards.price_in_rubles != 0,
+            Videocards.price_in_rubles >= price_from,
+            Videocards.price_in_rubles <= price_to
         ).all()
 
         if len(components) == 0:
@@ -382,7 +424,9 @@ def videocards():
                 Videocards.tdp <= max_videocard_tdp
             ).all()
     else:
-        components = db_sess.query(Videocards).filter(Videocards.price_in_rubles != 0).all()
+        components = db_sess.query(Videocards).filter(Videocards.price_in_rubles != 0,
+                                                      Videocards.price_in_rubles >= price_from,
+                                                      Videocards.price_in_rubles <= price_to).all()
 
     displaying_components = []
     # делаем видеокарты читабельнее

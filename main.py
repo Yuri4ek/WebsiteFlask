@@ -56,56 +56,131 @@ def home(component):
 
 @app.route('/choose_components/computer_cases')
 def choose_computer_cases():
-    return computer_cases()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return computer_cases(price_from, price_to)
 
 
 @app.route('/choose_components/air_coolers')
 def choose_air_coolers():
-    return air_coolers()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return air_coolers(price_from, price_to)
 
 
 @app.route('/choose_components/water_coolers')
 def choose_water_coolers():
-    return water_coolers()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return water_coolers(price_from, price_to)
 
 
 @app.route('/choose_components/motherboards')
 def choose_motherboards():
-    return motherboards()
+    price_from = 0
+    price_to = 1000000
 
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return motherboards(price_from, price_to)
 
 @app.route('/choose_components/power_supplies')
 def choose_power_supplies():
-    return power_supplies()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return power_supplies(price_from, price_to)
 
 
 @app.route('/choose_components/processors/')
 def choose_processors():
-    # Получаем параметр filters из query string
-    filters = request.args.get('filters', None)
-    print(filters)
+    price_from = 0
+    price_to = 1000000
 
-    return processors()
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return processors(price_from, price_to)
 
 
 @app.route('/choose_components/ram_modules')
 def choose_ram_modules():
-    return ram_modules()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return ram_modules(price_from, price_to)
 
 
 @app.route('/choose_components/SSDs')
 def choose_SSDs():
-    return ssds()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return SSDs(price_from, price_to)
 
 
 @app.route('/choose_components/HDDs')
 def choose_HDDs():
-    return hdds()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return HDDs(price_from, price_to)
 
 
 @app.route('/choose_components/videocards')
 def choose_videocards():
-    return videocards()
+    price_from = 0
+    price_to = 1000000
+
+    # Получаем фильтры (параметр filters из query string)
+    filters = request.args.get('filters', None)
+    if filters:
+        price_from, price_to = get_price_limit(filters)
+
+    return videocards(price_from, price_to)
 
 
 @app.route('/components/<component_type>')

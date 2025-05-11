@@ -39,3 +39,21 @@ def get_processor_line(processor_name):
     else:
         processor_line = None
     return processor_line
+
+
+def get_price_limit(filters):
+    filters_list = filters.split(',')
+    if "price_from" in filters and "price_to" in filters:
+        price_from = int(filters_list[0].split(':')[1])
+        price_to = int(filters_list[1].split(':')[1])
+    elif "price_from" in filters:
+        price_from = int(filters_list[0].split(':')[1])
+        price_to = 1000000
+    elif "price_to" in filters:
+        price_from = 0
+        price_to = int(filters_list[0].split(':')[1])
+    else:
+        price_from = 0
+        price_to = 1000000
+    print(price_from, price_to)
+    return price_from, price_to

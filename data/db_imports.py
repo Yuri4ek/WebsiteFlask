@@ -26,6 +26,6 @@ components_types = {'computer_cases': ComputerCases,
                     'processors': Processors,
                     'ram_modules': RamModules,
                     'sockets': Sockets,
-                    'HHDs': HDDs,
+                    'HDDs': HDDs,
                     'SSDs': SSDs,
                     'videocards': Videocards}

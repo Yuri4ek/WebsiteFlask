@@ -48,10 +48,38 @@ def home(component):
 
         if component_type == "air_coolers" or component_type == "water_coolers":
             component_type = "cooling_systems"
+        elif component_type == "SSDs" or component_type == "HDDs":
+            component_type = "storage_devices"
         return update_cookie(component_type, component_info)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
+
+
+@app.route('/build')
+def build():
+    data = get_cookie()
+
+    # первый - Регард, второй - ДНС, третий - Авито
+    displaying_data = [dict(), dict(), dict()]
+    for component_type in data.keys():
+        name = data[component_type][0]
+        if name == "не выбран":
+            return render_template('main.html', selected_component=data)
+        if component_type == "ram_modules":
+            name = ' '.join(name.split()[:4])
+        elif component_type == "computer_cases" or component_type == "power_supplies":
+            name = ' '.join(name.split()[:3])
+        price_in_rubles = data[component_type][-1]
+
+        displaying_data[0][component_type] = [name, price_in_rubles]
+        displaying_data[1][component_type] = [name, price_in_rubles]
+        displaying_data[2][component_type] = avito_price(name,
+                                                         component_type,
+                                                         price_in_rubles,
+                                                         data[component_type])
+
+    return render_template('build.html', data=displaying_data)
 
 
 @app.route('/choose_components/computer_cases')

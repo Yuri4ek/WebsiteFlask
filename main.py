@@ -33,22 +33,26 @@ def home(component):
 
     # Если cookie и component есть, обновляем данные
     if component:
-        component_type, component_name = component.split(':')
+        try:
+            component_type, component_name = component.split(':')
 
-        component_class = components_types[component_type]
-        # данные компонента
-        component_info = db_sess.query(component_class).filter(
-            component_class.name == component_name).all()
-        if len(component_info) > 1:
-            component_info = [component.get()[1:] for component in component_info]
-        else:
-            component_info = component_info[0].get()[1:]
+            component_class = components_types[component_type]
+            # данные компонента
+            component_info = db_sess.query(component_class).filter(
+                component_class.name == component_name).all()
+            if len(component_info) > 1:
+                component_info = [component.get()[1:] for component in
+                                  component_info]
+            else:
+                component_info = component_info[0].get()[1:]
 
-        if component_type == "air_coolers" or component_type == "water_coolers":
-            component_type = "cooling_systems"
-        elif component_type == "SSDs" or component_type == "HDDs":
-            component_type = "storage_devices"
-        return update_cookie(component_type, component_info)
+            if component_type == "air_coolers" or component_type == "water_coolers":
+                component_type = "cooling_systems"
+            elif component_type == "SSDs" or component_type == "HDDs":
+                component_type = "storage_devices"
+            return update_cookie(component_type, component_info)
+        except:
+            pass
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
@@ -78,6 +82,63 @@ def build():
                                                          data[component_type])
 
     return render_template('build.html', data=displaying_data)
+
+
+@app.route('/builds')
+def show_builds():
+    db_sess = db_session.create_session()
+
+    # пользователи
+    users = db_sess.query(User).all()
+
+    users_names = []
+    users_id = []
+    for user in users:
+        users_names.append(user.nickname)
+        users_id.append(user.id)
+    print(users_names)
+    print(users_id)
+
+    # конфигурации
+    configurations = db_sess.query(Configuration).all()
+
+    displaying_configurations = []
+    for configuration in configurations:
+        user_name = "Неизвестный"
+        for user_id in users_id:
+            if configuration.user_id == user_id:
+                user_name = users_names[users_id.index(user_id)]
+        title = configuration.title
+        price = 0
+        components = configuration.components
+        for component_type in components.keys():
+            price += components[component_type][-1]
+        image_path = configuration.image_path
+
+        displaying_configurations.append(
+            (user_name, title, price, components, image_path))
+
+    return render_template('builds.html',
+                           configurations=displaying_configurations)
+
+
+@app.route('/publish_configuration')
+def publish_configuration():
+    configuration_name = request.args.get('name', None)
+    data = get_cookie()
+
+    if current_user.is_authenticated:
+        db_sess = db_session.create_session()
+        configuration = Configuration()
+        configuration.title = configuration_name
+        configuration.image_path = "static/images/computer_case.webp"
+        configuration.components = data
+        configuration.user_id = current_user.id
+        db_sess.add(configuration)
+        db_sess.commit()
+        return redirect("/builds")
+
+    return render_template('main.html', selected_component=data)
 
 
 @app.route('/choose_components/computer_cases')
@@ -143,7 +204,8 @@ def choose_motherboards():
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return motherboards_with_filter(price_from, price_to, filter_type, filter_value)
+            return motherboards_with_filter(price_from, price_to, filter_type,
+                                            filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
@@ -181,7 +243,8 @@ def choose_processors():
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return processors_with_filter(price_from, price_to, filter_type, filter_value)
+            return processors_with_filter(price_from, price_to, filter_type,
+                                          filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
@@ -203,7 +266,8 @@ def choose_ram_modules():
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return ram_modules_with_filter(price_from, price_to, filter_type, filter_value)
+            return ram_modules_with_filter(price_from, price_to, filter_type,
+                                           filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
@@ -273,21 +337,18 @@ def show_components_table(component_type):
         current_sockets = get_sockets()
         i = columns.index("socket_id")
         for component in components:
-            component[i] = current_sockets[int(component[i]) - 1] if component[i] else None
+            component[i] = current_sockets[int(component[i]) - 1] if component[
+                i] else None
     if component_type == 'ram_modules' or component_type == 'motherboards' or component_type == 'processors':
         i = columns.index("memory_type_id")
         current_memory_types = get_memory_types()
         for component in components:
-            component[i] = current_memory_types[int(component[i]) - 1] if component[i] else None
+            component[i] = current_memory_types[int(component[i]) - 1] if \
+                component[i] else None
 
     return render_template('components_table.html',
                            keys=columns,
                            components=components)
-
-
-@app.route('/builds')
-def show_builds():
-    return render_template('builds.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -381,7 +442,8 @@ def new_forum_post():
                 title=form.title.data,
                 content=form.content.data
             )
-            current_user.forums.append(forum)  # Предполагается, что связь установлена
+            current_user.forums.append(
+                forum)  # Предполагается, что связь установлена
             db_sess.merge(current_user)
             db_sess.commit()  # Сохраняем изменения в базе данных
             return redirect('/forums')

@@ -14,4 +14,3 @@ from . import motherboards
 from . import user
 from . import configuration
 from . import forum
-from . import comment

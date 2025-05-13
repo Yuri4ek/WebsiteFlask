@@ -15,7 +15,6 @@ from data.videocards import Videocards
 from data.user import User
 from data.configuration import Configuration
 from data.forum import Forum
-from data.comment import Comment
 
 components_types = {'computer_cases': ComputerCases,
                     'air_coolers': AirCoolers,

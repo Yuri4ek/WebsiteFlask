@@ -6,13 +6,13 @@ from data.db_session import SqlAlchemyBase
 
 
 class User(SqlAlchemyBase, UserMixin):
-    __tablename__ = 'users'  # Была ошибка: должно быть tablename
+    __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     nickname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     configuration = orm.relationship("Configuration", back_populates='user')
-    forums = orm.relationship("Forum", back_populates='user')  # Добавлено!
+    forums = orm.relationship("Forum", back_populates='user')
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

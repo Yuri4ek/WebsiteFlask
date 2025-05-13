@@ -470,20 +470,6 @@ def edit_profile():
     return render_template('edit_profile.html', user=user)
 
 
-""" # Обработчик для добавления комментария
-@app.route('/forum/<int:forum_id>/comment', methods=['POST'])
-def add_comment(forum_id):
-    db_sess = db_session.create_session()
-    forum = db_sess.query(Forum).get(forum_id)
-    if forum is None:
-        return "Форум не найден", 404
-    content = request.form['content']
-    new_comment = Comment(content=content, forum_id=forum_id)
-    db_sess.add(new_comment)
-    db_sess.commit()  # Сохраняем изменения в базе данных
-    return redirect(url_for('forum_detail', forum_id=forum_id))"""
-
-
 @app.get("/print_cookie")
 def print_cookie():
     return get_cookie()

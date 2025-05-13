@@ -13,13 +13,14 @@
         <h1>Профиль пользователя</h1>
 
         <div class="profile-field">
-            <strong>Имя:</strong> {{ user.name }}
+            <strong>nickname:</strong> {{ user.nickname }}
         </div>
 
         <div class="profile-field">
             <strong>Email:</strong> {{ user.email }}
         </div>
-        <a href="{{ url_for('edit_profile') }}">Редактировать профиль</a>
+        <a href="/edit_profile" class="btn">Редактировать профиль</a>
+        <a href="/logout" class="btn"> Выйти</a>
     </div>
 </body>
 </html>

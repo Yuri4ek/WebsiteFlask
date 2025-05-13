@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
+from wtforms.fields.simple import PasswordField
 from wtforms.validators import DataRequired, Email
 
 
 class EditProfileForm(FlaskForm):
-    name = StringField('Имя', validators=[DataRequired()])
+    nickname = StringField('Nickname', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    city = StringField('Город')
-    bio = TextAreaField('О себе')
+    password = PasswordField('Пароль', validators=[DataRequired()])
     submit = SubmitField('Сохранить изменения')

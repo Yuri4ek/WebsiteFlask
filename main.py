@@ -6,18 +6,13 @@ from flask_login import (LoginManager, login_user, login_required, logout_user,
                          current_user)
 from forms.login import LoginForm
 from forms.register import RegisterForm
+from forms.profile import EditProfileForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'configuration_site_secret_key'
 
 db_session.global_init("db/components.db")
 db_sess = db_session.create_session()
-
-# Временно (на удаление)
-user = {
-    'name': 'Иван Иванов',
-    'email': 'ivan@example.com'
-}
 
 
 @app.route('/', defaults={'component': None})
@@ -391,18 +386,26 @@ def new_forum_post():
 # пробная версия профиля
 @app.route('/profile')
 def profile():
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == current_user.id).one()
     return render_template('profile.html', user=user)
 
-@app.route('/profile/edit', methods=['GET', 'POST'])
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
+    form = EditProfileForm()
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == current_user.id).one()
     if request.method == 'POST':
         # Обработка отправленной формы
-        user['name'] = request.form['name']
-        user['email'] = request.form['email']
-        return redirect(url_for('profile')) # Перенаправление на страницу профиля
+        print(user.nickname, 'vfdbdsgs')
+        user.nickname = form.nickname.data
+        user.email = form.email.data
+        user.password = form.password.data
+        db_sess.commit()
+        return redirect('/profile')  # Перенаправление на страницу профиля
 
     return render_template('edit_profile.html', user=user)
-
 
 
 """ # Обработчик для добавления комментария

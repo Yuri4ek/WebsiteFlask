@@ -109,3 +109,90 @@ button[type="submit"]:hover {
         margin: 15px 0;
     }
 }
+/* Добавляем стили для кнопок .btn в profile.css */
+.btn-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #555;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    flex: 1; /* Равномерно распределяет пространство между кнопками */
+}
+
+.btn:hover {
+    background-color: #666;
+}
+
+/* Остальные существующие стили оставляем без изменений */
+.profile-container, .form-container {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.profile-container h1, .form-container h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.profile-field {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.profile-field strong {
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.profile-field span {
+    color: #333;
+    font-size: 1em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container, .form-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .profile-field, .form-group {
+        margin: 15px 0;
+    }
+
+    .btn {
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

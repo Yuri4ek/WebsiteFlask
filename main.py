@@ -15,8 +15,10 @@ db_sess = db_session.create_session()
 
 # Временно (на удаление)
 user = {
-    'name': 'John Doe',
-    'email': 'john.doe@example.com'
+    'name': 'Иван Иванов',
+    'email': 'ivan@example.com',
+    'registration_date': '2023-10-26',
+    'bio': 'Увлекаюсь Python и Flask.'
 }
 
 
@@ -46,149 +48,216 @@ def home(component):
 
         if component_type == "air_coolers" or component_type == "water_coolers":
             component_type = "cooling_systems"
+        elif component_type == "SSDs" or component_type == "HHDs":
+            component_type = "storage_devices"
         return update_cookie(component_type, component_info)
 
     # если нет никаких изменений
     return render_template('main.html', selected_component=data)
 
 
+@app.route('/build')
+def build():
+    data = get_cookie()
+
+    # первый - Регард, второй - ДНС, третий - Авито
+    displaying_data = [dict(), dict(), dict()]
+    for component_type in data.keys():
+        name = data[component_type][0]
+        if name == "не выбран":
+            return render_template('main.html', selected_component=data)
+        if component_type == "ram_modules":
+            name = ' '.join(name.split()[:4])
+        elif component_type == "computer_cases" or component_type == "power_supplies":
+            name = ' '.join(name.split()[:3])
+        price_in_rubles = data[component_type][-1]
+
+        displaying_data[0][component_type] = [name, price_in_rubles]
+        displaying_data[1][component_type] = [name, price_in_rubles]
+        displaying_data[2][component_type] = avito_price(name,
+                                                         component_type,
+                                                         price_in_rubles,
+                                                         data[component_type])
+
+    return render_template('build.html', data=displaying_data)
+
+
 @app.route('/choose_components/computer_cases')
 def choose_computer_cases():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return computer_cases(price_from, price_to)
+    return computer_cases(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/air_coolers')
 def choose_air_coolers():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return air_coolers(price_from, price_to)
+    return air_coolers(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/water_coolers')
 def choose_water_coolers():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return water_coolers(price_from, price_to)
+    return water_coolers(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/motherboards')
 def choose_motherboards():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
         if "socket" in filters or "memory_type" in filters or "m2_support" in filters:
-            filter_type, filter_value = filters.split(':')
+            if len(filters.split(',')) >= 3:
+                filter_type, filter_value = filters.split(',')[-1].split(':')
+            else:
+                filter_type, filter_value = filters.split(':')
             return motherboards_with_filter(price_from, price_to, filter_type, filter_value)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return motherboards(price_from, price_to)
+    return motherboards(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/power_supplies')
 def choose_power_supplies():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return power_supplies(price_from, price_to)
+    return power_supplies(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/processors/')
 def choose_processors():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
         if "socket" in filters or "memory_type" in filters:
-            filter_type, filter_value = filters.split(':')
+            if len(filters.split(',')) >= 3:
+                filter_type, filter_value = filters.split(',')[-1].split(':')
+            else:
+                filter_type, filter_value = filters.split(':')
             return processors_with_filter(price_from, price_to, filter_type, filter_value)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return processors(price_from, price_to)
+    return processors(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/ram_modules')
 def choose_ram_modules():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
         if "memory_type" in filters:
-            filter_type, filter_value = filters.split(':')
+            if len(filters.split(',')) >= 3:
+                filter_type, filter_value = filters.split(',')[-1].split(':')
+            else:
+                filter_type, filter_value = filters.split(':')
             return ram_modules_with_filter(price_from, price_to, filter_type, filter_value)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return ram_modules(price_from, price_to)
+    return ram_modules(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/SSDs')
 def choose_SSDs():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return SSDs(price_from, price_to)
+    return ssds(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/HDDs')
 def choose_HDDs():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return HDDs(price_from, price_to)
+    return hdds(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/videocards')
 def choose_videocards():
     price_from = 0
     price_to = 1000000
+    people_request = None
 
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
         price_from, price_to = get_price_limit(filters)
+        if "search" in filters:
+            search, people_request = filters.split(':')
 
-    return videocards(price_from, price_to)
+    return videocards(price_from, price_to, people_request)
 
 
 @app.route('/components/<component_type>')
@@ -326,15 +395,12 @@ def new_forum_post():
 def profile():
     return render_template('profile.html', user=user)
 
-@app.route('/profile/edit', methods=['GET', 'POST'])
-def edit_profile():
-    if request.method == 'POST':
-        # Обработка отправленной формы
-        user['name'] = request.form['name']
-        user['email'] = request.form['email']
-        return redirect(url_for('profile')) # Перенаправление на страницу профиля
 
-    return render_template('profile_editing.html', user=user)
+@app.route('/edit_profile')
+def edit_profile():
+    # Временно
+    # Здесь будет логика для редактирования профиля
+    return "Страница редактирования профиля (еще не реализована)"
 
 
 """ # Обработчик для добавления комментария

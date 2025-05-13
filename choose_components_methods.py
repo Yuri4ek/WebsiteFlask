@@ -3,7 +3,7 @@ from cookie_functions import *
 from sqlalchemy import and_, or_
 
 
-def computer_cases(price_from, price_to):
+def computer_cases(price_from, price_to, people_request):
     # все компоненты
     db_sess = db_session.create_session()
     components = db_sess.query(ComputerCases).filter(
@@ -15,15 +15,20 @@ def computer_cases(price_from, price_to):
     for component in components:
         id, name, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей'))
 
     return render_template('search_components.html',
                            component_type='computer_cases', components=displaying_components,
                            component_image='/static/images/computer_case.webp')
 
 
-def air_coolers(price_from, price_to):
+def air_coolers(price_from, price_to, people_request):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
@@ -42,16 +47,22 @@ def air_coolers(price_from, price_to):
     for component in components:
         id, name, tdp, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
-                                      f'Отвод тепла: {tdp} Ватт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Отвод тепла: {tdp} Ватт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Отвод тепла: {tdp} Ватт'))
 
     return render_template('search_components.html',
                            component_type='air_coolers', components=displaying_components,
                            component_image='/static/images/air_cooler.webp')
 
 
-def water_coolers(price_from, price_to):
+def water_coolers(price_from, price_to, people_request):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
@@ -70,16 +81,22 @@ def water_coolers(price_from, price_to):
     for component in components:
         id, name, tdp, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
-                                      f'Отвод тепла: {tdp} Ватт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Отвод тепла: {tdp} Ватт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Отвод тепла: {tdp} Ватт'))
 
     return render_template('search_components.html',
                            component_type='water_coolers', components=displaying_components,
                            component_image='/static/images/water_cooler.webp')
 
 
-def motherboards(price_from, price_to):
+def motherboards(price_from, price_to, people_request):
     # достаем сокеты для материнских плат
     current_sockets = get_sockets()
 
@@ -146,8 +163,38 @@ def motherboards(price_from, price_to):
                                                         MotherBoards.price_in_rubles >= price_from,
                                                         MotherBoards.price_in_rubles <= price_to).all()
 
-    displaying_components = get_displaying_motherboards(components, current_sockets,
-                                                        current_memory_types)
+    displaying_components = []
+    # делаем материнские платы читабельнее
+    for component in components:
+        id, name, socket_id, chipset, memory_type_id, \
+            memory_slots, memory_max, m2_quantity, pcie_type, \
+            form_factor, price_in_rubles = component.get()
+        socket = current_sockets[socket_id - 1] if socket_id else 'Неизвестно'
+        memory_type = current_memory_types[memory_type_id - 1] if memory_type_id else 'Неизвестно'
+
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                              else 'Цена неизвестна',
+                                              f'Сокет: {socket}',
+                                              f'Тип памяти: {memory_type}',
+                                              f'Кол-во слотов для ОЗУ: {memory_slots}',
+                                              f'Максимальный объём памяти: {memory_max} Гигабайт',
+                                              f'Кол-во слотов m2: {m2_quantity}',
+                                              f'Тип pcie: {pcie_type}',
+                                              f'Форм-фактор: {form_factor}'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                          else 'Цена неизвестна',
+                                          f'Сокет: {socket}',
+                                          f'Тип памяти: {memory_type}',
+                                          f'Кол-во слотов для ОЗУ: {memory_slots}',
+                                          f'Максимальный объём памяти: {memory_max} Гигабайт',
+                                          f'Кол-во слотов m2: {m2_quantity}',
+                                          f'Тип pcie: {pcie_type}',
+                                          f'Форм-фактор: {form_factor}'))
 
     return render_template('search_components.html',
                            component_type='motherboards',
@@ -211,17 +258,6 @@ def motherboards_with_filter(price_from, price_to, filter_type, filter_value):
                 components = db_sess.query(MotherBoards).filter(
                     MotherBoards.m2_quantity == 0).all()
 
-    displaying_components = get_displaying_motherboards(components, current_sockets,
-                                                        current_memory_types)
-
-    return render_template('search_components.html',
-                           component_type='motherboards',
-                           components=displaying_components,
-                           component_image='/static/images/motherboard.webp',
-                           sockets=current_sockets, memory_types=current_memory_types)
-
-
-def get_displaying_motherboards(components, current_sockets, current_memory_types):
     displaying_components = []
     # делаем материнские платы читабельнее
     for component in components:
@@ -241,10 +277,15 @@ def get_displaying_motherboards(components, current_sockets, current_memory_type
                                       f'Кол-во слотов m2: {m2_quantity}',
                                       f'Тип pcie: {pcie_type}',
                                       f'Форм-фактор: {form_factor}'))
-    return displaying_components
+
+    return render_template('search_components.html',
+                           component_type='motherboards',
+                           components=displaying_components,
+                           component_image='/static/images/motherboard.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
 
 
-def power_supplies(price_from, price_to):
+def power_supplies(price_from, price_to, people_request):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
@@ -266,16 +307,22 @@ def power_supplies(price_from, price_to):
     for component in components:
         id, name, power, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
-                                      f'Мощность: {power} Ватт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Мощность: {power} Ватт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Мощность: {power} Ватт'))
 
     return render_template('search_components.html',
                            component_type='power_supplies', components=displaying_components,
                            component_image='/static/images/power_supplie.webp')
 
 
-def processors(price_from, price_to):
+def processors(price_from, price_to, people_request):
     # достаем сокеты для процессоров
     current_sockets = get_sockets()
 
@@ -341,8 +388,40 @@ def processors(price_from, price_to):
                                                       Processors.price_in_rubles >= price_from,
                                                       Processors.price_in_rubles <= price_to).all()
 
-    displaying_components = get_displaying_processors(components, current_sockets,
-                                                      current_memory_types)
+    displaying_components = []
+    # делаем процессоры читабельнее
+    for component in components:
+        id, name, release_year, socket_id, cores, threads, processor_frequency, tdp, \
+            memory_type_id, memory_frequency, pcie_type, price_in_rubles = component.get()
+        socket = current_sockets[int(socket_id) - 1] if socket_id else 'Неизвестно'
+        memory_type = current_memory_types[
+            int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
+
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                              else 'Цена неизвестна',
+                                              f'Год выпуска: {release_year}',
+                                              f'Сокет: {socket}',
+                                              f'Ядра / Потоки: {cores} / {threads}',
+                                              f'Частота процессора: {processor_frequency} Мегагерц',
+                                              f'Тип памяти: {memory_type}',
+                                              f'Максимальная частота памяти: {memory_frequency} Мегагерц',
+                                              f'Тип pcie: {pcie_type}',
+                                              f'Потребление: {tdp} Ватт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                          else 'Цена неизвестна',
+                                          f'Год выпуска: {release_year}',
+                                          f'Сокет: {socket}',
+                                          f'Ядра / Потоки: {cores} / {threads}',
+                                          f'Частота процессора: {processor_frequency} Мегагерц',
+                                          f'Тип памяти: {memory_type}',
+                                          f'Максимальная частота памяти: {memory_frequency} Мегагерц',
+                                          f'Тип pcie: {pcie_type}',
+                                          f'Потребление: {tdp} Ватт'))
 
     return render_template('search_components.html',
                            component_type='processors', components=displaying_components,
@@ -384,16 +463,6 @@ def processors_with_filter(price_from, price_to, filter_type, filter_value):
             components = db_sess.query(Processors).filter(
                 Processors.memory_type_id == memory_type_id).all()
 
-    displaying_components = get_displaying_processors(components, current_sockets,
-                                                      current_memory_types)
-
-    return render_template('search_components.html',
-                           component_type='processors', components=displaying_components,
-                           component_image='/static/images/processor.webp',
-                           sockets=current_sockets, memory_types=current_memory_types)
-
-
-def get_displaying_processors(components, current_sockets, current_memory_types):
     displaying_components = []
     # делаем процессоры читабельнее
     for component in components:
@@ -414,10 +483,14 @@ def get_displaying_processors(components, current_sockets, current_memory_types)
                                       f'Максимальная частота памяти: {memory_frequency} Мегагерц',
                                       f'Тип pcie: {pcie_type}',
                                       f'Потребление: {tdp} Ватт'))
-    return displaying_components
+
+    return render_template('search_components.html',
+                           component_type='processors', components=displaying_components,
+                           component_image='/static/images/processor.webp',
+                           sockets=current_sockets, memory_types=current_memory_types)
 
 
-def ram_modules(price_from, price_to):
+def ram_modules(price_from, price_to, people_request):
     # флаг для проверки кол-во модулей памяти
     memory_slots_flag = False
 
@@ -460,9 +533,30 @@ def ram_modules(price_from, price_to):
             RamModules.price_in_rubles >= price_from,
             RamModules.price_in_rubles <= price_to).all()
 
-    displaying_components = get_displaying_ram_modules(components, current_memory_types,
-                                                       memory_slots_flag,
-                                                       current_configuration_data)
+    displaying_components = []
+    # делаем оперативную память читабельнее
+    for component in components:
+        id, name, capacity_gb, frequency, memory_type_id, price_in_rubles = component.get()
+        memory_type = current_memory_types[
+            int(memory_type_id) - 1] if memory_type_id else 'Неизвестно'
+        if memory_slots_flag:
+            memory_slots = get_memory_slots(name)
+            if memory_slots > current_configuration_data['motherboards'][4]:
+                continue
+
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Тип памяти: {memory_type}',
+                                              f'Объём памяти: {capacity_gb} Гигабайт',
+                                              f'Частота памяти: {frequency} Мегагерц'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Тип памяти: {memory_type}',
+                                          f'Объём памяти: {capacity_gb} Гигабайт',
+                                          f'Частота памяти: {frequency} Мегагерц'))
 
     return render_template('search_components.html',
                            component_type='ram_modules', components=displaying_components,
@@ -491,17 +585,6 @@ def ram_modules_with_filter(price_from, price_to, filter_type, filter_value):
             components = db_sess.query(RamModules).filter(
                 RamModules.memory_type_id == memory_type_id).all()
 
-    displaying_components = get_displaying_ram_modules(components, current_memory_types,
-                                                       memory_slots_flag,
-                                                       current_configuration_data=[])
-    return render_template('search_components.html',
-                           component_type='ram_modules', components=displaying_components,
-                           component_image='/static/images/ram_module.webp',
-                           memory_types=current_memory_types)
-
-
-def get_displaying_ram_modules(components, current_memory_types, memory_slots_flag,
-                               current_configuration_data):
     displaying_components = []
     # делаем оперативную память читабельнее
     for component in components:
@@ -518,10 +601,14 @@ def get_displaying_ram_modules(components, current_memory_types, memory_slots_fl
                                       f'Тип памяти: {memory_type}',
                                       f'Объём памяти: {capacity_gb} Гигабайт',
                                       f'Частота памяти: {frequency} Мегагерц'))
-    return displaying_components
+
+    return render_template('search_components.html',
+                           component_type='ram_modules', components=displaying_components,
+                           component_image='/static/images/ram_module.webp',
+                           memory_types=current_memory_types)
 
 
-def ssds(price_from, price_to):
+def ssds(price_from, price_to, people_request):
     # все компоненты
     db_sess = db_session.create_session()
     components = db_sess.query(SSDs).filter(
@@ -533,17 +620,24 @@ def ssds(price_from, price_to):
     for component in components:
         id, name, m2, capacity_gb, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
-                                      f'Тип: {"m2" if m2 else "Неизвестно"}',
-                                      f'Объём: {capacity_gb} Гигабайт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Тип: {"m2" if m2 else "Неизвестно"}',
+                                              f'Объём: {capacity_gb} Гигабайт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Тип: {"m2" if m2 else "Неизвестно"}',
+                                          f'Объём: {capacity_gb} Гигабайт'))
 
     return render_template('search_components.html',
                            component_type='SSDs', components=displaying_components,
                            component_image='/static/images/SSD.webp')
 
 
-def hdds(price_from, price_to):
+def hdds(price_from, price_to, people_request):
     # все компоненты
     db_sess = db_session.create_session()
     components = db_sess.query(HDDs).filter(
@@ -555,16 +649,22 @@ def hdds(price_from, price_to):
     for component in components:
         id, name, capacity_gb, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей',
-                                      f'Объём: {capacity_gb} Гигабайт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей',
+                                              f'Объём: {capacity_gb} Гигабайт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей',
+                                          f'Объём: {capacity_gb} Гигабайт'))
 
     return render_template('search_components.html',
                            component_type='HDDs', components=displaying_components,
                            component_image='/static/images/HDD.webp')
 
 
-def videocards(price_from, price_to):
+def videocards(price_from, price_to, people_request):
     current_configuration_data = get_cookie()
     # все компоненты
     db_sess = db_session.create_session()
@@ -595,13 +695,23 @@ def videocards(price_from, price_to):
     for component in components:
         id, name, tdp, release_year, memory_capacity, pcie_type, price_in_rubles = component.get()
 
-        displaying_components.append((name,
-                                      f'Цена: {price_in_rubles} Рублей' if price_in_rubles
-                                      else 'Цена неизвестна',
-                                      f'Год выпуска: {release_year}',
-                                      f'Объём видеопамяти: {memory_capacity} Гигабайт',
-                                      f'Тип pcie: {pcie_type}',
-                                      f'Потребление: {tdp} Ватт'))
+        if people_request:
+            if set(people_request.lower()) - set(name.lower()) == set():
+                displaying_components.append((name,
+                                              f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                              else 'Цена неизвестна',
+                                              f'Год выпуска: {release_year}',
+                                              f'Объём видеопамяти: {memory_capacity} Гигабайт',
+                                              f'Тип pcie: {pcie_type}',
+                                              f'Потребление: {tdp} Ватт'))
+        else:
+            displaying_components.append((name,
+                                          f'Цена: {price_in_rubles} Рублей' if price_in_rubles
+                                          else 'Цена неизвестна',
+                                          f'Год выпуска: {release_year}',
+                                          f'Объём видеопамяти: {memory_capacity} Гигабайт',
+                                          f'Тип pcie: {pcie_type}',
+                                          f'Потребление: {tdp} Ватт'))
 
     return render_template('search_components.html',
                            component_type='videocards', components=displaying_components,

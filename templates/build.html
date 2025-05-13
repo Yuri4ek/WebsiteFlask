@@ -119,5 +119,65 @@
     </div>
 </div>
 
-<a href="#" class="publish-button">Опубликовать конфигурацию</a>
+<!-- Модальное окно -->
+<div id="configModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Введите название конфигурации</h2>
+        <input type="text" id="configName" placeholder="Название конфигурации">
+        <button id="submitConfig">Опубликовать</button>
+    </div>
+</div>
+
+<a class="publish-button" id="publishBtn">Опубликовать конфигурацию</a>
+
+<script>
+    // Получаем модальное окно
+    const modal = document.getElementById("configModal");
+
+    // Получаем кнопку, которая открывает модальное окно
+    const btn = document.getElementById("publishBtn");
+
+    // Получаем элемент <span>, который закрывает модальное окно
+    const span = document.getElementsByClassName("close")[0];
+
+    // Получаем кнопку отправки
+    const submitBtn = document.getElementById("submitConfig");
+
+    // Когда пользователь нажимает на кнопку, открываем модальное окно
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Когда пользователь нажимает на <span> (x), закрываем модальное окно
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Когда пользователь нажимает на кнопку отправки
+    submitBtn.onclick = function() {
+        const configName = document.getElementById("configName").value;
+        if (configName) {
+            window.location.href = `/publish_configuration?name=${encodeURIComponent(configName)}`;
+        }
+    }
+
+    // Также обрабатываем нажатие Enter в поле ввода
+    document.getElementById("configName").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            const configName = document.getElementById("configName").value;
+            if (configName) {
+                window.location.href = `/publish_configuration?name=${encodeURIComponent(configName)}`;
+            }
+        }
+    });
+
+    // Когда пользователь кликает в любом месте вне модального окна, закрываем его
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
 {% endblock %}

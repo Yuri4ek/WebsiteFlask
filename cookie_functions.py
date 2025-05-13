@@ -5,10 +5,12 @@ from data.db_imports import *
 # данные для конфигурации
 configuration_data = {'computer_cases': ['не выбран'],
                       'cooling_systems': ['не выбран'],
+                      'memory_types': ['не выбран'],
                       'motherboards': ['не выбран'],
                       'power_supplies': ['не выбран'],
                       'processors': ['не выбран'],
                       'ram_modules': ['не выбран'],
+                      'sockets': ['не выбран'],
                       'storage_devices': ['не выбран'],
                       'videocards': ['не выбран']}
 

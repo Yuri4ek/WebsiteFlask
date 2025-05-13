@@ -1,0 +1,111 @@
+.profile-container, .form-container {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.profile-container h1, .form-container h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.profile-field {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.profile-field strong {
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.profile-field span {
+    color: #333;
+    font-size: 1em;
+}
+
+/* Edit Profile Form Styles */
+.form-group {
+    margin: 20px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #f9f9f9;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #555;
+    background-color: white;
+}
+
+/* Buttons and Links */
+a.edit-profile-link {
+    display: inline-block;
+    background-color: #555;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    margin-top: 20px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+a.edit-profile-link:hover {
+    background-color: #666;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #555;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container, .form-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .profile-field, .form-group {
+        margin: 15px 0;
+    }
+}

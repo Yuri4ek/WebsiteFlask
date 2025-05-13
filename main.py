@@ -16,9 +16,7 @@ db_sess = db_session.create_session()
 # Временно (на удаление)
 user = {
     'name': 'Иван Иванов',
-    'email': 'ivan@example.com',
-    'registration_date': '2023-10-26',
-    'bio': 'Увлекаюсь Python и Flask.'
+    'email': 'ivan@example.com'
 }
 
 
@@ -395,12 +393,16 @@ def new_forum_post():
 def profile():
     return render_template('profile.html', user=user)
 
-
-@app.route('/edit_profile')
+@app.route('/profile/edit', methods=['GET', 'POST'])
 def edit_profile():
-    # Временно
-    # Здесь будет логика для редактирования профиля
-    return "Страница редактирования профиля (еще не реализована)"
+    if request.method == 'POST':
+        # Обработка отправленной формы
+        user['name'] = request.form['name']
+        user['email'] = request.form['email']
+        return redirect(url_for('profile')) # Перенаправление на страницу профиля
+
+    return render_template('edit_profile.html', user=user)
+
 
 
 """ # Обработчик для добавления комментария

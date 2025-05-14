@@ -1,6 +1,5 @@
 from flask import make_response, request, render_template
 import json
-from data.db_imports import *
 
 # данные для конфигурации
 configuration_data = {'computer_cases': ['не выбран'],

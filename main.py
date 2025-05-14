@@ -1,30 +1,63 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, abort
 from sqlalchemy import inspect
-from choose_components_methods import *
+import os
+import choose_components_methods
+import data.configuration
+import data.db_session
+import cookie_functions
+import data.forum
+import data.user
+import db_methods
 from forms.forum_form import ForumForm
 from flask_login import (LoginManager, login_user, login_required, logout_user,
                          current_user)
 from forms.login import LoginForm
 from forms.register import RegisterForm
 from forms.profile import EditProfileForm
+from data.computer_cases import ComputerCases
+from data.air_coolers import AirCoolers
+from data.water_coolers import WaterCoolers
+from data.memory_types import MemoryTypes
+from data.motherboards import MotherBoards
+from data.power_supplies import PowerSupplies
+from data.processors import Processors
+from data.ram_modules import RamModules
+from data.sockets import Sockets
+from data.HDDs import HDDs
+from data.SSDs import SSDs
+from data.videocards import Videocards
+
+components_types = {'computer_cases': ComputerCases,
+                    'air_coolers': AirCoolers,
+                    'water_coolers': WaterCoolers,
+                    'memory_types': MemoryTypes,
+                    'motherboards': MotherBoards,
+                    'power_supplies': PowerSupplies,
+                    'processors': Processors,
+                    'ram_modules': RamModules,
+                    'sockets': Sockets,
+                    'HDDs': HDDs,
+                    'SSDs': SSDs,
+                    'videocards': Videocards}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'configuration_site_secret_key'
 
-db_session.global_init("db/components.db")
-db_sess = db_session.create_session()
+DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'components.db')
+data.db_session.global_init(DB_PATH)
+db_sess = data.db_session.create_session()
 
 
 @app.route('/', defaults={'component': None})
 @app.route('/<component>')
 def home(component):
     # Проверяем, есть ли cookie
-    data = get_cookie()
+    data = cookie_functions.get_cookie()
 
     # Если нет cookie, то создаем
     if not data:
         # создаем cookie
-        return set_cookie()
+        return cookie_functions.set_cookie()
 
     # Если cookie и component есть, обновляем данные
     if component:
@@ -45,7 +78,7 @@ def home(component):
                 component_type = "cooling_systems"
             elif component_type == "SSDs" or component_type == "HDDs":
                 component_type = "storage_devices"
-            return update_cookie(component_type, component_info)
+            return cookie_functions.update_cookie(component_type, component_info)
         except:
             pass
 
@@ -55,7 +88,7 @@ def home(component):
 
 @app.route('/build')
 def build():
-    data = get_cookie()
+    data = cookie_functions.get_cookie()
 
     # первый - Регард, второй - ДНС, третий - Авито
     displaying_data = [dict(), dict(), dict()]
@@ -71,20 +104,20 @@ def build():
 
         displaying_data[0][component_type] = [name, price_in_rubles]
         displaying_data[1][component_type] = [name, price_in_rubles]
-        displaying_data[2][component_type] = avito_price(name,
-                                                         component_type,
-                                                         price_in_rubles,
-                                                         data[component_type])
+        displaying_data[2][component_type] = db_methods.avito_price(name,
+                                                                    component_type,
+                                                                    price_in_rubles,
+                                                                    data[component_type])
 
     return render_template('build.html', data=displaying_data)
 
 
 @app.route('/builds')
 def show_builds():
-    db_sess = db_session.create_session()
+    db_sess = data.db_session.create_session()
 
     # пользователи
-    users = db_sess.query(User).all()
+    users = db_sess.query(data.user.User).all()
 
     users_names = []
     users_id = []
@@ -95,7 +128,7 @@ def show_builds():
     print(users_id)
 
     # конфигурации
-    configurations = db_sess.query(Configuration).all()
+    configurations = db_sess.query(data.configuration.Configuration).all()
 
     displaying_configurations = []
     for configuration in configurations:
@@ -120,14 +153,14 @@ def show_builds():
 @app.route('/publish_configuration')
 def publish_configuration():
     configuration_name = request.args.get('name', None)
-    data = get_cookie()
+    configutarion_data = cookie_functions.get_cookie()
 
     if current_user.is_authenticated:
-        db_sess = db_session.create_session()
-        configuration = Configuration()
+        db_sess = data.db_session.create_session()
+        configuration = data.configuration.Configuration()
         configuration.title = configuration_name
         configuration.image_path = "static/images/computer_case.webp"
-        configuration.components = data
+        configuration.components = configutarion_data
         configuration.user_id = current_user.id
         db_sess.add(configuration)
         db_sess.commit()
@@ -145,11 +178,11 @@ def choose_computer_cases():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return computer_cases(price_from, price_to, people_request)
+    return choose_components_methods.computer_cases(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/air_coolers')
@@ -161,11 +194,11 @@ def choose_air_coolers():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return air_coolers(price_from, price_to, people_request)
+    return choose_components_methods.air_coolers(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/water_coolers')
@@ -177,11 +210,11 @@ def choose_water_coolers():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return water_coolers(price_from, price_to, people_request)
+    return choose_components_methods.water_coolers(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/motherboards')
@@ -193,18 +226,19 @@ def choose_motherboards():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "socket" in filters or "memory_type" in filters or "m2_support" in filters:
             if len(filters.split(',')) >= 3:
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return motherboards_with_filter(price_from, price_to, filter_type,
-                                            filter_value)
+            return choose_components_methods.motherboards_with_filter(price_from, price_to,
+                                                                      filter_type,
+                                                                      filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return motherboards(price_from, price_to, people_request)
+    return choose_components_methods.motherboards(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/power_supplies')
@@ -216,11 +250,11 @@ def choose_power_supplies():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return power_supplies(price_from, price_to, people_request)
+    return choose_components_methods.power_supplies(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/processors/')
@@ -232,18 +266,19 @@ def choose_processors():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "socket" in filters or "memory_type" in filters:
             if len(filters.split(',')) >= 3:
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return processors_with_filter(price_from, price_to, filter_type,
-                                          filter_value)
+            return choose_components_methods.processors_with_filter(price_from, price_to,
+                                                                    filter_type,
+                                                                    filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return processors(price_from, price_to, people_request)
+    return choose_components_methods.processors(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/ram_modules')
@@ -255,18 +290,19 @@ def choose_ram_modules():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "memory_type" in filters:
             if len(filters.split(',')) >= 3:
                 filter_type, filter_value = filters.split(',')[-1].split(':')
             else:
                 filter_type, filter_value = filters.split(':')
-            return ram_modules_with_filter(price_from, price_to, filter_type,
-                                           filter_value)
+            return choose_components_methods.ram_modules_with_filter(price_from, price_to,
+                                                                     filter_type,
+                                                                     filter_value)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return ram_modules(price_from, price_to, people_request)
+    return choose_components_methods.ram_modules(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/SSDs')
@@ -278,11 +314,11 @@ def choose_SSDs():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return ssds(price_from, price_to, people_request)
+    return choose_components_methods.ssds(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/HDDs')
@@ -294,11 +330,11 @@ def choose_HDDs():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return hdds(price_from, price_to, people_request)
+    return choose_components_methods.hdds(price_from, price_to, people_request)
 
 
 @app.route('/choose_components/videocards')
@@ -310,11 +346,11 @@ def choose_videocards():
     # Получаем фильтры (параметр filters из query string)
     filters = request.args.get('filters', None)
     if filters:
-        price_from, price_to = get_price_limit(filters)
+        price_from, price_to = db_methods.get_price_limit(filters)
         if "search" in filters:
             search, people_request = filters.split(':')
 
-    return videocards(price_from, price_to, people_request)
+    return choose_components_methods.videocards(price_from, price_to, people_request)
 
 
 @app.route('/components/<component_type>')
@@ -329,14 +365,14 @@ def show_components_table(component_type):
     components = [el.get() for el in db_sess.query(component_class).all()]
 
     if component_type == 'processors' or component_type == 'motherboards':
-        current_sockets = get_sockets()
+        current_sockets = db_methods.get_sockets()
         i = columns.index("socket_id")
         for component in components:
             component[i] = current_sockets[int(component[i]) - 1] if component[
                 i] else None
     if component_type == 'ram_modules' or component_type == 'motherboards' or component_type == 'processors':
         i = columns.index("memory_type_id")
-        current_memory_types = get_memory_types()
+        current_memory_types = db_methods.get_memory_types()
         for component in components:
             component[i] = current_memory_types[int(component[i]) - 1] if \
                 component[i] else None
@@ -351,11 +387,11 @@ def registration():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
+        db_sess = data.db_session.create_session()
+        if db_sess.query(data.user.User).filter(data.user.User.email == form.email.data).first():
             return render_template('registration.html', form=form,
                                    message="Пользователь с такой почтой уже существует")
-        user = User(
+        user = data.user.User(
             nickname=form.nickname.data,
             email=form.email.data
         )
@@ -373,8 +409,8 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
+    db_sess = data.db_session.create_session()
+    return db_sess.query(data.user.User).get(user_id)
 
 
 @app.route('/logout')
@@ -388,10 +424,10 @@ def logout():
 def authorization():
     form = LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(
-            (User.nickname == form.nickname_email.data) | (
-                    User.email == form.nickname_email.data)).first()
+        db_sess = data.db_session.create_session()
+        user = db_sess.query(data.user.User).filter(
+            (data.user.User.nickname == form.nickname_email.data) | (
+                    data.user.User.email == form.nickname_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=True)
             return redirect("/")
@@ -404,8 +440,8 @@ def authorization():
 # Отображение списка форумов
 @app.route('/forums')
 def forums_page():
-    db_sess = db_session.create_session()
-    forums = db_sess.query(Forum).all()
+    db_sess = data.db_session.create_session()
+    forums = db_sess.query(data.forum.Forum).all()
     if current_user.is_authenticated:
         return render_template('forums.html', forums=forums,
                                user=current_user)
@@ -416,8 +452,8 @@ def forums_page():
 # Просмотр конкретного форума
 @app.route('/forum/<int:forum_id>')
 def forum_detail(forum_id):
-    db_sess = db_session.create_session()
-    forum = db_sess.query(Forum).get(forum_id)
+    db_sess = data.db_session.create_session()
+    forum = db_sess.query(data.forum.Forum).get(forum_id)
     if not forum:
         abort(404)
     return render_template('forum_detail.html', forum=forum, user=forum.user)
@@ -426,14 +462,12 @@ def forum_detail(forum_id):
 # Страница для добавления нового поста на форум
 @app.route('/forum/new_forum_post', methods=['GET', 'POST'])
 def new_forum_post():
-    db_sess = db_session.create_session()
+    db_sess = data.db_session.create_session()
     form = ForumForm()
     if current_user.is_authenticated:
         if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['content']
             # Создание нового форума в базе данных
-            forum = Forum(
+            forum = data.forum.Forum(
                 title=form.title.data,
                 content=form.content.data
             )
@@ -448,16 +482,16 @@ def new_forum_post():
 # пробная версия профиля
 @app.route('/profile')
 def profile():
-    db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == current_user.id).one()
+    db_sess = data.db_session.create_session()
+    user = db_sess.query(data.user.User).filter(data.user.User.id == current_user.id).one()
     return render_template('profile.html', user=user)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     form = EditProfileForm()
-    db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == current_user.id).one()
+    db_sess = data.db_session.create_session()
+    user = db_sess.query(data.user.User).filter(data.user.User.id == current_user.id).one()
     if request.method == 'POST':
         # Обработка отправленной формы
         print(user.nickname, 'vfdbdsgs')
@@ -472,13 +506,9 @@ def edit_profile():
 
 @app.get("/print_cookie")
 def print_cookie():
-    return get_cookie()
+    return cookie_functions.get_cookie()
 
 
 @app.get("/clear_cookie")
 def clear_cookie_handler():
-    return clear_cookie()
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return cookie_functions.clear_cookie()

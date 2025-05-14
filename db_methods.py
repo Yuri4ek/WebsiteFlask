@@ -1,9 +1,11 @@
 import json
+import os
 
 
 def get_sockets():
     # берем сокеты
-    with open('data/filling_db/data_files/sockets.json', "r", encoding="utf-8") as file:
+    file_path = os.path.join(os.path.dirname(__file__), 'data', 'filling_db', 'data_files', 'sockets.json')
+    with open(file_path, "r", encoding="utf-8") as file:
         sockets = json.load(file)
     sockets = list(sockets.keys())
 
@@ -12,7 +14,8 @@ def get_sockets():
 
 def get_memory_types():
     # берем типы памяти
-    with open('data/filling_db/data_files/memory_types.json', "r", encoding="utf-8") as file:
+    file_path = os.path.join(os.path.dirname(__file__), 'data', 'filling_db', 'data_files', 'memory_types.json')
+    with open(file_path, "r", encoding="utf-8") as file:
         memory_types = json.load(file)
     memory_types = list(memory_types.keys())
 
@@ -20,7 +23,6 @@ def get_memory_types():
 
 
 def get_memory_slots(RAM_name):
-    print(RAM_name)
     if "KIT" in RAM_name:
         try:
             return int(RAM_name.split('(')[-1].split('x')[0])

@@ -1,10 +1,11 @@
-/* base_style.css (без навигации) */
+/* Same as provided in the original build.html, confirmed to be correct */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
+
 body {
     background-color: #f0f0f0;
     min-height: 100vh;
@@ -13,7 +14,6 @@ body {
     align-items: center;
 }
 
-/* main_style.css */
 .container {
     display: flex;
     justify-content: center;
@@ -23,6 +23,7 @@ body {
     flex-wrap: wrap;
     padding-bottom: 60px;
 }
+
 .components-container {
     background-color: white;
     border: 1px solid #ccc;
@@ -33,6 +34,7 @@ body {
     align-items: center;
     width: 500px;
 }
+
 .store-image {
     width: 100px;
     height: 100px;
@@ -40,24 +42,29 @@ body {
     margin-bottom: 20px;
     border-radius: 5px;
 }
+
 .components-list {
     margin-bottom: 20px;
     width: 100%;
 }
+
 .component-item {
     margin: 10px 0;
     font-size: 16px;
     color: #333;
 }
+
 .component-item a {
     color: #007BFF;
     text-decoration: none;
     display: block;
     margin-top: 5px;
 }
+
 .component-item a:hover {
     text-decoration: underline;
 }
+
 .publish-button {
     position: fixed;
     bottom: 15%;
@@ -71,10 +78,12 @@ body {
     font-size: 16px;
     text-decoration: none;
 }
+
 .publish-button:hover {
     background-color: #666;
 }
-/* Стили для модального окна (адаптированные из существующих стилей) */
+
+/* Modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -141,4 +150,63 @@ body {
 
 #submitConfig:hover {
     background-color: #666;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        padding-top: 60px;
+    }
+
+    .components-container {
+        width: 100%;
+        max-width: 350px;
+        padding: 15px;
+    }
+
+    .store-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+    }
+
+    .component-item {
+        font-size: 14px;
+    }
+
+    .component-item a {
+        font-size: 14px;
+    }
+
+    .publish-button {
+        bottom: 20px;
+        left: auto;
+        width: 90%;
+        max-width: 350px;
+        margin: 0 auto;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .modal-content {
+        width: 80%;
+        max-width: 300px;
+        margin: 20% auto;
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.2em;
+    }
+
+    #configName, #submitConfig {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .close {
+        font-size: 24px;
+    }
 }

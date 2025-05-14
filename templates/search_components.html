@@ -3,75 +3,75 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/components_style.css">
 
-
-
 <div class="container">
     <div class="filters">
-        <h3>Фильтры</h3>
-        <!-- Динамические фильтры в зависимости от категории -->
-        {% if component_type == "processors" %}
-            <h4>Сокет</h4>
-            <select name="socket" onchange="applyFilters()">
-                <option value="">Любой</option>
-                {% for socket in sockets %}
-                <option value="{{ socket }}">{{ socket }}</option>
-                {% endfor %}
-            </select>
-            <h4>Тип памяти</h4>
-            <select name="memory_type" onchange="applyFilters()">
-                <option value="">Любой</option>
-                {% for memory_type in memory_types %}
-                <option value="{{ memory_type }}">{{ memory_type }}</option>
-                {% endfor %}
-            </select>
-            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
-        {% elif component_type == "motherboards" %}
-            <h4>Сокет</h4>
-            <select name="socket" onchange="applyFilters()">
-                <option value="">Любой</option>
-                {% for socket in sockets %}
-                <option value="{{ socket }}">{{ socket }}</option>
-                {% endfor %}
-            </select>
-            <h4>Тип памяти</h4>
-            <select name="memory_type" onchange="applyFilters()">
-                <option value="">Любой</option>
-                {% for memory_type in memory_types %}
-                <option value="{{ memory_type }}">{{ memory_type }}</option>
-                {% endfor %}
-            </select>
-            <h4>Поддержка m2</h4>
-            <select name="m2_support" onchange="applyFilters()">
-                <option value="">Любой</option>
-                <option value="True">Есть</option>
-                <option value="False">Нет</option>
-            </select>
-            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
-        {% elif component_type == "ram_modules" %}
-            <h4>Тип памяти</h4>
-            <select name="memory_type" onchange="applyFilters()">
-                <option value="">Любой</option>
-                {% for memory_type in memory_types %}
-                <option value="{{ memory_type }}">{{ memory_type }}</option>
-                {% endfor %}
-            </select>
-            <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
-        {% endif %}
+        <button class="toggle-filters">Фильтры ▼</button>
+        <div class="filters-content">
+            <!-- Динамические фильтры в зависимости от категории -->
+            {% if component_type == "processors" %}
+                <h4>Сокет</h4>
+                <select name="socket" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for socket in sockets %}
+                    <option value="{{ socket }}">{{ socket }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% elif component_type == "motherboards" %}
+                <h4>Сокет</h4>
+                <select name="socket" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for socket in sockets %}
+                    <option value="{{ socket }}">{{ socket }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Поддержка m2</h4>
+                <select name="m2_support" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    <option value="True">Есть</option>
+                    <option value="False">Нет</option>
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% elif component_type == "ram_modules" %}
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% endif %}
 
-        <h4>Цена</h4>
-        <div class="price-range">
-            <div class="price-input">
-                <input type="number" name="price_from" placeholder="От" oninput="updatePriceFilter()">
+            <h4>Цена</h4>
+            <div class="price-range">
+                <div class="price-input">
+                    <input type="number" name="price_from" placeholder="От" oninput="updatePriceFilter()">
+                </div>
+                <div class="price-input">
+                    <input type="number" name="price_to" placeholder="До" oninput="updatePriceFilter()">
+                </div>
             </div>
-            <div class="price-input">
-                <input type="number" name="price_to" placeholder="До" oninput="updatePriceFilter()">
-            </div>
+            <a class="price-button" onclick="applyFilters()">Показать с ценами</a>
         </div>
-        <a class="price-button" onclick="applyFilters()">Показать с ценами</a>
     </div>
     <div class="right-section">
         <div class="search-bar">
-            <input type="text" name="search_query" placeholder="Поиск комплектующих..." oninput="showSearchPreview()">
+            <input type="text" name="search_query" placeholder="Поиск комплектующих...">
             <div class="search-preview" id="searchPreview"></div>
             <button onclick="applySearch()">Поиск</button>
         </div>
@@ -107,19 +107,6 @@ let priceTo = '';
 function updatePriceFilter() {
     priceFrom = document.querySelector('input[name="price_from"]').value;
     priceTo = document.querySelector('input[name="price_to"]').value;
-}
-
-function showSearchPreview() {
-    const searchInput = document.querySelector('input[name="search_query"]').value;
-    const preview = document.getElementById('searchPreview');
-
-    if (searchInput && searchInput.trim() !== '') {
-        preview.textContent = 'При работе с поиском не работает проверка на совместимость';
-        preview.classList.add('show');
-    } else {
-        preview.textContent = 'При работе с поиском не работает проверка на совместимость';
-        preview.classList.remove('show');
-    }
 }
 
 function applyFilters() {
@@ -163,6 +150,14 @@ function applyFilters() {
 function applySearch() {
     applyFilters();
 }
+
+// Toggle filters on mobile
+document.querySelector('.toggle-filters').addEventListener('click', function() {
+    const filtersContent = document.querySelector('.filters-content');
+    const isVisible = filtersContent.style.display === 'block';
+    filtersContent.style.display = isVisible ? 'none' : 'block';
+    this.textContent = isVisible ? 'Фильтры ▼' : 'Фильтры ▲';
+});
 </script>
 
 {% endblock %}

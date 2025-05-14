@@ -124,8 +124,6 @@ def show_builds():
     for user in users:
         users_names.append(user.nickname)
         users_id.append(user.id)
-    print(users_names)
-    print(users_id)
 
     # конфигурации
     configurations = db_sess.query(data.configuration.Configuration).all()
@@ -166,7 +164,7 @@ def publish_configuration():
         db_sess.commit()
         return redirect("/builds")
 
-    return render_template('main.html', selected_component=data)
+    return render_template('main.html', selected_component=configutarion_data)
 
 
 @app.route('/choose_components/computer_cases')
@@ -512,3 +510,7 @@ def print_cookie():
 @app.get("/clear_cookie")
 def clear_cookie_handler():
     return cookie_functions.clear_cookie()
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

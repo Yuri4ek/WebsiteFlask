@@ -1,11 +1,11 @@
 body {
-    background-color: #f0f0f0; /* Фон страницы */
+    background-color: #f0f0f0;
     margin: 0;
 }
 
 .container {
     width: 100%;
-    margin: 0;
+    margin: 0 auto;
     padding: 20px;
     padding-top: 40px;
     display: flex;
@@ -17,14 +17,14 @@ body {
 
 .pc-block {
     width: calc(33.33% - 14px);
-    background-color: #ffffff; /* Белый фон блока */
+    background-color: #ffffff;
     border: 1px solid #ccc;
     padding: 15px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     min-height: 450px;
-    border-radius: 10px; /* Закругленные углы блока */
+    border-radius: 10px;
 }
 
 .header {
@@ -37,14 +37,14 @@ body {
 }
 
 .nickname-btn {
-    background-color: #666; /* Цвет кнопки */
+    background-color: #666;
     color: white;
     padding: 8px;
     border: none;
     cursor: pointer;
     flex-shrink: 0;
     margin-bottom: 10px;
-    border-radius: 15px; /* Закругленные углы кнопки */
+    border-radius: 15px;
 }
 
 .title-budget {
@@ -83,17 +83,25 @@ body {
 @media (max-width: 768px) {
     .pc-block {
         width: calc(50% - 10px);
+        min-height: 400px;
     }
 }
 
 @media (max-width: 480px) {
     .pc-block {
         width: 100%;
+        max-width: 350px;
     }
     .content {
         flex-direction: column;
     }
     .pc-image, .specs {
         width: 100%;
+    }
+    .title {
+        font-size: 18px;
+    }
+    .budget, .specs {
+        font-size: 14px;
     }
 }

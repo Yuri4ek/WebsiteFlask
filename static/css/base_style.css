@@ -93,3 +93,39 @@ body {
 .dropdown:hover .dropbtn {
     color: #ddd;
 }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        width: 90%;
+        padding: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .navbar .nav-left, .navbar .nav-right {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 5px 0;
+    }
+    .navbar .nav-left a, .navbar .nav-right a, .navbar .nav-right .btn {
+        font-size: 16px;
+        margin: 5px;
+        padding: 6px 8px;
+    }
+    .dropdown {
+        position: relative;
+    }
+    .dropdown-content {
+        width: 100%;
+        min-width: unset;
+        position: relative;
+        text-align: center;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    .dropdown-content a {
+        font-size: 12px;
+        padding: 10px;
+    }
+}

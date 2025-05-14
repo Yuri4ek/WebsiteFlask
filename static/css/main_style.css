@@ -5,6 +5,8 @@
     align-items: center;
     flex-direction: row;
     gap: 40px;
+    padding: 20px;
+    padding-top: 80px;
 }
 
 /* Components container */
@@ -16,6 +18,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 600px;
 }
 
 /* Blocks */
@@ -31,9 +35,11 @@
     cursor: pointer;
     font-size: 20px;
 }
+
 .block:hover {
     background-color: #666;
 }
+
 .row {
     display: flex;
     justify-content: center;
@@ -42,7 +48,7 @@
     position: relative;
 }
 
-/* Motherboard block (3x width) */
+/* Motherboard block */
 .motherboard {
     width: 488px;
     padding: 18.75px;
@@ -55,21 +61,23 @@
     cursor: pointer;
     font-size: 20px;
 }
+
 .motherboard:hover {
     background-color: #666;
 }
 
-/* Adjust CPU and CPU Cooler to be centered above Motherboard */
+/* Adjust CPU and CPU Cooler */
 .cpu-row {
     display: flex;
     justify-content: center;
     width: 488px;
 }
+
 .cpu-block {
     margin: 12.5px 0;
 }
 
-/* Adjust Storage, PSU, and Case to be under Motherboard */
+/* Adjust Storage, PSU, and Case */
 .bottom-row {
     display: flex;
     justify-content: space-between;
@@ -84,7 +92,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 520px;
 }
 
 .sidebar h1 {
@@ -105,14 +113,17 @@
 .build-button {
     background-color: #555;
     color: white;
-    padding: 10px;
+    padding: 7px;
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     text-decoration: none;
     display: block;
+    width: 100%;
+    margin: 0 auto;
 }
+
 .build-button:hover {
     background-color: #666;
 }
@@ -120,7 +131,7 @@
 .delete-button {
     background-color: #555;
     color: white;
-    padding: 10px;
+    padding: 7px;
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
@@ -128,7 +139,11 @@
     text-decoration: none;
     display: block;
     margin-bottom: 10px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
+
 .delete-button:hover {
     background-color: #666;
 }
@@ -194,4 +209,97 @@
 
 .modal-option:hover {
     background-color: #666;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        padding-top: 100px;
+        min-height: 100vh;
+    }
+
+    .components-container {
+        width: 100%;
+        max-width: 320px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    .block {
+        width: 100%;
+        max-width: 280px;
+        font-size: 16px;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .row {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .motherboard {
+        width: 100%;
+        max-width: 280px;
+        font-size: 16px;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .cpu-row, .bottom-row {
+        width: 100%;
+        max-width: 280px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cpu-block {
+        margin: 10px auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: 416px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    .sidebar h1 {
+        font-size: 24px;
+    }
+
+    .components-list p {
+        font-size: 14px;
+    }
+
+    .build-button, .delete-button {
+        font-size: 14px;
+        padding: 5.6px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .modal-content {
+        width: 90%;
+        max-width: 280px;
+        margin: 25% auto;
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 20px;
+    }
+
+    .modal-option {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .close {
+        font-size: 24px;
+    }
 }

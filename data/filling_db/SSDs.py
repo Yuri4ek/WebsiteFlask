@@ -47,20 +47,23 @@ def filling_db(SSDs_info, M2_SSDs_info):
 
         db_sess.add(SSD)
     for SSD_info in SSDs_info:
-        capacity_gb, type, *name = SSD_info[0].split()
-        name = f"{capacity_gb} {' '.join(name)}"
-        if capacity_gb[-2:] == "Tb":
-            capacity_gb = int(float(capacity_gb[:-2]) * 1000)
-        else:
-            capacity_gb = int(capacity_gb[:-2])
+        try:
+            capacity_gb, type, *name = SSD_info[0].split()
+            name = f"{capacity_gb} {' '.join(name)}"
+            if capacity_gb[-2:] == "Tb":
+                capacity_gb = int(float(capacity_gb[:-2]) * 1000)
+            else:
+                capacity_gb = int(capacity_gb[:-2])
 
-        SSD = SSDs()
-        SSD.name = name
-        SSD.m2 = False
-        SSD.capacity_gb = capacity_gb
-        SSD.price_in_rubles = SSD_info[1]
+            SSD = SSDs()
+            SSD.name = name
+            SSD.m2 = False
+            SSD.capacity_gb = capacity_gb
+            SSD.price_in_rubles = SSD_info[1]
 
-        db_sess.add(SSD)
+            db_sess.add(SSD)
+        except:
+            pass
     db_sess.commit()
 
     db_sess = db_session.create_session()

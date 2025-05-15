@@ -27,15 +27,18 @@ def filling_db(PSUs_info):
 
     db_sess = db_session.create_session()
     for PSU_info in PSUs_info:
-        power, *other = PSU_info[0].split()
-        power = int(power[:-1])
+        try:
+            power, *other = PSU_info[0].split()
+            power = int(power[:-1])
 
-        PSU = PowerSupplies()
-        PSU.name = PSU_info[0]
-        PSU.power = power
-        PSU.price_in_rubles = PSU_info[1]
+            PSU = PowerSupplies()
+            PSU.name = PSU_info[0]
+            PSU.power = power
+            PSU.price_in_rubles = PSU_info[1]
 
-        db_sess.add(PSU)
+            db_sess.add(PSU)
+        except:
+            pass
     db_sess.commit()
 
     db_sess = db_session.create_session()

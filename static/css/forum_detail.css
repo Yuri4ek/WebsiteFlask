@@ -1,57 +1,75 @@
+/* Forum Detail Page */
 .container {
-    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 80px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: calc(100vh - 20px);
-    background-color: #f0f0f0;
 }
 
 .modal-content {
-    background-color: #fff;
-    padding: 20px;
+    background-color: white;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 500px;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
     text-align: center;
 }
 
-h2 {
-    font-size: 1.5em;
+.modal-content h2 {
+    font-size: 1.8em;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .post-content {
     font-size: 1em;
     color: #666;
+    margin-bottom: 20px;
     text-align: left;
-    margin-bottom: 20px;
-    word-wrap: break-word; /* Перенос длинных слов */
-    max-height: 400px; /* Ограничение высоты для длинного текста */
-    overflow-y: auto; /* Прокрутка при превышении высоты */
-    padding: 10px; /* Внутренние отступы для читаемости */
-}
-
-.post-meta {
-    font-size: 0.9em;
-    color: #888;
-    margin-bottom: 20px;
 }
 
 .btn {
-    width: 90%;
-    padding: 10px;
+    display: inline-block;
     background-color: #555;
     color: white;
-    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    cursor: pointer;
     text-decoration: none;
-    display: inline-block;
+    font-size: 16px;
 }
 
 .btn:hover {
     background-color: #666;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px 10px;
+        padding-top: 100px;
+    }
+
+    .modal-content {
+        padding: 15px 10px;
+        max-width: 90%;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .post-content {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
 }

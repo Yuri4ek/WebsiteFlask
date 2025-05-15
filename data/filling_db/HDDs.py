@@ -19,7 +19,7 @@ def filling_db(HDDs_info):
     # удаляем старые данные
     con = sqlite3.connect("../../db/components.db")
     cur = con.cursor()
-    cur.execute("DELETE FROM HHDs")
+    cur.execute("DELETE FROM HDDs")
     con.commit()
     con.close()
 

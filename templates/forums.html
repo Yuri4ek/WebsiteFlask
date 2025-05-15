@@ -22,10 +22,8 @@
                             <span class="forum-post-count" aria-label="Количество постов">{{ forum.post_count }}</span>
                         </div>
                         <p class="forum-description">{{ forum.content[:90] }}</p>
+                        <h3 class="forum-item-author">{{ forum.user.nickname }}</h3>
                     </article>
-                    <h2 class="forum-item-title">
-                                <h3>{{ forum.user.nickname }}</h3>
-                            </h2>
                 </a>
             </li>
             {% endfor %}

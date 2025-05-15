@@ -12,7 +12,7 @@ def get_components(file_path):
     # Iterate through all sheets
     for sheet_name, df in xl.items():
         # Limit to first 9776 rows
-        df = df.iloc[24:9776]
+        df = df.iloc[24:20000]
 
         # Print rows
         for _, row in df.iterrows():
@@ -32,54 +32,58 @@ def get_components(file_path):
 
     for component in components:
         info, price = component
-        piece1, *other = info.split()
-        if piece1 == 'Кулер':
-            other = ' '.join(other)
-            sorted_components['components']['Кулер'].append((other, price))
-            continue
-        elif piece1 == 'Видеокарта':
-            other = ' '.join(other)
-            sorted_components['components']['Видеокарта'].append((other, price))
-            continue
-        elif piece1 == 'Процессор':
-            other = ' '.join(other[1:-1]).replace(' - ', '-')
-            sorted_components['components']['Процессор'].append((other, price))
-            continue
-        elif piece1 == 'Корпус':
-            other = ' '.join(other)
-            sorted_components['components']['Корпус'].append((other, price))
-            continue
-        piece2, *other = other
-        if piece1 == 'Материнская' and piece2 == 'плата':
-            other = ' '.join(other)
-            sorted_components['components']['Материнская плата'].append((other, price))
-            continue
-        elif piece1 == 'Оперативная' and piece2 == 'память':
-            other = ' '.join(other)
-            sorted_components['components']['Оперативная память'].append((other, price))
-            continue
-        elif piece1 == 'Жёсткий' and piece2 == 'диск':
-            other = ' '.join(other)
-            sorted_components['components']['Жёсткий диск'].append((other, price))
-            continue
-        elif piece1 == 'Накопитель' and piece2 == 'SSD':
-            other = ' '.join(other)
-            sorted_components['components']['Накопитель SSD'].append((other, price))
-            continue
-        elif piece1 == 'Блок' and piece2 == 'питания':
-            other = ' '.join(other)
-            sorted_components['components']['Блок питания'].append((other, price))
-            continue
-        piece3, *other = other
-        if piece1 == 'Система' and piece2 == 'жидкостного' and piece3 == 'охлаждения':
-            other = ' '.join(other)
-            sorted_components['components']['Система жидкостного охлаждения'].append((other, price))
+        try:
+            piece1, *other = info.split()
+            if piece1 == 'Кулер':
+                other = ' '.join(other)
+                sorted_components['components']['Кулер'].append((other, price))
+                continue
+            elif piece1 == 'Видеокарта':
+                other = ' '.join(other)
+                sorted_components['components']['Видеокарта'].append((other, price))
+                continue
+            elif piece1 == 'Процессор':
+                other = ' '.join(other[1:-1]).replace(' - ', '-')
+                sorted_components['components']['Процессор'].append((other, price))
+                continue
+            elif piece1 == 'Корпус':
+                other = ' '.join(other)
+                sorted_components['components']['Корпус'].append((other, price))
+                continue
+            piece2, *other = other
+            if piece1 == 'Материнская' and piece2 == 'плата':
+                other = ' '.join(other)
+                sorted_components['components']['Материнская плата'].append((other, price))
+                continue
+            elif piece1 == 'Оперативная' and piece2 == 'память':
+                other = ' '.join(other)
+                sorted_components['components']['Оперативная память'].append((other, price))
+                continue
+            elif piece1 == 'Жёсткий' and piece2 == 'диск':
+                other = ' '.join(other)
+                sorted_components['components']['Жёсткий диск'].append((other, price))
+                continue
+            elif piece1 == 'Накопитель' and piece2 == 'SSD':
+                other = ' '.join(other)
+                sorted_components['components']['Накопитель SSD'].append((other, price))
+                continue
+            elif piece1 == 'Блок' and piece2 == 'питания':
+                other = ' '.join(other)
+                sorted_components['components']['Блок питания'].append((other, price))
+                continue
+            piece3, *other = other
+            if piece1 == 'Система' and piece2 == 'жидкостного' and piece3 == 'охлаждения':
+                other = ' '.join(other)
+                sorted_components['components']['Система жидкостного охлаждения'].append(
+                    (other, price))
+        except:
+            pass
 
     return sorted_components
 
 
 # день, месяц, год (последние две цифры)
-date = "070525"
+date = "150525"
 file_name = f"data_files/regard_price_{date}_21.xlsx"
 
 # Call function to print contents

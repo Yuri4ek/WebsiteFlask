@@ -1,0 +1,75 @@
+/* Forum Detail Page */
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 80px;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.modal-content h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.post-content {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #555;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #666;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px 10px;
+        padding-top: 100px;
+    }
+
+    .modal-content {
+        padding: 15px 10px;
+        max-width: 90%;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .post-content {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}

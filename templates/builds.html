@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/builds_style.css">
+
+<div class="container">
+    {% for configuration in configurations %}
+    <div class="pc-block">
+        <div class="header">
+            <button class="nickname-btn">{{ configuration[0] }}</button>
+            <div class="title-budget">
+                <div class="title">{{ configuration[1] }}</div>
+                <div class="budget">Бюджет: {{ configuration[2] }} Рублей</div>
+            </div>
+        </div>
+        <div class="content">
+            <img src="{{ configuration[4] }}" alt="PC Case" class="pc-image">
+            <div class="specs">
+                Процессор {{ configuration[3]['processors'][0] }}<br>
+                Видеокарта {{ configuration[3]['videocards'][0] }}<br>
+                ОЗУ {{ configuration[3]['ram_modules'][0] }}<br>
+                Накопители {{ configuration[3]['storage_devices'][0] }}<br>
+                Материнская плата {{ configuration[3]['motherboards'][0] }}<br>
+                Блок питания {{ configuration[3]['power_supplies'][0] }}<br>
+                Корпус {{ configuration[3]['computer_cases'][0] }}<br>
+                Охлаждение процессора {{ configuration[3]['cooling_systems'][0] }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

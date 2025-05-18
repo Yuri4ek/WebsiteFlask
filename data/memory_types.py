@@ -10,5 +10,7 @@ class MemoryTypes(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
 
-    motherboards = orm.relationship("MotherBoards",
-                                    back_populates="memory_type")
+    motherboards = orm.relationship("Processors", back_populates="memory_type")
+
+    def get(self):
+        return [self.id, self.name]

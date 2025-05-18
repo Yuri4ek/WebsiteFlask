@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/build_style.css">
+
+<div class="container">
+    <div class="components-container">
+        <img src="/static/images/shops/regard.webp" alt="Регард" class="store-image">
+        <div class="components-list">
+            <div class="component-item">
+                Процессор {{ data[0]["processors"][0] }} - {{ data[0]["processors"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1001/processory?search={{ data[0]['processors'][0] }}X&searchStep=2">Купить</a>
+            </div>
+            <div class="component-item">
+                Охлаждение процессора {{ data[0]["cooling_systems"][0] }} - {{ data[0]["cooling_systems"][1] }} ₽
+                <a href="https://www.regard.ru/catalog?search={{ data[0]['cooling_systems'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Видеокарта {{ data[0]["videocards"][0] }} - {{ data[0]["videocards"][1] }} ₽
+                <a href="https://www.regard.ru/reciept/26698710/videokarty?search={{ data[0]['videocards'][0] }}&searchStep=0">Купить</a>
+            </div>
+            <div class="component-item">
+                ОЗУ {{ data[0]["ram_modules"][0] }} - {{ data[0]["ram_modules"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1010/operativnaya-pamyat?search={{ data[0]['ram_modules'][0] }}&searchStep=2">Купить</a>
+            </div>
+            <div class="component-item">
+                Материнская плата {{ data[0]["motherboards"][0] }} - {{ data[0]["motherboards"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1000/materinskie-platy?search={{ data[0]['motherboards'][0] }}&searchStep=2">Купить</a>
+            </div>
+            <div class="component-item">
+                Накопители {{ data[0]["storage_devices"][0] }} - {{ data[0]["storage_devices"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1015/nakopiteli-ssd?search={{ data[0]['storage_devices'][0] }}&searchStep=8">Купить</a>
+            </div>
+            <div class="component-item">
+                Блок питания {{ data[0]["power_supplies"][0] }} - {{ data[0]["power_supplies"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1225/bloki-pitaniya?search={{ data[0]['power_supplies'][0] }}&searchStep=2">Купить</a>
+            </div>
+            <div class="component-item">
+                Корпус {{ data[0]["computer_cases"][0] }} - {{ data[0]["computer_cases"][1] }} ₽
+                <a href="https://www.regard.ru/catalog/1032/korpusa?search={{ data[0]['computer_cases'][0] }}&searchStep=2">Купить</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="components-container">
+        <img src="/static/images/shops/dns.webp" alt="ДНС" class="store-image">
+        <div class="components-list">
+            <div class="component-item">
+                Процессор {{ data[0]["processors"][0] }} - {{ data[0]["processors"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a899cd16404e77/processory/?q={{ data[0]['processors'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Охлаждение процессора {{ data[0]["cooling_systems"][0] }} - {{ data[0]["cooling_systems"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a9cc2d164 Ree04e77/kulery-dlya-processorov/?q={{ data[0]['cooling_systems'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Видеокарта {{ data[0]["videocards"][0] }} - {{ data[0]["videocards"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a89aab16404e77/videokarty/?q={{ data[0]['videocards'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                ОЗУ {{ data[0]["ram_modules"][0] }} - {{ data[0]["ram_modules"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a89a3916404e77/operativnaya-pamyat-dimm/?q={{ data[0]['ram_modules'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Материнская плата {{ data[0]["motherboards"][0] }} - {{ data[0]["motherboards"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a89a0416404e77/materinskie-platy/?q={{ data[0]['motherboards'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Накопители {{ data[0]["storage_devices"][0] }} - {{ data[0]["storage_devices"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/dd58148920724e77/ssd-m2-nakopiteli/?q={{ data[0]['storage_devices'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Блок питания {{ data[0]["power_supplies"][0] }} - {{ data[0]["power_supplies"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a89c2216404e77/bloki-pitaniya/?q={{ data[0]['power_supplies'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+            <div class="component-item">
+                Корпус {{ data[0]["computer_cases"][0] }} - {{ data[0]["computer_cases"][1] }} ₽
+                <a href="https://www.dns-shop.ru/catalog/17a89c5616404e77/korpusa/?q={{ data[0]['computer_cases'][0] }}&stock=now-today-tomorrow-later-out_of_stock&order=6">Купить</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="components-container">
+        <img src="/static/images/shops/avito.webp" alt="Авито" class="store-image">
+        <div class="components-list">
+            <div class="component-item">
+                Процессор {{ data[2]["processors"][0] }} - {{ data[2]["processors"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['processors'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Охлаждение процессора {{ data[2]["cooling_systems"][0] }} - {{ data[2]["cooling_systems"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['cooling_systems'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Видеокарта {{ data[2]["videocards"][0] }} - {{ data[2]["videocards"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['videocards'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                ОЗУ {{ data[2]["ram_modules"][0] }} - {{ data[2]["ram_modules"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['ram_modules'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Материнская плата {{ data[2]["motherboards"][0] }} - {{ data[2]["motherboards"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['motherboards'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Накопители {{ data[2]["storage_devices"][0] }} - {{ data[2]["storage_devices"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['storage_devices'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Блок питания {{ data[2]["power_supplies"][0] }} - {{ data[2]["power_supplies"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['power_supplies'][0] }}">Купить</a>
+            </div>
+            <div class="component-item">
+                Корпус {{ data[2]["computer_cases"][0] }} - {{ data[2]["computer_cases"][1] }} ₽
+                <a href="https://www.avito.ru/moskva/tovary_dlya_kompyutera/komplektuyuschie?cd=1&q={{ data[2]['computer_cases'][0] }}">Купить</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="configModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Введите название конфигурации</h2>
+        <input type="text" id="configName" placeholder="Название конфигурации">
+        <button id="submitConfig">Опубликовать</button>
+    </div>
+</div>
+
+<a class="publish-button" id="publishBtn">Опубликовать конфигурацию</a>
+
+<script>
+    // Получаем модальное окно
+    const modal = document.getElementById("configModal");
+
+    // Получаем кнопку, которая открывает модальное окно
+    const btn = document.getElementById("publishBtn");
+
+    // Получаем элемент <span>, который закрывает модальное окно
+    const span = document.getElementsByClassName("close")[0];
+
+    // Получаем кнопку отправки
+    const submitBtn = document.getElementById("submitConfig");
+
+    // Когда пользователь нажимает на кнопку, открываем модальное окно
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Когда пользователь нажимает на <span> (x), закрываем модальное окно
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Когда пользователь нажимает на кнопку отправки
+    submitBtn.onclick = function() {
+        const configName = document.getElementById("configName").value;
+        if (configName) {
+            window.location.href = `/publish_configuration?name=${encodeURIComponent(configName)}`;
+        }
+    }
+
+    // Также обрабатываем нажатие Enter в поле ввода
+    document.getElementById("configName").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            const configName = document.getElementById("configName").value;
+            if (configName) {
+                window.location.href = `/publish_configuration?name=${encodeURIComponent(configName)}`;
+            }
+        }
+    });
+
+    // Когда пользователь кликает в любом месте вне модального окна, закрываем его
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+{% endblock %}

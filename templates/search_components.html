@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/components_style.css">
+
+<div class="container">
+    <div class="filters">
+        <button class="toggle-filters">Фильтры ▼</button>
+        <div class="filters-content">
+            <!-- Динамические фильтры в зависимости от категории -->
+            {% if component_type == "processors" %}
+                <h4>Сокет</h4>
+                <select name="socket" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for socket in sockets %}
+                    <option value="{{ socket }}">{{ socket }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% elif component_type == "motherboards" %}
+                <h4>Сокет</h4>
+                <select name="socket" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for socket in sockets %}
+                    <option value="{{ socket }}">{{ socket }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h4>Поддержка m2</h4>
+                <select name="m2_support" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    <option value="True">Есть</option>
+                    <option value="False">Нет</option>
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% elif component_type == "ram_modules" %}
+                <h4>Тип памяти</h4>
+                <select name="memory_type" onchange="applyFilters()">
+                    <option value="">Любой</option>
+                    {% for memory_type in memory_types %}
+                    <option value="{{ memory_type }}">{{ memory_type }}</option>
+                    {% endfor %}
+                </select>
+                <h5>* при использовании фильтров перестанет работать проверка на совместимость</h5>
+            {% endif %}
+
+            <h4>Цена</h4>
+            <div class="price-range">
+                <div class="price-input">
+                    <input type="number" name="price_from" placeholder="От" oninput="updatePriceFilter()">
+                </div>
+                <div class="price-input">
+                    <input type="number" name="price_to" placeholder="До" oninput="updatePriceFilter()">
+                </div>
+            </div>
+            <a class="price-button" onclick="applyFilters()">Показать с ценами</a>
+        </div>
+    </div>
+    <div class="right-section">
+        <div class="search-bar">
+            <input type="text" name="search_query" placeholder="Поиск комплектующих...">
+            <div class="search-preview" id="searchPreview"></div>
+            <button onclick="applySearch()">Поиск</button>
+        </div>
+        <div class="components">
+            {% if components == [] %}
+                <h4>К сожалению нету комплектующих под ваши запросы(</h4>
+                <h4>Если вы просто собирали конфигурацию без использования фильтров, то значит к выбранному вами компоненту нету подходящих(</h4>
+                <h4>Очистите выбор и выбирайте дальше)</h4>
+                <h4>А если вы использовали фильтры, то под эти фильтры нету комплектующих(</h4>
+            {% endif %}
+            {% for component in components %}
+                <div class="component-item">
+                    <div class="component-image">
+                        <img src="{{ component_image }}" alt="Нету изображения">
+                    </div>
+                    <div class="component-info">
+                        <h3>{{ component[0] }}</h3>
+                        {% for el in component[1:] %}
+                            <p>{{ el }}</p>
+                        {% endfor %}
+                    </div>
+                    <a href="/{{ component_type }}:{{ component[0] }}" class="component-button">Выбрать</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+let priceFrom = '';
+let priceTo = '';
+
+function updatePriceFilter() {
+    priceFrom = document.querySelector('input[name="price_from"]').value;
+    priceTo = document.querySelector('input[name="price_to"]').value;
+}
+
+function applyFilters() {
+    const filters = [];
+    const searchQuery = document.querySelector('input[name="search_query"]').value;
+
+    // Добавляем фильтры по цене, если они заданы
+    if (priceFrom && priceFrom !== '') {
+        filters.push(`price_from:${priceFrom}`);
+    }
+    if (priceTo && priceTo !== '') {
+        filters.push(`price_to:${priceTo}`);
+    }
+
+    // Добавляем поисковый запрос, если он задан
+    if (searchQuery && searchQuery !== '') {
+        filters.push(`search:${encodeURIComponent(searchQuery)}`);
+    }
+
+    // Собираем значения фильтров
+    const selects = document.querySelectorAll('.filters select');
+    selects.forEach(select => {
+        const filterType = select.name;
+        const filterValue = select.value;
+        if (filterValue && filterValue !== '') {
+            filters.push(`${filterType}:${filterValue}`);
+        }
+    });
+
+    // Формируем URL
+    const componentType = '{{ component_type }}';
+    let url = `/choose_components/${componentType}`;
+    if (filters.length > 0) {
+        url += `?filters=${filters.join(',')}`;
+    }
+
+    // Перенаправляем на сформированный URL
+    window.location.href = url;
+}
+
+function applySearch() {
+    applyFilters();
+}
+
+// Toggle filters on mobile
+document.querySelector('.toggle-filters').addEventListener('click', function() {
+    const filtersContent = document.querySelector('.filters-content');
+    const isVisible = filtersContent.style.display === 'block';
+    filtersContent.style.display = isVisible ? 'none' : 'block';
+    this.textContent = isVisible ? 'Фильтры ▼' : 'Фильтры ▲';
+});
+</script>
+
+{% endblock %}

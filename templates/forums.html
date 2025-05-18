@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/forum.css">
+
+<div class="forum-container" role="main">
+    <header class="forum-header">
+        <a class="btn btn-primary create-thread-btn" href="/forum/new_forum_post" aria-label="Создать публикацию">Создать публикацию</a>
+    </header>
+
+    <section class="forum-list" aria-label="Список тем форума">
+        {% if forums %}
+        <ul class="forum-items">
+            {% for forum in forums %}
+            <li class="forum-item">
+                <a href="{{ url_for('forum_detail', forum_id=forum.id) }}" class="forum-card" aria-label="Перейти к теме {{ forum.title }}">
+                    <article>
+                        <div class="forum-card-header">
+                            <h2 class="forum-item-title">
+                                <span>{{ forum.title }}</span>
+                            </h2>
+                            <span class="forum-post-count" aria-label="Количество постов">{{ forum.post_count }}</span>
+                        </div>
+                        <p class="forum-description">{{ forum.content[:90] }}</p>
+                        <h3 class="forum-item-author">{{ forum.user.nickname }}</h3>
+                    </article>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-forums" aria-live="polite">Пока нет тем для обсуждения. Создайте первую!</p>
+        {% endif %}
+    </section>
+</div>
+
+{% endblock %}

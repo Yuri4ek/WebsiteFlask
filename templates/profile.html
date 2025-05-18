@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/profile.css">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>Профиль пользователя</h1>
+
+        <div class="profile-field">
+            <strong>nickname:</strong> {{ user.nickname }}
+        </div>
+
+        <div class="profile-field">
+            <strong>Email:</strong> {{ user.email }}
+        </div>
+        <a href="/edit_profile" class="btn">Редактировать профиль</a>
+        <a href="/logout" class="btn"> Выйти</a>
+    </div>
+</body>
+</html>
+{% endblock %}

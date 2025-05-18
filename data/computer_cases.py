@@ -8,6 +8,7 @@ class ComputerCases(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
-    form_factor = sqlalchemy.Column(sqlalchemy.String)
-    price = sqlalchemy.Column(sqlalchemy.REAL)
-    currency = sqlalchemy.Column(sqlalchemy.String)
+    price_in_rubles = sqlalchemy.Column(sqlalchemy.Integer)
+
+    def get(self):
+        return [self.id, self.name, self.price_in_rubles]

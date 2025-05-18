@@ -1,0 +1,306 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 1500px;
+    display: flex;
+    flex: 1;
+    margin: 40px auto 15px;
+    min-height: calc(100vh - 85px);
+}
+
+.filters {
+    width: 300px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-right: 1px solid #ccc;
+    height: 100%;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+.toggle-filters {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.filters h3 {
+    margin: 0;
+    padding: 5px 0;
+}
+
+.filters h4 {
+    margin: 10px 0 5px 0;
+}
+
+.filters select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filters .price-range {
+    display: flex;
+    gap: 10px;
+}
+
+.filters .price-range .price-input {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.filters .price-range .price-input input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.price-button {
+    width: 60%;
+    background-color: #555;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.price-button:hover {
+    background-color: #666;
+}
+
+.right-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.search-bar {
+    position: relative;
+    padding: 10px;
+    background-color: #ddd;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    margin: 10px 10px 10px 0;
+    height: 50px;
+}
+
+.search-preview {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #f9f9f9;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 10;
+    display: none;
+}
+
+.search-preview.show {
+    display: block;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    height: 30px;
+    background-color: #ddd;
+}
+
+.search-bar button {
+    padding: 8px 15px;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 30px;
+}
+
+.search-bar button:hover {
+    background-color: #777;
+}
+
+.components {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.component-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.component-image {
+    width: 130px;
+    height: 130px;
+    background-color: #fff;
+    margin-right: 15px;
+    border-radius: 6px;
+}
+
+.component-info {
+    flex: 1;
+}
+
+.component-info h3 {
+    margin: 0 0 10px 0;
+}
+
+.component-info p {
+    width: 400px;
+    margin: 6px 0;
+    color: #666;
+}
+
+.component-button {
+    margin-right: 300px;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.component-button:hover {
+    background-color: #777;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        flex-direction: column;
+        margin: 50px 0 15px;
+        min-height: auto;
+        padding: 15px;
+    }
+
+    .filters {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        margin-right: 0;
+        padding: 10px;
+    }
+
+    .toggle-filters {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #555;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .filters-content {
+        display: none;
+    }
+
+    .filters-content.show {
+        display: block;
+    }
+
+    .filters select, .filters .price-range .price-input input {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .price-button {
+        width: 100%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .search-bar {
+        margin: 10px 0;
+        height: auto;
+        padding: 8px;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        padding: 8px;
+        height: 36px;
+    }
+
+    .search-bar button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .components {
+        padding: 10px;
+    }
+
+    .component-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .component-image {
+        width: 100%;
+        max-width: 120px;
+        height: 120px;
+        margin: 0 auto 10px;
+    }
+
+    .component-info p {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .component-button {
+        margin-right: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        padding: 8px;
+    }
+}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/main_style.css">
+
+<!-- Main container -->
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>Конфигурация</h1>
+        <div class="components-list">
+            <p>Процессор: {{ selected_component['processors'][0] }} </p>
+            <p>Охлаждение процессора: {{ selected_component['cooling_systems'][0] }} </p>
+            <p>Видеокарта: {{ selected_component['videocards'][0] }} </p>
+            <p>ОЗУ: {{ selected_component['ram_modules'][0] }} </p>
+            <p>Материнская плата: {{ selected_component['motherboards'][0] }} </p>
+            <p>Накопители: {{ selected_component['storage_devices'][0] }} </p>
+            <p>Блок питания: {{ selected_component['power_supplies'][0] }} </p>
+            <p>Корпус: {{ selected_component['computer_cases'][0] }} </p>
+        </div>
+        <a href="/clear_cookie" class="delete-button">Очистить выбор</a>
+        <a href="/build" class="build-button">Собрать конфигурацию</a>
+    </div>
+
+    <!-- Components container -->
+    <div class="components-container">
+        <!-- Row 1: CPU Cooler (centered above CPU) -->
+        <div class="cpu-row">
+            <div class="block cpu-block" onclick="openModal('coolingModal')">Охлаждение процессора</div>
+        </div>
+
+        <!-- Row 2: GPU, CPU, RAM -->
+        <div class="row">
+            <div class="block" onclick="window.location.href='/choose_components/videocards'">Видеокарта</div>
+            <div class="block cpu-block" onclick="window.location.href='/choose_components/processors'">Процессор</div>
+            <div class="block" onclick="window.location.href='/choose_components/ram_modules'">ОЗУ</div>
+        </div>
+
+        <!-- Row 3: Motherboard -->
+        <div class="row">
+            <div class="motherboard" onclick="window.location.href='/choose_components/motherboards'">Материнская плата</div>
+        </div>
+
+        <!-- Row 4: Storage, PSU, Case -->
+        <div class="bottom-row">
+            <div class="block" onclick="openModal('storageModal')">Накопители</div>
+            <div class="block" onclick="window.location.href='/choose_components/power_supplies'">Блок питания</div>
+            <div class="block" onclick="window.location.href='/choose_components/computer_cases'">Корпус</div>
+        </div>
+    </div>
+</div>
+
+<!-- Cooling System Modal -->
+<div id="coolingModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('coolingModal')">&times;</span>
+        <h2>Выберите тип охлаждения</h2>
+        <div class="modal-options">
+            <div class="modal-option" onclick="window.location.href='/choose_components/air_coolers'">Воздушное</div>
+            <div class="modal-option" onclick="window.location.href='/choose_components/water_coolers'">Жидкостное</div>
+        </div>
+    </div>
+</div>
+
+<!-- Storage Device Modal -->
+<div id="storageModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('storageModal')">&times;</span>
+        <h2>Выберите тип накопителя</h2>
+        <div class="modal-options">
+            <div class="modal-option" onclick="window.location.href='/choose_components/SSDs'">SSD</div>
+            <div class="modal-option" onclick="window.location.href='/choose_components/HDDs'">HDD</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Close modal when clicking outside of modal content
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+</script>
+
+{% endblock %}

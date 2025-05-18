@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/create_forum.css">
+
+<div class="container">
+    <form method="post" class="modal-content">
+        <h2>Создать публикацию</h2>
+        <input type="text" id="title" name="title" required placeholder="Название темы">
+        <textarea id="content" name="content" required placeholder="Содержание"></textarea>
+        <button type="submit" class="btn">Создать</button>
+    </form>
+</div>
+
+{% endblock %}
